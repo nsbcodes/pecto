@@ -1,0 +1,25 @@
+{
+    "name": "shitter",
+    "class": "Honors Biology I",
+    "author": "NavtejB",
+    "date": "09/15/22",
+    "uid": "I2PnaeBNQ6RAbJpERNYdcYBtZwt2",
+    "uuid": "99a12c30-acff-4339-94ce-67d58c343f4b",
+    "content": [
+        {
+            "term": "Test 1",
+            "definition": "This is the first test",
+            "category": "Foo"
+        },
+        {
+            "term": "Test 2",
+            "definition": "This is the second test",
+            "category": "Bar"
+        },
+        {
+            "term": "Test 3",
+            "definition": "This is the third test",
+            "category": "Foo"
+        }
+    ]
+}
