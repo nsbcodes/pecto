@@ -6,6 +6,7 @@ import Root from './Root' // Name conflict with Bootstrap
 import './index.scss'
 import { NewPack } from './Pack/NewPack'
 import { UserView } from './UserView'
+import { SearchPacks } from './SearchPacks'
 import Home from './Home'
 
 const router = createBrowserRouter([
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
             {
                 path: 'new/pack',
                 element: <NewPack/>
+            },
+            {
+                path: 'search/:searchTerm',
+                element: <SearchPacks/>
             }
         ],
     },

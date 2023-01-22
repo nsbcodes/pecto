@@ -63,7 +63,8 @@ export function Metadata() {
 
     // sadge
     async function deletePack() {
-        await deleteDoc(doc(db, "packs", pack.uuid))
+        const docRef = doc(db, "packs", user.displayName, "packs", id)
+        await deleteDoc(docRef)
         navigate('/')
     }
 

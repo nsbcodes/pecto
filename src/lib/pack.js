@@ -28,4 +28,19 @@ async function getUsersPacks(user) {
     return packs
 }
 
-export { fetcher, getMyPacks, getUsersPacks }
+async function getPacks(searchTerm) {
+    let packs = []
+    const userPacks = await getDocs(
+        query(
+            collection(db, "packs", user, "packs"),
+            where("published", "==", true)
+        )
+    )
+    userPacks.forEach(doc => {
+        packs.push(doc.data())
+    })
+    
+    return packs
+}
+
+export { fetcher, getMyPacks, getUsersPacks, getPacks }
