@@ -2,8 +2,6 @@ import React from 'react'
 
 import { useContext, useState, useEffect } from 'react'
 import { PackContext, EditorContext } from '@/lib/context'
-import { deleteDoc, doc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -13,6 +11,8 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { LinkContainer } from 'react-router-bootstrap'
 import Modal from 'react-bootstrap/Modal'
+
+import { StoreInstance as Store } from '@/lib/store'
 
 import './Metadata.scss'
 
@@ -62,9 +62,8 @@ export function Metadata() {
     }
 
     // sadge
-    async function deletePack() {
-        const docRef = doc(db, "packs", user.displayName, "packs", id)
-        await deleteDoc(docRef)
+    function deletePack() {
+        Store.deletePack(pack.id)
         navigate('/')
     }
 

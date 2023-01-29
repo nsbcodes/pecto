@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { UserContext } from '@/lib/context'
-import { getMyPacks } from '@/lib/pack'
+import { StoreInstance as Store } from '@/lib/store'
 import UserPacks from './Home/UserPacks'
 import './Home.scss'
 
@@ -9,10 +9,7 @@ function Home() {
     const [usersPacks, setUsersPacks] = useState([])
 
     useEffect(() => {
-        async function fetchData() {
-            setUsersPacks(await getMyPacks(user.displayName))
-        }
-        if (usersPacks.length == 0 && !loading) fetchData()
+        if (usersPacks.length == 0 && !loading) setUsersPacks(Store.getMyPacks())
     }, [loading])
 
     try {
