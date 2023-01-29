@@ -1,11 +1,10 @@
 import React, { useContext, useEffect } from 'react'
-import { StoreInstance as Store } from '@/lib/store'
+import { setDoc, doc } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '@/lib/context'
 
 import Spinner from 'react-bootstrap/Spinner'
-
-import { BasePack } from '@/lib/schema'
 
 import { v4 as uuidv4 } from 'uuid'
 
@@ -25,13 +24,33 @@ export function NewPack() {
 	var id = uuidv4()
 
 	useEffect(() => {
-		if (user === null) {
-			Store.newPack(id, BasePack())
-			navigate(`/view/me/${id}`)
-		} else {
-			Store.newPack(id, {...BasePack(), uid: user.uid})
+        async function newPack() {
+			// This is basically our schema
+			let newPack = {
+				name: '',
+				class: '',
+				author: user.displayName,
+				date: new Date(Date.now()).toLocaleString().split(',')[0],
+				uid: user.uid,
+				uuid: id,
+				published: false,
+				categories: {'Default': ['transparent', 'transparent']},
+				content: [
+					{
+						term: '',
+						definition: '',
+						category: 'Default'
+					},
+				],
+			}
+			
+			// Abstract this specific line
+			const docRef = doc(db, "packs", user.displayName, "packs", id)
+			await setDoc(docRef, newPack)
+			console.log(`${id} has been created`)
 			navigate(`/view/${user.displayName}/${id}`)
 		}
+		if (user != undefined) newPack()
     }, [])
 
     return (

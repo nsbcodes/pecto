@@ -4,6 +4,8 @@ import Cards from './Cards'
 import { CardsContext, PackContext, UserContext, EditorContext } from '@/lib/context'
 import { Metadata } from './Metadata'
 import { useParams } from 'react-router-dom'
+import { setDoc, doc } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
@@ -12,8 +14,6 @@ import Spinner from 'react-bootstrap/Spinner'
 import FlashcardView from './Views/FlashcardView'
 
 import './Pack.scss'
-
-import { StoreInstance as Store } from '@/lib/store'
 
 import { AnimatePresence } from 'framer-motion'
 
@@ -43,15 +43,11 @@ function Pack() {
 
     let editor = false
 
-    // TODO: Fix the below code
-    // it works but messy
     try {
         if (user.uid == pack.uid) editor = true
     } catch (err) {
         editor = false
     }
-
-    if (displayName == "me") editor = true
 
     async function newCards() {
         // Add new terms
@@ -66,8 +62,8 @@ function Pack() {
     async function saveCards() {
         startSaving(true)
 
-        // We aren't actually creating a new pack, this also edits it
-        Store.newPack(packId, pack)
+        const docRef = doc(db, "packs", user.displayName, "packs", packId)
+        await setDoc(docRef, pack)
 
         startSaving(false)
     }
