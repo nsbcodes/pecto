@@ -10,36 +10,36 @@ import { SearchPacks } from './SearchPacks'
 import Home from './Home'
 
 const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <Root />,
-        children: [
-            {
-                path: '/',
-                element: <Home/>
-            },
-            {
-                path: 'view/:displayName',
-                element: <UserView />
-            },
-            {
-                path: 'view/:displayName/:packId',
-                element: <Pack />
-            },
-            {
-                path: 'new/pack',
-                element: <NewPack/>
-            },
-            {
-                path: 'search/:searchTerm',
-                element: <SearchPacks/>
-            }
-        ],
-    },
+	{
+		path: '/',
+		element: <Root />,
+		children: [
+			{
+				path: '/',
+				element: <Home />,
+			},
+			{
+				path: 'view/:displayName',
+				element: <UserView />,
+			},
+			{
+				path: 'view/:displayName/:packId',
+				element: <Pack />,
+			},
+			{
+				path: 'new/pack',
+				element: <NewPack />,
+			},
+			{
+				path: 'search/:searchTerm',
+				element: <SearchPacks />,
+			},
+		],
+	},
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <RouterProvider router={router} />
-    </React.StrictMode>
+	<React.StrictMode>
+		<RouterProvider router={router} />
+	</React.StrictMode>
 )

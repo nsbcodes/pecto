@@ -17,14 +17,13 @@ import { v4 as uuidv4 } from 'uuid'
 // This is why we use an id variable
 
 export function NewPack() {
-
 	const user = useContext(UserContext).user
 	const navigate = useNavigate()
 
 	var id = uuidv4()
 
 	useEffect(() => {
-        async function newPack() {
+		async function newPack() {
 			// This is basically our schema
 			let newPack = {
 				name: '',
@@ -34,28 +33,31 @@ export function NewPack() {
 				uid: user.uid,
 				uuid: id,
 				published: false,
-				categories: {'Default': ['transparent', 'transparent']},
+				categories: {
+					// id (key) on new categories should be something generated with uuidV4
+					default: { name: 'Default', colors: ['transparent', 'transparent'] },
+				},
 				content: [
 					{
 						term: '',
 						definition: '',
-						category: 'Default'
+						category: 'default',
 					},
 				],
 			}
-			
+
 			// Abstract this specific line
-			const docRef = doc(db, "packs", user.displayName, "packs", id)
+			const docRef = doc(db, 'packs', user.displayName, 'packs', id)
 			await setDoc(docRef, newPack)
 			console.log(`${id} has been created`)
 			navigate(`/view/${user.displayName}/${id}`)
 		}
 		if (user != undefined) newPack()
-    }, [])
+	}, [])
 
-    return (
+	return (
 		<div className="d-flex justify-content-center">
-			<Spinner animation="border" variant="dark" size="lg"/>
+			<Spinner animation="border" variant="dark" size="lg" />
 		</div>
 	)
 }

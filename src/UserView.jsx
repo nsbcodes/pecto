@@ -6,31 +6,29 @@ import './Home.scss'
 
 export function UserView() {
 	const { displayName } = useParams()
-    const [usersPacks, setUsersPacks] = useState([])
+	const [usersPacks, setUsersPacks] = useState([])
 
-    useEffect(() => {
-        async function fetchData() {
-            setUsersPacks(await getUsersPacks(displayName))
-        }
-        fetchData()
-    }, [])
+	useEffect(() => {
+		async function fetchData() {
+			setUsersPacks(await getUsersPacks(displayName))
+		}
+		fetchData()
+	}, [])
 
 	if (usersPacks.length == 0) {
-        return (
-            <div className="container text-center">
-                <div className="m-3">
-                    Profile not found
-                </div>
-            </div>
-        )
+		return (
+			<div className="container text-center">
+				<div className="m-3">Profile not found</div>
+			</div>
+		)
 	}
 
-    return (
-        <div className="container">
-            <div className="m-3">
-                <h3>{`${displayName}'s Packs`}</h3>
-                <UserPacks packs={usersPacks}/>
-            </div>
-        </div>
-    )
+	return (
+		<div className="container">
+			<div className="m-3">
+				<h3>{`${displayName}'s Packs`}</h3>
+				<UserPacks packs={usersPacks} />
+			</div>
+		</div>
+	)
 }
