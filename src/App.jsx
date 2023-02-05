@@ -21,13 +21,9 @@ function App() {
 
 	return (
 		// TODO: possibly there shall be a cleaner way (prop spreddy)?
-		<UserContext.Provider
-			value={{ user: user, loading: loading, error: error }}
-		>
+		<UserContext.Provider value={{ user: user, loading: loading, error: error }}>
 			<code>{user ? <AuthInfo /> : 'Unauthenticated'}</code>
-			<button onClick={handleAuthClick}>
-				{user ? 'Sign Out' : 'Sign in with Google'}
-			</button>
+			<button onClick={handleAuthClick}>{user ? 'Sign Out' : 'Sign in with Google'}</button>
 
 			<Pack id="99a12c30-acff-4339-94ce-67d58c343f4b" />
 		</UserContext.Provider>

@@ -1,8 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@500&display=swap');
 
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/maps";
+@import "../node_modules/bootstrap/scss/mixins";
+@import "../node_modules/bootstrap/scss/root";
+
+
 #packRoot {
 	margin-left: 5rem;
-	width: 60vw;
+	width: 90%;
+}
+
+#packContentContainer {
+	padding: 0px;
+}
+
+@include media-breakpoint-up(sm) { 
+	#packRoot {
+		width: 80vw;
+	}
+}
+@include media-breakpoint-up(md) {
+	#packRoot {
+		width: 77.5vw;
+	}
+	#packContentContainer {
+		padding: 1.5em;
+	}
+}
+@include media-breakpoint-up(lg) {
+	#packRoot {
+		width: 70vw
+	}
+}
+@include media-breakpoint-up(xl) {
+	#packRoot {
+		width: 65vw
+	}
+}
+@include media-breakpoint-up(xxl) {
+	#packRoot {
+		width: 60vw
+	}
 }
 
 #packName {

@@ -40,7 +40,7 @@ export const usePack = create((set) => ({
 					cards.push({
 						term: a[0],
 						definition: a[1],
-						category: 'Default',
+						category: 'default',
 					})
 				})
 

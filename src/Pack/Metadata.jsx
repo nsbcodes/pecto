@@ -26,14 +26,7 @@ import { UserContext } from '@/lib/context'
 export function Metadata() {
 	const [editing, setEditing] = useState(false)
 	const user = useContext(UserContext).user
-	const [
-		pack,
-		togglePublished,
-		editClass,
-		editName,
-		addQuizletCards,
-		canEdit,
-	] = usePack(
+	const [pack, togglePublished, editClass, editName, addQuizletCards, canEdit] = usePack(
 		(state) => [
 			// Data
 			state.pack,
@@ -106,10 +99,7 @@ export function Metadata() {
 						/>
 						<p>
 							Author:{' '}
-							<LinkContainer
-								className="link-primary"
-								to={`/view/${pack.author}`}
-							>
+							<LinkContainer className="link-primary" to={`/view/${pack.author}`}>
 								<b>@{pack.author}</b>
 							</LinkContainer>
 						</p>
@@ -170,11 +160,7 @@ export function Metadata() {
 						Are you sure?
 					</Button>
 				) : (
-					<Button
-						size="sm"
-						variant="warning"
-						onClick={() => startDelete(true)}
-					>
+					<Button size="sm" variant="warning" onClick={() => startDelete(true)}>
 						Delete
 					</Button>
 				)}
@@ -187,27 +173,21 @@ export function Metadata() {
 						This only works if you are the creator
 						<ol>
 							<li>
-								Click the{' '}
-								<span className="badge bg-dark">⋯</span> menu
+								Click the <span className="badge bg-dark">⋯</span> menu
 							</li>
 							<li>
-								Press{' '}
-								<span className="badge bg-primary">Export</span>
+								Press <span className="badge bg-primary">Export</span>
 							</li>
 							<li>
-								Paste <span className="badge bg-dark">🟢</span>{' '}
-								in <b>Custom</b> for{' '}
+								Paste <span className="badge bg-dark">🟢</span> in <b>Custom</b> for{' '}
 								<b>Between term and definition</b>
 							</li>
 							<li>
-								Paste <span className="badge bg-dark">⭕</span>{' '}
-								in <b>Custom</b> for <b>Between rows</b>
+								Paste <span className="badge bg-dark">⭕</span> in <b>Custom</b> for{' '}
+								<b>Between rows</b>
 							</li>
 							<li>
-								Click{' '}
-								<span className="badge bg-primary">
-									Copy Text
-								</span>
+								Click <span className="badge bg-primary">Copy Text</span>
 							</li>
 							<li>Paste it below:</li>
 						</ol>
@@ -239,10 +219,7 @@ export function Metadata() {
 					</h1>
 					<p>
 						Author:{' '}
-						<LinkContainer
-							className="link-primary"
-							to={`/view/${pack.author}`}
-						>
+						<LinkContainer className="link-primary" to={`/view/${pack.author}`}>
 							<b>@{pack.author}</b>
 						</LinkContainer>
 					</p>
@@ -273,11 +250,7 @@ export function Metadata() {
 					</Button>
 
 					{canEdit ? (
-						<Button
-							size="sm"
-							variant="dark"
-							onClick={() => setEditing(!editing)}
-						>
+						<Button size="sm" variant="dark" onClick={() => setEditing(!editing)}>
 							Edit Metadata
 						</Button>
 					) : null}

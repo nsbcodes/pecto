@@ -1,0 +1,39 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/maps";
+@import "../node_modules/bootstrap/scss/mixins";
+@import "../node_modules/bootstrap/scss/root";
+
+.flashCard {
+	width: 100%;
+	padding: 30px 10px;
+}
+
+@include media-breakpoint-up(sm) { 
+	.flashCard {
+		width: 95%;
+		padding: 40px 20px;
+	}
+}
+@include media-breakpoint-up(md) {
+	.flashCard {
+		width: 90%;
+		padding: 60px 25px;
+	}
+}
+@include media-breakpoint-up(lg) {
+	.flashCard {
+		width: 80%
+	}
+}
+@include media-breakpoint-up(xl) {
+	.flashCard {
+		width: 75%;
+		padding: 120px 50px;
+	}
+}
+@include media-breakpoint-up(xxl) {
+	.flashCard {
+		width: 70%
+	}
+}

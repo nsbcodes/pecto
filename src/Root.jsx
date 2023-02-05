@@ -48,9 +48,7 @@ function Root() {
 			>
 				<Container fluid>
 					<LinkContainer to={'/'}>
-						<Navbar.Brand className="fw-bold">
-							📎 Pecto
-						</Navbar.Brand>
+						<Navbar.Brand className="fw-bold">📎 Pecto</Navbar.Brand>
 					</LinkContainer>
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
 					<Navbar.Collapse id="basic-navbar-nav">
@@ -99,9 +97,7 @@ function Root() {
 			</Navbar>
 
 			<div id="detail">
-				<UserContext.Provider
-					value={{ user: user, loading: loading, error: error }}
-				>
+				<UserContext.Provider value={{ user: user, loading: loading, error: error }}>
 					<Outlet />
 				</UserContext.Provider>
 			</div>

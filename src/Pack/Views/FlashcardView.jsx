@@ -7,6 +7,8 @@ import { motion } from 'framer-motion'
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
+import './FlashcardView.scss'
+
 function FlashcardView() {
 	const [pack] = usePack((state) => [state.pack], shallow)
 	const [currentCard, setCurrentCard] = useState(0)
@@ -29,26 +31,10 @@ function FlashcardView() {
 				{clicked ? (
 					<div style={{ position: 'relative' }}>
 						<motion.div
-							animate={{ opacity: 100 }}
-							initial={{ opacity: 0 }}
-							className="shadow bg-secondary rounded-3 w-75 mx-auto text-center position-absolute top-50 start-50 translate-middle"
-							style={{
-								paddingTop: '7rem',
-								paddingBottom: '7rem',
-								position: 'absolute',
-							}}
-						>
-							a
-						</motion.div>
-						<motion.div
-							animate={{ rotate: -5 }}
-							initial={{ rotate: 0 }}
+							initial={{ y: 0 }}
+							animate={{ y: -10 }}
 							key={pack.content[currentCard]['definition']}
-							className="shadow rounded-3 bg-secondary w-75 mx-auto text-center"
-							style={{
-								paddingTop: '7rem',
-								paddingBottom: '7rem',
-							}}
+							className="shadow rounded-3 bg-secondary mx-auto text-center flashCard"
 							onClick={() => setClicked(!clicked)}
 						>
 							<h3>{pack.content[currentCard]['definition']}</h3>
@@ -56,11 +42,10 @@ function FlashcardView() {
 					</div>
 				) : (
 					<motion.div
-						animate={{ rotate: 0, x: 0 }}
-						initial={{ rotate: -5, x: 25 }}
+						initial={{ y: -10, x: 25 }}
+						animate={{ y: 0, x: 0 }}
 						key={pack.content[currentCard]['term']}
-						className="shadow rounded-3 bg-secondary w-75 mx-auto text-center"
-						style={{ paddingTop: '7rem', paddingBottom: '7rem' }}
+						className="shadow rounded-3 bg-secondary mx-auto text-center flashCard"
 						onClick={() => setClicked(!clicked)}
 					>
 						<h3>{pack.content[currentCard]['term']}</h3>
@@ -78,10 +63,7 @@ function FlashcardView() {
 							Previous
 						</Button>
 					) : (
-						<Button
-							variant="light"
-							onClick={() => setCurrentCard(currentCard - 1)}
-						>
+						<Button variant="light" onClick={() => setCurrentCard(currentCard - 1)}>
 							Previous
 						</Button>
 					)}
@@ -95,10 +77,7 @@ function FlashcardView() {
 							Next
 						</Button>
 					) : (
-						<Button
-							variant="light"
-							onClick={() => setCurrentCard(currentCard + 1)}
-						>
+						<Button variant="light" onClick={() => setCurrentCard(currentCard + 1)}>
 							Next
 						</Button>
 					)}

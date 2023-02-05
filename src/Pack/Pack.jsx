@@ -85,7 +85,7 @@ function Pack() {
 
 			<FlashcardView />
 
-			<div id="packContentContainer" className="mt-3 border border-2 rounded-3 p-4">
+			<div id="packContentContainer" className="mt-3 border border-2 rounded-3">
 				<AnimatePresence>
 					{pack.content.map((cards, index) => (
 						<CardsContext.Provider

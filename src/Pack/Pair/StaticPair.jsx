@@ -1,19 +1,19 @@
 import React from 'react'
 import { CardsContext } from '@/lib/context'
 
+// import './Pair.scss'
+
 function StaticPair() {
 	const cards = React.useContext(CardsContext)
 
 	// Muy padding
 	return (
 		<div className="container overflow-hidden text-center">
-			<div className="row">
+			<div className="row row-cols-1 row-cols-sm-2">
 				<div className="col p-2">
 					<div className="p-2 py-4 shadow-sm bg-light rounded-3">
 						{cards.term == '' ? (
-							<span className="text-muted">
-								Term {cards.id + 1}
-							</span>
+							<span className="text-muted">Term {cards.id + 1}</span>
 						) : (
 							cards.term
 						)}
@@ -22,9 +22,7 @@ function StaticPair() {
 				<div className="col p-2">
 					<div className="p-2 py-4 shadow-sm bg-light rounded-3">
 						{cards.definition == '' ? (
-							<span className="text-muted">
-								Definition {cards.id + 1}
-							</span>
+							<span className="text-muted">Definition {cards.id + 1}</span>
 						) : (
 							cards.definition
 						)}
