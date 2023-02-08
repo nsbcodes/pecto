@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -18,11 +18,25 @@ import { LinkContainer } from 'react-router-bootstrap'
 
 import './Root.scss'
 
+import { useUser } from '@/stores/user'
+import { shallow } from 'zustand/shallow'
+
 function Root() {
 	const [user, loading, error] = useAuthState(auth)
+	const [setUser] = useUser((state) => [state.setUser], shallow)
 	const navigate = useNavigate()
 
 	const [search, setSearch] = useState('')
+
+	useEffect(() => {
+		if (user?.displayName == undefined) {
+			setUser({})
+			console.log('user is undefined, sadge')
+		} else {
+			setUser(user)
+			console.log('is user bruda')
+		}
+	}, [user, loading])
 
 	async function handleAuthClick() {
 		if (user) {

@@ -1,34 +1,34 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { UserContext } from '@/lib/context'
-import { getMyPacks } from '@/lib/pack'
+import React, { useState, useEffect } from 'react'
 import UserPacks from './Home/UserPacks'
 import './Home.scss'
 
+import { useUser } from '@/stores/user'
+import { shallow } from 'zustand/shallow'
+
 function Home() {
-	const { user, loading } = useContext(UserContext)
+	const [user, getMyPacks] = useUser((state) => [state.user, state.getMyPacks], shallow)
 	const [usersPacks, setUsersPacks] = useState([])
 
 	useEffect(() => {
 		async function fetchData() {
-			setUsersPacks(await getMyPacks(user.displayName))
+			setUsersPacks(await getMyPacks())
 		}
-		if (usersPacks.length == 0 && !loading) fetchData()
-	}, [loading])
+		fetchData()
+	}, [user])
 
-	try {
-		user.displayName
-	} catch {
-		return (
-			<div className="container text-center">
-				<div className="m-3">Sign in for a personalized home-page</div>
-			</div>
-		)
-	}
+	// if (user?.displayName !== undefined) {
+	// 	return (
+	// 		<div className="container text-center">
+	// 			<div className="m-3">Sign in for a personalized home-page</div>
+	// 		</div>
+	// 	)
+	// }
+
 	return (
 		<div className="container">
 			<div className="m-3">
 				<h3>Your Packs</h3>
-				<UserPacks packs={usersPacks} />
+				<UserPacks canEdit packs={usersPacks} />
 			</div>
 		</div>
 	)

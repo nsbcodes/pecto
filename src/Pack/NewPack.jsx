@@ -1,12 +1,14 @@
-import React, { useContext, useEffect } from 'react'
-import { setDoc, doc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { UserContext } from '@/lib/context'
 
 import Spinner from 'react-bootstrap/Spinner'
 
 import { v4 as uuidv4 } from 'uuid'
+
+import { BasePack } from '@/lib/schema'
+
+import { useUser } from '@/stores/user'
+import { shallow } from 'zustand/shallow'
 
 // READ: https://beta.reactjs.org/learn/you-might-not-need-an-effect#initializing-the-application
 // READ: https://beta.reactjs.org/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development
@@ -17,42 +19,34 @@ import { v4 as uuidv4 } from 'uuid'
 // This is why we use an id variable
 
 export function NewPack() {
-	const user = useContext(UserContext).user
+	const [user, newPack, authenticated] = useUser(
+		(state) => [state.user, state.newPack, state.authenticated],
+		shallow
+	)
 	const navigate = useNavigate()
 
 	var id = uuidv4()
 
 	useEffect(() => {
-		async function newPack() {
-			// This is basically our schema
-			let newPack = {
-				name: '',
-				class: '',
-				author: user.displayName,
-				date: new Date(Date.now()).toLocaleString().split(',')[0],
-				uid: user.uid,
-				uuid: id,
-				published: false,
-				categories: {
-					// id (key) on new categories should be something generated with uuidV4
-					default: { name: 'Default', colors: ['transparent', 'transparent'] },
-				},
-				content: [
-					{
-						term: '',
-						definition: '',
-						category: 'default',
-					},
-				],
+		async function createNew() {
+			if (authenticated()) {
+				newPack(id, {
+					...BasePack(),
+					uid: user.uid,
+					uuid: id,
+					author: user.displayName, // in the future should not be this
+					superficialAuthor: user.displayName,
+				})
+				console.log('pack created cloudally')
+				navigate(`/view/${user.displayName}/${id}`)
+			} else {
+				newPack(id, { ...BasePack(), uuid: id })
+				console.log(BasePack())
+				console.log('pack created locally')
+				navigate(`/view/me/${id}`)
 			}
-
-			// Abstract this specific line
-			const docRef = doc(db, 'packs', user.displayName, 'packs', id)
-			await setDoc(docRef, newPack)
-			console.log(`${id} has been created`)
-			navigate(`/view/${user.displayName}/${id}`)
 		}
-		if (user != undefined) newPack()
+		createNew()
 	}, [])
 
 	return (

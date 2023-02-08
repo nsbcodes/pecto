@@ -1,8 +1,6 @@
 import React from 'react'
 
-import { useContext, useState, useEffect } from 'react'
-import { deleteDoc, doc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { useState, useEffect } from 'react'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -18,19 +16,19 @@ import './Metadata.scss'
 import { motion } from 'framer-motion'
 
 import { usePack } from '@/stores/pack'
+import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
-import { UserContext } from '@/lib/context'
 
 // Lots of logic is shared with EditingPair
 
 export function Metadata() {
 	const [editing, setEditing] = useState(false)
-	const user = useContext(UserContext).user
-	const [pack, togglePublished, editClass, editName, addQuizletCards, canEdit] = usePack(
+	const [deletePack] = useUser((state) => [state.deletePack], shallow)
+	const [pack, togglePublish, editClass, editName, addQuizletCards, canEdit] = usePack(
 		(state) => [
 			// Data
 			state.pack,
-			state.togglePublished,
+			state.togglePublish,
 			state.editClass,
 			state.editName,
 			state.addQuizletCards,
@@ -67,16 +65,15 @@ export function Metadata() {
 		// we send a write to Firebase
 		editName(name)
 		editClass(packClass)
-		togglePublished(publish)
+		togglePublish(publish)
 
 		// Self-destruct
 		setEditing(!editing)
 	}
 
 	// sadge
-	async function deletePack() {
-		const docRef = doc(db, 'packs', user.displayName, 'packs', pack.id)
-		await deleteDoc(docRef)
+	async function deleteP() {
+		await deletePack(pack.id)
 		navigate('/')
 	}
 
@@ -84,6 +81,8 @@ export function Metadata() {
 		addQuizletCards(quizletContents)
 		importFromQuizlet(false)
 	}
+
+	console.log(pack)
 
 	if (editing) {
 		return (
@@ -156,7 +155,7 @@ export function Metadata() {
 				</Button>
 
 				{willDelete ? (
-					<Button size="sm" variant="danger" onClick={deletePack}>
+					<Button size="sm" variant="danger" onClick={deleteP}>
 						Are you sure?
 					</Button>
 				) : (

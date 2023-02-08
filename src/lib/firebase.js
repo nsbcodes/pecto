@@ -1,11 +1,6 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, setDoc } from 'firebase/firestore'
-import {
-	GoogleAuthProvider,
-	getAuth,
-	signInWithPopup,
-	signOut,
-} from 'firebase/auth'
+import { getFirestore, doc, setDoc, deleteDoc, getDocs, collection } from 'firebase/firestore'
+import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from 'firebase/auth'
 
 // TODO: Is this safe?
 const firebaseConfig = {
@@ -64,5 +59,38 @@ const signOutOfGoogle = async () => {
 	}
 }
 
+const addNewPack = async (id, newPack) => {
+	const user = getAuth().currentUser
+	const docRef = doc(db, 'packs', user.displayName, 'packs', id)
+	await setDoc(docRef, newPack)
+}
+
+const deletePack = async (id) => {
+	const user = getAuth().currentUser
+	const docRef = doc(db, 'packs', user.displayName, 'packs', id)
+	await deleteDoc(docRef)
+}
+
+const getMyPacks = async () => {
+	const user = getAuth().currentUser
+	let packs = []
+	console.log(user)
+	const userPacks = await getDocs(collection(db, 'packs', user.displayName, 'packs'))
+	userPacks.forEach((doc) => {
+		packs.push(doc.data())
+	})
+
+	return packs
+}
+
 // For whatever reason export default doesn't work with vite in this case
-export { app, db, auth, authenticateWithGoogle, signOutOfGoogle }
+export {
+	app,
+	db,
+	auth,
+	authenticateWithGoogle,
+	signOutOfGoogle,
+	addNewPack,
+	deletePack,
+	getMyPacks,
+}

@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { fetcher } from '@/lib/pack'
 import Cards from './Cards'
-import { CardsContext, UserContext } from '@/lib/context'
+import { CardsContext } from '@/lib/context'
 import { Metadata } from './Metadata'
 import { useParams } from 'react-router-dom'
-import { setDoc, doc } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
 
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
@@ -18,6 +16,7 @@ import './Pack.scss'
 import { AnimatePresence } from 'framer-motion'
 
 import { usePack } from '@/stores/pack'
+import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
 function Pack() {
@@ -25,7 +24,7 @@ function Pack() {
 	// We wrap useState around this so we can modify it (ex. adding new cards)
 	//const { pack: ogPack, mutate, isLoading, error } = usePack(packId)
 	//const { pack, setPack } = useState(ogPack)
-	const user = useContext(UserContext).user
+	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
 	const [pack, loadPack, addCards, canEdit, letMeEdit] = usePack(
 		(state) => [
 			// Data
@@ -50,7 +49,7 @@ function Pack() {
 	}, [])
 
 	useEffect(() => {
-		if (user?.uid != '') {
+		if (user?.uid != '' || displayName == 'me') {
 			letMeEdit(true)
 		}
 	}, [user])
@@ -73,8 +72,7 @@ function Pack() {
 	async function saveCards() {
 		startSaving(true)
 
-		const docRef = doc(db, 'packs', user.displayName, 'packs', packId)
-		await setDoc(docRef, pack)
+		await newPack(packId, pack)
 
 		startSaving(false)
 	}
