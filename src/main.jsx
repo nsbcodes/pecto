@@ -23,6 +23,10 @@ const router = createBrowserRouter([
 				element: <UserView />,
 			},
 			{
+				path: 'view/me',
+				element: <Home />,
+			},
+			{
 				path: 'view/:displayName/:packId',
 				element: <Pack />,
 			},

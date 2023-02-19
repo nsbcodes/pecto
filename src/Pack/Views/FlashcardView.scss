@@ -9,6 +9,11 @@
 	padding: 30px 10px;
 }
 
+// Flashcard text
+.fcText {
+	font-size: 2vw;
+}
+
 @include media-breakpoint-up(sm) { 
 	.flashCard {
 		width: 95%;

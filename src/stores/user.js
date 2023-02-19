@@ -23,11 +23,8 @@ export const useUser = create((set, get) => ({
 	// Utility functions
 	newPack: (id, newPack) => {
 		if (userDefined(get().user)) {
-			console.log("saving 2 cloud")
 			addNewPackCloud(id, newPack)
 		} else {
-			console.log("saving 2 local")
-			console.log(newPack)
 			addNewPackLocal(id, newPack)
 		}
 	},
@@ -44,6 +41,9 @@ export const useUser = create((set, get) => ({
 		} else {
 			return await getMyPacksLocal()
 		}
+	},
+	getMyOfflinePacks: async () => {
+		return await getMyPacksLocal()
 	},
 	authenticated: () => {
 		if (userDefined(get().user)) {

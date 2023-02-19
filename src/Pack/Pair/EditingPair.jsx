@@ -7,6 +7,8 @@ import Button from 'react-bootstrap/Button'
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
+import Form from 'react-bootstrap/Form'
+
 function EditingPair(props) {
 	const cards = React.useContext(CardsContext)
 	const [setCard] = usePack(
@@ -57,12 +59,12 @@ function EditingPair(props) {
 		//     </button>
 		// </div>
 
-		<form>
+		<Form>
 			<div className="container overflow-hidden text-center">
 				<div className="row">
 					<div className="col p-2">
 						<div className="p-2 py-4 shadow-sm bg-light rounded-3">
-							<input
+							<Form.Control
 								className="text-center"
 								type="text"
 								value={term}
@@ -72,7 +74,7 @@ function EditingPair(props) {
 					</div>
 					<div className="col p-2">
 						<div className="p-2 py-4 shadow-sm bg-light rounded-3">
-							<input
+							<Form.Control
 								className="text-center"
 								type="text"
 								value={definition}
@@ -86,7 +88,7 @@ function EditingPair(props) {
 			<Button variant="success" size="sm" onClick={exitEditingMode}>
 				Done
 			</Button>
-		</form>
+		</Form>
 	)
 }
 

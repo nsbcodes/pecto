@@ -12,7 +12,7 @@ import { motion } from 'framer-motion'
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
-function Cards() {
+function Cards(props) {
 	const cards = useContext(CardsContext)
 	const [pack, deleteCard, canEdit] = usePack(
 		(state) => [
@@ -25,11 +25,11 @@ function Cards() {
 		shallow
 	)
 
+	const [editing, setEditing] = useState(false)
+
 	if (pack?.content == undefined) {
 		return <div>Loading...</div>
 	}
-
-	const [editing, setEditing] = useState(false)
 
 	function deletePair() {
 		deleteCard(cards.id)
@@ -38,7 +38,6 @@ function Cards() {
 	if (editing && canEdit) {
 		return <EditingPair setEditing={setEditing} />
 	} else {
-		console.log(pack.categories, cards.category)
 		return (
 			<motion.div
 				key={cards.id}

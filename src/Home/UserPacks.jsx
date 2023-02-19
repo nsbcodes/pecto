@@ -50,6 +50,19 @@ function UserPacks(props) {
 
 			<div className="container">
 				<div className="row row-cols-1 row-cols-sm-3 gy-4">
+					{props.canEdit && (
+						<div className="col">
+							<LinkContainer to={`/new/pack`}>
+								<div className="card text-center">
+									<div className="card-body">
+										<h2>➕</h2>
+										<h5>New Pack</h5>
+									</div>
+								</div>
+							</LinkContainer>
+						</div>
+					)}
+
 					{props.packs.map((pack) => (
 						<div className="col" key={pack.uuid}>
 							<LinkContainer to={`/view/${pack.author}/${pack.uuid}`}>
@@ -90,7 +103,6 @@ function UserPacks(props) {
 													(e) => e != pack.uuid
 												)
 											}
-											console.log(packsToDelete)
 										}}
 									/>
 								</div>

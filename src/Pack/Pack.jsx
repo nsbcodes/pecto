@@ -74,7 +74,11 @@ function Pack() {
 
 		await newPack(packId, pack)
 
-		startSaving(false)
+		// This isn't a stopgap for async, it just shows the saving spinner,
+		// providing feedback to the user
+		setTimeout(() => {
+			startSaving(false)
+		}, '200')
 	}
 
 	return (
@@ -101,26 +105,22 @@ function Pack() {
 				</AnimatePresence>
 			</div>
 
-			{canEdit ? (
-				<div
-					id="parentToolbar"
-					className="d-flex justify-content-between fixed-bottom"
-					style={{ transform: 'translateY(-75%)' }}
-				>
-					<ButtonGroup className="mx-auto mt-3 fw-bold" id="bottomToolbar">
-						<Button variant="light" onClick={newCards} className="p-4">
+			{canEdit && (
+				<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
+					<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
+						<Button variant="light" onClick={newCards} className="p-3">
 							➕ New
 						</Button>
-						<Button variant="light" onClick={saveCards} className="p-4">
+						<Button variant="light" onClick={saveCards} className="p-3">
 							{saving ? (
-								<Spinner animation="border" variant="light" size="sm" />
+								<Spinner animation="border" variant="dark" size="sm" />
 							) : (
 								'💾 Save'
 							)}
 						</Button>
 					</ButtonGroup>
 				</div>
-			) : null}
+			)}
 		</div>
 	)
 }

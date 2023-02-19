@@ -3,7 +3,9 @@ import produce from 'immer'
 
 import { v4 as uuidv4 } from 'uuid'
 
-export const usePack = create((set) => ({
+import { levenSort } from '@/lib/utilities'
+
+export const usePack = create((set, get) => ({
 	pack: {},
 	canEdit: false,
 	// Cards
@@ -50,6 +52,23 @@ export const usePack = create((set) => ({
 				state.pack.content = cards
 			})
 		),
+	getSimilarCards: (card) => {
+		let p = get().pack.content
+
+		// Get the index of the card we want to use as a base
+		let i = p.findIndex((c) => c === card)
+
+		// Sort using the Levenshtein algorithm
+		p = levenSort(p, i)
+
+		// Only use the first 4 elements
+		p = p.slice(0, 4)
+
+		// Randomize it!
+		p.sort(() => 0.5 - Math.random())
+
+		return p
+	},
 	// Metadata
 	editClass: (newClass) =>
 		set(
