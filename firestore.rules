@@ -13,7 +13,13 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow create, update, read: if request.auth.uid == userId;
+      allow create, update, read: if userId == request.auth.uid;
+    }
+
+    // TODO: BREAKING - CHECK IF USERNAME IS ABOVE 3 CHARACTERS BUT BELOW 15 OR 20
+    match /usernames/{username} {
+      allow read;
+      allow create: if request.auth != null && resource.data.uid == request.auth.uid;
     }
   }
 }

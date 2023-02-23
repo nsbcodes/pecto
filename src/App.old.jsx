@@ -20,7 +20,6 @@ function App() {
 	}
 
 	return (
-		// TODO: possibly there shall be a cleaner way (prop spreddy)?
 		<UserContext.Provider value={{ user: user, loading: loading, error: error }}>
 			<code>{user ? <AuthInfo /> : 'Unauthenticated'}</code>
 			<button onClick={handleAuthClick}>{user ? 'Sign Out' : 'Sign in with Google'}</button>

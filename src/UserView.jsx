@@ -11,6 +11,7 @@ export function UserView() {
 	useEffect(() => {
 		async function fetchData() {
 			setUsersPacks(await getUsersPacks(displayName))
+			console.log(await getUsersPacks(displayName))
 		}
 		fetchData()
 	}, [])

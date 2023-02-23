@@ -1,8 +1,17 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, setDoc, deleteDoc, getDocs, collection } from 'firebase/firestore'
+import {
+	getFirestore,
+	doc,
+	getDoc,
+	setDoc,
+	deleteDoc,
+	getDocs,
+	collection,
+	writeBatch,
+} from 'firebase/firestore'
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from 'firebase/auth'
 
-// TODO: Is this safe?
+// TODO: Confirm that our Firebase instance can be safely accessed
 const firebaseConfig = {
 	apiKey: 'AIzaSyDOjwVp0tpl9CIyGnGoO3xl86kFKyIifMU',
 	authDomain: 'pecto-5f56.firebaseapp.com',
@@ -17,36 +26,43 @@ const db = getFirestore(app)
 const auth = getAuth()
 const provider = new GoogleAuthProvider()
 
-// READ: https://blog.logrocket.com/user-authentication-firebase-react-apps/
-const authenticateWithGoogle = async () => {
+var user = {}
+
+// Also inits the user
+const getDisplayName = async () => {
 	try {
 		const res = await signInWithPopup(auth, provider)
-		const user = res.user
-
-		console.log(user)
-
-		await setDoc(doc(db, 'users', user.uid), {
-			name: user.displayName,
-			authProvider: 'google',
-			email: user.email,
-			uid: user.uid,
-		})
-
-		// The way this app is structured we actually don't need to return information
-		// Rather, it is stored in the auth variable
-		// -----
-		// Now that the user has been added to the database, return information
-		// return {
-		//     uid: user.uid,
-		//     name: user.displayName,
-		//     authProvider: 'google',
-		//     email: user.email,
-		// }
+		user = res.user
+		return user.displayName
 	} catch (err) {
-		// it look serious
-		console.error(`FATAL AUTH ERROR: ${err}`)
+		console.error(`Authenication failed with ${err}`)
 		alert(err.message)
+		throw new Error(`Authenication failed with ${err}`)
 	}
+}
+
+// READ: https://blog.logrocket.com/user-authentication-firebase-react-apps/
+const authenticateWithGoogle = async (username) => {
+	if (user?.displayName == undefined) {
+		await getDisplayName()
+	}
+	const batch = writeBatch(db)
+
+	// Add to users (uids)
+	batch.update(doc(db, 'users', user.uid), {
+		name: user.displayName,
+		authProvider: 'google',
+		email: user.email,
+		uid: user.uid,
+		username: username,
+	})
+
+	// Add to usernames (unique usernames)
+	batch.update(doc(db, 'usernames', username), {
+		uid: user.uid,
+	})
+
+	await batch.commit()
 }
 
 const signOutOfGoogle = async () => {
@@ -61,13 +77,14 @@ const signOutOfGoogle = async () => {
 
 const addNewPack = async (id, newPack) => {
 	const user = getAuth().currentUser
-	const docRef = doc(db, 'packs', user.displayName, 'packs', id)
+	console.log(user.uid)
+	const docRef = doc(db, 'packs', user.uid, 'packs', id)
 	await setDoc(docRef, newPack)
 }
 
 const deletePack = async (id) => {
 	const user = getAuth().currentUser
-	const docRef = doc(db, 'packs', user.displayName, 'packs', id)
+	const docRef = doc(db, 'packs', user.uid, 'packs', id)
 	await deleteDoc(docRef)
 }
 
@@ -75,12 +92,16 @@ const getMyPacks = async () => {
 	const user = getAuth().currentUser
 	let packs = []
 	console.log(user)
-	const userPacks = await getDocs(collection(db, 'packs', user.displayName, 'packs'))
+	const userPacks = await getDocs(collection(db, 'packs', user.uid, 'packs'))
 	userPacks.forEach((doc) => {
 		packs.push(doc.data())
 	})
-
 	return packs
+}
+
+const getUsername = async (username) => {
+	let u = await getDoc(doc(db, 'usernames', username))
+	return u.data()
 }
 
 // For whatever reason export default doesn't work with vite in this case
@@ -89,8 +110,10 @@ export {
 	db,
 	auth,
 	authenticateWithGoogle,
+	getDisplayName,
 	signOutOfGoogle,
 	addNewPack,
 	deletePack,
 	getMyPacks,
+	getUsername,
 }

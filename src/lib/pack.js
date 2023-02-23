@@ -26,7 +26,7 @@ async function getUsersPacks(user) {
 		query(collection(db, 'packs', user, 'packs'), where('published', '==', true))
 	)
 	userPacks.forEach((doc) => {
-		packs.push(doc.data())
+		console.log(doc.data())
 	})
 
 	return packs

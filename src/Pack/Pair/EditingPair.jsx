@@ -21,10 +21,9 @@ function EditingPair(props) {
 	const [term, setTerm] = useState(cards.term)
 	const [definition, setDefinition] = useState(cards.definition)
 
-	// TODO: Spin-out this logic or keep it here?
 	async function exitEditingMode() {
 		// When the user clicks "Done" and the component will be switched to the static version,
-		// we send a write to Firebase
+		// we commit our changes
 		console.log(cards.id, { term: term, definition: definition })
 		setCard(cards.id, { term: term, definition: definition })
 

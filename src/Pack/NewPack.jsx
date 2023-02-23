@@ -37,12 +37,9 @@ export function NewPack() {
 					author: user.displayName, // in the future should not be this
 					superficialAuthor: user.displayName,
 				})
-				console.log('pack created cloudally')
 				navigate(`/view/${user.displayName}/${id}`)
 			} else {
 				newPack(id, { ...BasePack(), uuid: id })
-				console.log(BasePack())
-				console.log('pack created locally')
 				navigate(`/view/me/${id}`)
 			}
 		}

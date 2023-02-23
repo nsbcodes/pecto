@@ -68,32 +68,30 @@ function FlashcardView() {
 					className="d-flex justify-content-evenly mt-5"
 					key={currentCard}
 				>
-					{/* TODO: fix code duplication */}
-					{true &&
-						(currentCard - 1 < 0 ? (
-							<Button variant="light" disabled>
-								Previous
-							</Button>
-						) : (
-							<Button variant="light" onClick={() => setCurrentCard(currentCard - 1)}>
-								Previous
-							</Button>
-						))}
+					{(currentCard - 1 < 0 ? (
+						<Button variant="light" disabled>
+							Previous
+						</Button>
+					) : (
+						<Button variant="light" onClick={() => setCurrentCard(currentCard - 1)}>
+							Previous
+						</Button>
+					))}
 
+					{/* Current Card */}
 					<span className="align-middle">
 						{currentCard + 1}/{pack.content.length}
 					</span>
 
-					{true &&
-						(currentCard + 2 > pack.content.length ? (
-							<Button variant="light" disabled>
-								Next
-							</Button>
-						) : (
-							<Button variant="light" onClick={() => setCurrentCard(currentCard + 1)}>
-								Next
-							</Button>
-						))}
+					{(currentCard + 2 > pack.content.length ? (
+						<Button variant="light" disabled>
+							Next
+						</Button>
+					) : (
+						<Button variant="light" onClick={() => setCurrentCard(currentCard + 1)}>
+							Next
+						</Button>
+					))}
 				</motion.div>
 			</div>
 		</motion.div>

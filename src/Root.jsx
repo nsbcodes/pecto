@@ -5,9 +5,11 @@ import Navbar from 'react-bootstrap/Navbar'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
+import Modal from 'react-bootstrap/Modal'
 
 // Auth
 import { auth, authenticateWithGoogle, signOutOfGoogle } from '@/lib/firebase'
+import { getUsername, getDisplayName } from '@/lib/firebase'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { UserContext } from '@/lib/context'
 
@@ -21,22 +23,42 @@ import './Root.scss'
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
+import { debounce } from './lib/utilities'
+
 function Root() {
 	const [user, loading, error] = useAuthState(auth)
 	const [setUser] = useUser((state) => [state.setUser], shallow)
 	const navigate = useNavigate()
 
 	const [search, setSearch] = useState('')
+	const [askForUsername, setAskForUsername] = useState(false)
+	const [username, setUsername] = useState('')
+	const [usernameAvailable, setUsernameAvailable] = useState('Great Username!')
 
 	useEffect(() => {
 		if (user?.displayName == undefined) {
 			setUser({})
-			console.log('user is undefined, sadge')
 		} else {
 			setUser(user)
-			console.log('is user bruda')
 		}
 	}, [user, loading])
+
+	// Validate the new username
+	useEffect(() => {
+		async function calcAvailability() {
+			setUsernameAvailable('Loading...')
+			if (await getUsername(username)) {
+				setUsernameAvailable('❌ Username has been taken')
+			} else {
+				setUsernameAvailable('Great Username!')
+			}
+		}
+		if (username == '') {
+			setUsernameAvailable('Please enter a username')
+		} else {
+			debounce(calcAvailability())
+		}
+	}, [username])
 
 	async function handleAuthClick() {
 		if (user) {
@@ -44,8 +66,17 @@ function Root() {
 			signOutOfGoogle()
 		} else {
 			// Log-In
-			authenticateWithGoogle()
+			// getDisplayName returns the displayName as the default username
+			setUsername(await getDisplayName())
+			// Open the modal
+			setAskForUsername(true)
 		}
+	}
+
+	async function confirmUsername() {
+		setUsernameAvailable('Saving to database...')
+		await authenticateWithGoogle(username)
+		askForUsername(false)
 	}
 
 	function openSearchPage() {
@@ -115,6 +146,30 @@ function Root() {
 					<Outlet />
 				</UserContext.Provider>
 			</div>
+
+			{/* Username sign-in modal */}
+			<Modal show={askForUsername}>
+				<Modal.Header>
+					<Modal.Title>Create a Username</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form.Control
+						value={username}
+						onChange={(e) => {
+							setUsername(e.target.value)
+						}}
+						type="input"
+						placeholder="Enter a unique username 3-15 characters long"
+						aria-label="Enter a unique username 3-15 characters long"
+					/>
+					<Form.Text>{usernameAvailable}</Form.Text>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="primary" onClick={confirmUsername}>
+						Confirm
+					</Button>
+				</Modal.Footer>
+			</Modal>
 		</>
 	)
 }
