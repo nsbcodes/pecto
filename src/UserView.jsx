@@ -19,7 +19,9 @@ export function UserView() {
 	if (usersPacks.length == 0) {
 		return (
 			<div className="container text-center">
-				<div className="m-3">Profile not found</div>
+				<div className="m-3">
+					Profile not found or {displayName} has not published any packs
+				</div>
 			</div>
 		)
 	}

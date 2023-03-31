@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 const BasePack = () => {
 	return {
 		name: '',
@@ -17,6 +19,7 @@ const BasePack = () => {
 				term: '',
 				definition: '',
 				category: 'default',
+				uuid: uuidv4(),
 			},
 		],
 	}

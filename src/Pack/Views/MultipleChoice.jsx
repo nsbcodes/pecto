@@ -22,9 +22,13 @@ function Answer(props) {
 					className="d-flex justify-content-between"
 				>
 					{props.correctChoice && props.wrongAnswerClicked ? (
-						<><div className="badge bg-success">✓</div> {props.answerText}</>
+						<>
+							<div className="badge bg-success">✓</div> {props.answerText}
+						</>
 					) : (
-						<><div className="badge bg-dark">{props.i + 1}</div> {props.answerText}</>
+						<>
+							<div className="badge bg-dark">{props.i + 1}</div> {props.answerText}
+						</>
 					)}
 				</Button>
 			</div>
@@ -85,24 +89,23 @@ function MultipleChoice(props) {
 			// 		</Button>
 			// 	</div>
 			// </div>
-			<Answer key={card} i={i} correctChoice={correctChoice} answerText={card.term} wrongAnswerClicked={wrongAnswerClicked} handleAnswerClick={handleAnswerClick}/>
+			<Answer
+				key={card}
+				i={i}
+				correctChoice={correctChoice}
+				answerText={card.term}
+				wrongAnswerClicked={wrongAnswerClicked}
+				handleAnswerClick={handleAnswerClick}
+			/>
 		)
 	})
 
 	return (
-		<motion.div
-			initial={{
-				y: 25,
-			}}
-			animate={{
-				y: 0,
-			}}
-			className="rounded-3 mx-auto text-center mt-4"
-		>
+		<div className="rounded-3 mx-auto text-center mt-4">
 			<div className="container text-center">
 				<div className="row row-cols-2 gx-3">{choices}</div>
 			</div>
-		</motion.div>
+		</div>
 	)
 }
 

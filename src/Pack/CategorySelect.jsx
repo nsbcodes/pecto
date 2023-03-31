@@ -70,63 +70,72 @@ export function CategorySelect() {
 
 	return (
 		<>
-			<DropdownButton
-				title={pack.categories[cards.category].name}
-				size="sm"
-				className="ms-2"
-				variant="outline-dark rounded-5"
-			>
-				{Object.entries(pack.categories).map(([id, category]) => (
-					<div key={id}>
-						<Dropdown.Item onClick={() => changeCardCategory(id)} key={category.name}>
-							{category.name}
-						</Dropdown.Item>
-
-						{editingCategoryDropdown && (
-							<div className="d-flex justify-content-between align-items-center ps-2 pe-2 pt-1 pb-1">
-								<Button
-									size="sm"
-									variant="outline-light"
-									onClick={() => showEditModal(id, category)}
-								>
-									✏️
-								</Button>
-								<Button
-									size="sm"
-									variant="outline-light"
-									onClick={() => removeCardCategory(id)}
-								>
-									🗑️
-								</Button>
-							</div>
-						)}
-					</div>
-				))}
-				<li>
-					<hr className="dropdown-divider" />
-				</li>
-				<div className="text-center d-flex justify-content-between align-items-center ps-2 pe-2">
-					<Button
-						size="sm"
-						variant="light"
-						onClick={() => editCategoryDropdown(!editingCategoryDropdown)}
-					>
-						⚒️
-					</Button>
-				</div>
-				<li>
-					<hr className="dropdown-divider" />
-				</li>
-				<Dropdown.Item
-					className="text-center"
-					onClick={() => {
-						generateNewColor()
-						setShow(true)
-					}}
+			<Dropdown>
+				<Dropdown.Toggle
+					size="sm"
+					className="ms-2"
+					variant="outline-light rounded-3 text-muted"
+					tabIndex="-1"
 				>
-					New
-				</Dropdown.Item>
-			</DropdownButton>
+					{pack.categories[cards.category].name}
+				</Dropdown.Toggle>
+
+				<Dropdown.Menu>
+					{Object.entries(pack.categories).map(([id, category]) => (
+						<div key={id}>
+							<Dropdown.Item
+								onClick={() => changeCardCategory(id)}
+								key={category.name}
+							>
+								{category.name}
+							</Dropdown.Item>
+
+							{editingCategoryDropdown && category.name !== 'Default' && (
+								<div className="d-flex justify-content-between align-items-center ps-2 pe-2 pt-1 pb-1">
+									<Button
+										size="sm"
+										variant="outline-light"
+										onClick={() => showEditModal(id, category)}
+									>
+										✏️
+									</Button>
+									<Button
+										size="sm"
+										variant="outline-light"
+										onClick={() => removeCardCategory(id)}
+									>
+										🗑️
+									</Button>
+								</div>
+							)}
+						</div>
+					))}
+					<li>
+						<hr className="dropdown-divider" />
+					</li>
+					<div className="text-center d-flex justify-content-between align-items-center ps-2 pe-2">
+						<Button
+							size="sm"
+							variant="light"
+							onClick={() => editCategoryDropdown(!editingCategoryDropdown)}
+						>
+							⚒️
+						</Button>
+					</div>
+					<li>
+						<hr className="dropdown-divider" />
+					</li>
+					<Dropdown.Item
+						className="text-center"
+						onClick={() => {
+							generateNewColor()
+							setShow(true)
+						}}
+					>
+						New
+					</Dropdown.Item>
+				</Dropdown.Menu>
+			</Dropdown>
 
 			{/* New Category Modal */}
 			<Modal show={show} onHide={() => setShow(false)}>
@@ -155,7 +164,7 @@ export function CategorySelect() {
 				<Modal.Footer>
 					<Button variant="primary" onClick={submitNewCategory}>
 						{/* eslint-disable-next-line prettier/prettier */}
-						{(replaceCategory == '') ? 'Add New Category' : 'Set Category'}
+						{replaceCategory == '' ? 'Add New Category' : 'Set Category'}
 					</Button>
 				</Modal.Footer>
 			</Modal>

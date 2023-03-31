@@ -7,10 +7,12 @@ import { levenSort } from '@/lib/utilities'
 
 export const usePack = create((set, get) => ({
 	pack: {},
+	error: undefined,
 	canEdit: false,
 	// Cards
 	// eslint-disable-next-line no-unused-vars
 	loadPack: (pack) => set(() => ({ pack: pack })),
+	setError: (err) => set(() => ({ error: err })),
 	addCards: (cards) =>
 		set(
 			produce((state) => {
@@ -43,6 +45,7 @@ export const usePack = create((set, get) => ({
 						term: a[0],
 						definition: a[1],
 						category: 'default',
+						uuid: uuidv4(),
 					})
 				})
 

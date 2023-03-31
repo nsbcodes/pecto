@@ -3,11 +3,18 @@ import { doc, getDoc, getDocs, collection, query, where } from 'firebase/firesto
 
 import { db as localDb } from './localstore'
 
-const fetcher = (id, user) => {
+const fetcher = async (id, user) => {
 	if (user == 'me') {
-		return localDb.packs.get(id)
+		return await localDb.packs.get(id)
 	}
-	return getDoc(doc(db, 'packs', user, 'packs', id)).then((r) => r.data())
+
+	return await getDoc(doc(db, 'packs', user, 'packs', id))
+	// if (data.exists()) {
+	// 	return data.data()
+	// } else {
+	// 	return null
+	// }
+	// return await getDoc(ref).then((r) => r.data())
 }
 
 async function getMyPacks(user) {
@@ -32,7 +39,7 @@ async function getUsersPacks(user) {
 	return packs
 }
 
-async function getPacks() {
+async function getPacks(user) {
 	let packs = []
 	const userPacks = await getDocs(
 		query(collection(db, 'packs', user, 'packs'), where('published', '==', true))

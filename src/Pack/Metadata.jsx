@@ -21,7 +21,7 @@ import { shallow } from 'zustand/shallow'
 
 // Lots of logic is shared with EditingPair
 
-export function Metadata() {
+export function Metadata(props) {
 	const [editing, setEditing] = useState(false)
 	const [deletePack] = useUser((state) => [state.deletePack], shallow)
 	const [pack, togglePublish, editClass, editName, addQuizletCards, canEdit] = usePack(
@@ -57,6 +57,10 @@ export function Metadata() {
 	}, [pack])
 
 	useEffect(() => {
+		setEditing(props.editing)
+	}, [props.editing])
+
+	useEffect(() => {
 		if (!editing) startDelete(false)
 	}, [editing])
 
@@ -82,87 +86,100 @@ export function Metadata() {
 		importFromQuizlet(false)
 	}
 
-	console.log(pack)
-
 	if (editing) {
 		return (
-			<motion.div key="editing" animate={{ y: 0 }} initial={{ y: -50 }}>
+			<div key="editing">
 				<Form>
-					<div className="d-flex justify-content-between">
-						<input
-							id="packName"
-							type="text"
-							value={name}
-							className="form-control w-75"
-							onChange={(e) => setName(e.target.value)}
-						/>
-						<p>
-							Author:{' '}
+					<input
+						id="packNameX"
+						type="text"
+						value={name}
+						className="form-control form-control-lg"
+						onChange={(e) => setName(e.target.value)}
+					/>
+					<div className="d-flex justify-content-around mt-3 mb-3 align-items-center">
+						<div className="row g-0 align-items-center">
+							<div className="col-auto">For</div>
+							<div className="col-auto">
+								<input
+									id="packClass"
+									type="text"
+									value={packClass}
+									className="form-control form-control-sm ms-2"
+									onChange={(e) => setPackClass(e.target.value)}
+								/>
+							</div>
+						</div>
+						<div>
+							Created by{' '}
 							<LinkContainer className="link-primary" to={`/view/${pack.author}`}>
-								<b>@{pack.author}</b>
+								<b>{pack.author}</b>
 							</LinkContainer>
-						</p>
-					</div>
-
-					<div className="d-flex justify-content-between">
-						<p>
-							For{' '}
-							<input
-								id="packClass"
-								type="text"
-								value={packClass}
-								className="form-control"
-								onChange={(e) => setPackClass(e.target.value)}
-							/>
-						</p>
-						<p>
-							Published on: <b>{pack.date}</b>
-						</p>
+						</div>
+						<div>
+							Published on <b>{pack.date}</b>
+						</div>
 					</div>
 				</Form>
 
-				<OverlayTrigger
-					placement="top"
-					overlay={
-						<Tooltip>
-							{publish
-								? 'Currently everyone can view this'
-								: 'Currently only you can see this'}
-						</Tooltip>
-					}
-				>
-					<Button
-						className="me-2"
-						size="sm"
-						variant="dark"
-						onClick={() => setPublish(!publish)}
-					>
-						{publish ? 'Unpublish' : 'Publish'}
-					</Button>
-				</OverlayTrigger>
+				<div className="d-flex justify-content-between">
+					<div>
+						<OverlayTrigger
+							placement="top"
+							overlay={
+								<Tooltip>
+									{publish
+										? 'Currently everyone can view this'
+										: 'Currently only you can see this'}
+								</Tooltip>
+							}
+						>
+							<Button
+								className="me-2"
+								size="sm"
+								variant="dark"
+								onClick={() => setPublish(!publish)}
+							>
+								{publish ? 'Unpublish' : 'Publish'}
+							</Button>
+						</OverlayTrigger>
+						<Button
+							className="me-2"
+							size="sm"
+							variant="success"
+							onClick={() => importFromQuizlet(!importing)}
+						>
+							Import from Quizlet
+						</Button>
+						{!props?.editing && (
+							<Button className="me-2" size="sm" onClick={exitEditingMode}>
+								Finish editing
+							</Button>
+						)}
+					</div>
 
-				<Button
-					className="me-2"
-					size="sm"
-					variant="success"
-					onClick={() => importFromQuizlet(!importing)}
-				>
-					Import from Quizlet
-				</Button>
-
-				<Button className="me-2" size="sm" onClick={exitEditingMode}>
-					Finish editing
-				</Button>
-
-				{willDelete ? (
-					<Button size="sm" variant="danger" onClick={deleteP}>
-						Are you sure?
-					</Button>
-				) : (
-					<Button size="sm" variant="warning" onClick={() => startDelete(true)}>
-						Delete
-					</Button>
-				)}
+					<div>
+						{willDelete ? (
+							<>
+								<Button
+									size="sm"
+									className="me-2"
+									variant="warning"
+									onClick={() => startDelete(false)}
+								>
+									Cancel
+								</Button>
+								<Button size="sm" variant="danger" onClick={deleteP}>
+									Are you sure?
+								</Button>
+							</>
+						) : (
+							<Button size="sm" variant="warning" onClick={() => startDelete(true)}>
+								Delete
+							</Button>
+						)}
+					</div>
+				</div>
 
 				<Modal show={importing} onHide={() => importFromQuizlet(false)}>
 					<Modal.Header closeButton>
@@ -203,12 +220,12 @@ export function Metadata() {
 						</Button>
 					</Modal.Footer>
 				</Modal>
-			</motion.div>
+			</div>
 		)
 	} else {
 		return (
-			<motion.div key="normal" animate={{ x: 0 }} initial={{ x: -100 }}>
-				<div className="d-flex justify-content-between">
+			<div key="normal">
+				<div className="d-flex align-items-center justify-content-between">
 					<h1 id="packName">
 						{pack.name == '' ? (
 							<span className="text-muted">My Pack</span>
@@ -226,7 +243,7 @@ export function Metadata() {
 
 				<div className="d-flex justify-content-between">
 					<p>
-						For{' '}
+						For
 						{pack.class == '' ? (
 							<span className="text-muted">My Class</span>
 						) : (
@@ -254,7 +271,7 @@ export function Metadata() {
 						</Button>
 					) : null}
 				</div>
-			</motion.div>
+			</div>
 		)
 	}
 }

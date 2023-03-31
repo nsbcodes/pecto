@@ -27,15 +27,26 @@ function UserPacks(props) {
 
 				{props.canEdit &&
 					(editing ? (
-						<Button
-							variant="danger"
-							onClick={() => {
-								handleDelete()
-								setEditing(false)
-							}}
-						>
-							Confirm Delete (unrecoverable)
-						</Button>
+						<div>
+							<Button
+								variant="warning"
+								onClick={() => {
+									setEditing(false)
+								}}
+							>
+								Cancel
+							</Button>
+							<Button
+								variant="danger"
+								className="ms-2"
+								onClick={() => {
+									handleDelete()
+									setEditing(false)
+								}}
+							>
+								Confirm Delete (unrecoverable)
+							</Button>
+						</div>
 					) : (
 						<Button
 							variant="warning"

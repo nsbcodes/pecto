@@ -34,10 +34,10 @@ export function NewPack() {
 					...BasePack(),
 					uid: user.uid,
 					uuid: id,
-					author: user.displayName, // in the future should not be this
-					superficialAuthor: user.displayName,
+					author: user.username,
+					superficialAuthor: user.username,
 				})
-				navigate(`/view/${user.displayName}/${id}`)
+				navigate(`/view/${user.username}/${id}`)
 			} else {
 				newPack(id, { ...BasePack(), uuid: id })
 				navigate(`/view/me/${id}`)

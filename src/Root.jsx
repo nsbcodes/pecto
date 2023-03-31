@@ -8,8 +8,8 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 
 // Auth
-import { auth, authenticateWithGoogle, signOutOfGoogle } from '@/lib/firebase'
-import { getUsername, getDisplayName } from '@/lib/firebase'
+import { auth, authenticateWithGoogle, getUser, signOutOfGoogle } from '@/lib/firebase'
+import { getUsername, initUser } from '@/lib/firebase'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { UserContext } from '@/lib/context'
 
@@ -45,18 +45,33 @@ function Root() {
 
 	// Validate the new username
 	useEffect(() => {
-		async function calcAvailability() {
-			setUsernameAvailable('Loading...')
-			if (await getUsername(username)) {
+		async function checkAvailability() {
+			console.log(await getUsername(username))
+			if ((await getUsername(username)) !== undefined) {
 				setUsernameAvailable('❌ Username has been taken')
-			} else {
-				setUsernameAvailable('Great Username!')
 			}
 		}
+
+		function checkUsername() {
+			// Between 3 and 20 characters
+			let correctLength = username.length >= 3 && username.length <= 20
+			// // ASCII
+			// let correctCharacters = ![...username].some((char) => char.charCodeAt(0) > 127)
+			// Overlaps with ASCII but checks for no spaces, only alphanumeric
+			let alphaNumeric = /^[\w-]+$/.test(username)
+			if (!correctLength || !alphaNumeric) {
+				setUsernameAvailable(
+					'Username must be between 3 and 20 characters, not include spaces, and contain no special characters'
+				)
+			}
+		}
+
 		if (username == '') {
 			setUsernameAvailable('Please enter a username')
 		} else {
-			debounce(calcAvailability())
+			setUsernameAvailable('Great Username!')
+			checkUsername()
+			debounce(checkAvailability())
 		}
 	}, [username])
 
@@ -66,17 +81,20 @@ function Root() {
 			signOutOfGoogle()
 		} else {
 			// Log-In
-			// getDisplayName returns the displayName as the default username
-			setUsername(await getDisplayName())
-			// Open the modal
-			setAskForUsername(true)
+			let user = await initUser()
+			if ((await getUser(user.uid)) === undefined) {
+				// initUser returns the displayName as the default username
+				setUsername(await user.displayName)
+				// Open the modal
+				setAskForUsername(true)
+			}
 		}
 	}
 
 	async function confirmUsername() {
 		setUsernameAvailable('Saving to database...')
 		await authenticateWithGoogle(username)
-		askForUsername(false)
+		setAskForUsername(false)
 	}
 
 	function openSearchPage() {

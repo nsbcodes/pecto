@@ -8,6 +8,7 @@ import { NewPack } from './Pack/NewPack'
 import { UserView } from './UserView'
 import { SearchPacks } from './SearchPacks'
 import Home from './Home'
+import EditPack from './Pack/EditPack'
 
 const router = createBrowserRouter([
 	{
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
 			{
 				path: 'view/:displayName/:packId',
 				element: <Pack />,
+			},
+			{
+				path: 'edit/:displayName/:packId',
+				element: <EditPack />,
 			},
 			{
 				path: 'new/pack',

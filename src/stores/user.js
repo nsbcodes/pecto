@@ -3,6 +3,7 @@ import {
 	addNewPack as addNewPackCloud,
 	deletePack as deletePackCloud,
 	getMyPacks as getMyPacksCloud,
+	getUser,
 } from '@/lib/firebase'
 import {
 	addNewPack as addNewPackLocal,
@@ -17,27 +18,35 @@ function userDefined(user) {
 	return true
 }
 
+async function addUsername(user) {
+	if (user?.displayName == undefined) {
+		return {}
+	} else {
+		return { username: await getUser(user.uid) }
+	}
+}
+
 export const useUser = create((set, get) => ({
 	user: {},
-	setUser: (newUser) => set({ user: newUser }),
+	setUser: async (newUser) => set({ user: { ...newUser, ...(await addUsername(newUser)) } }),
 	// Utility functions
 	newPack: (id, newPack) => {
 		if (userDefined(get().user)) {
-			addNewPackCloud(id, newPack)
+			addNewPackCloud(id, newPack, get().user.username)
 		} else {
 			addNewPackLocal(id, newPack)
 		}
 	},
 	deletePack: (id) => {
 		if (userDefined(get().user)) {
-			deletePackCloud(id)
+			deletePackCloud(id, get().user.username)
 		} else {
 			deletePackLocal(id)
 		}
 	},
 	getMyPacks: async () => {
 		if (userDefined(get().user)) {
-			return await getMyPacksCloud()
+			return await getMyPacksCloud(get().user.username)
 		} else {
 			return await getMyPacksLocal()
 		}

@@ -9,32 +9,28 @@ import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Spinner from 'react-bootstrap/Spinner'
 
-import FlashcardView from './Views/FlashcardView'
-
 import './Pack.scss'
 
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
-import { v4 as uuidv4 } from 'uuid'
+import { AnimatePresence, motion } from 'framer-motion'
 
-function Pack() {
+function EditPack() {
 	const { displayName, packId } = useParams()
 	// We wrap useState around this so we can modify it (ex. adding new cards)
 	//const { pack: ogPack, mutate, isLoading, error } = usePack(packId)
 	//const { pack, setPack } = useState(ogPack)
 	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
-	const [pack, error, setError, loadPack, addCards, canEdit, letMeEdit] = usePack(
+	const [pack, error, setError, loadPack, letMeEdit] = usePack(
 		(state) => [
 			// Data
 			state.pack,
 			state.error,
 			state.setError,
 			state.loadPack,
-			state.addCards,
 			// Editing
-			state.canEdit,
 			state.letMeEdit,
 		],
 		shallow
@@ -48,7 +44,7 @@ function Pack() {
 	useEffect(() => {
 		async function fetchData() {
 			const ref = await fetcher(packId, displayName)
-			console.log(ref)
+			// console.log(ref)
 			if (ref.exists()) {
 				loadPack(ref.data())
 				setError(false)
@@ -62,10 +58,8 @@ function Pack() {
 	}, [])
 
 	useEffect(() => {
-		// TODO: fix this
-		if (user?.uid != '' || displayName == 'me') {
-			letMeEdit(true)
-		}
+		if (user?.uid === pack?.uid) letMeEdit(true)
+		else letMeEdit(false)
 	}, [user])
 
 	// Loading logic
@@ -76,9 +70,7 @@ function Pack() {
 				<Spinner animation="grow" size="sm" />
 			</div>
 		)
-	}
-
-	if (error) {
+	} else if (error) {
 		return (
 			<div className="text-center">
 				<h1>404</h1>
@@ -86,14 +78,18 @@ function Pack() {
 			</div>
 		)
 	}
-	async function newCards() {
-		// Add new terms
-		addCards({
-			term: '',
-			definition: '',
-			category: 'default',
-			uuid: uuidv4(),
-		})
+
+	if (user?.uid !== pack.uid) {
+		return (
+			<div className="text-center">
+				<h1>403</h1>
+				<p>
+					You don&apos;t have permission to edit this pack.
+					{/* <br />
+					you little shit */}
+				</p>
+			</div>
+		)
 	}
 
 	async function saveCards() {
@@ -109,60 +105,49 @@ function Pack() {
 	}
 
 	return (
-		<div id="packRoot" className="mx-auto border border-2 p-4 rounded-3">
-			<Metadata />
+		<div id="packRoot" className="mx-auto mb-5 border border-2 p-4 rounded-3">
+			<Metadata editing />
 
-			<FlashcardView />
+			{/* <FlashcardView /> */}
 
-			<div
+			<motion.div
 				id="packContentContainer"
 				className="mt-3 border border-2 rounded-3"
-				// Trigger a re-render when the pack changes
-				key={pack.content.length}
+				// style={{ height: 'fit-content' }}
+				// layout
 			>
-				{pack.content.map((cards, index) => (
-					<CardsContext.Provider
-						key={index}
-						value={{
-							term: cards.term,
-							definition: cards.definition,
-							category: cards.category,
-							uuid: cards.uuid,
-							id: index,
-						}}
-					>
-						<Cards />
-					</CardsContext.Provider>
-				))}
-			</div>
-
-			{canEdit && (
-				<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
-					<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
-						<Button variant="light" onClick={newCards} className="p-3">
-							➕ New
-						</Button>
-						{/* <Button
-							variant="light"
-							onClick={() => {
-								setEditingAll(!editingAll)
+				<AnimatePresence>
+					{pack.content.map((cards, index) => (
+						<CardsContext.Provider
+							// TODO: generate a better key
+							key={cards.uuid}
+							value={{
+								term: cards.term,
+								definition: cards.definition,
+								category: cards.category,
+								uuid: cards.uuid,
+								id: index,
 							}}
-							className="p-3"
 						>
-							{editingAll ? '✔️ Done' : '✏️ Edit All'}
-						</Button> */}
-						<Button variant="light" onClick={saveCards} className="p-3">
-							{saving ? (
-								<Spinner animation="border" variant="dark" size="sm" />
-							) : (
-								'💾 Save'
-							)}
-						</Button>
-					</ButtonGroup>
-				</div>
-			)}
+							<Cards editing />
+						</CardsContext.Provider>
+					))}
+				</AnimatePresence>
+			</motion.div>
+
+			<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
+				<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
+					<Button variant="light" onClick={saveCards} className="p-3">
+						{saving ? (
+							<Spinner animation="border" variant="dark" size="sm" />
+						) : (
+							'💾 Save'
+						)}
+					</Button>
+				</ButtonGroup>
+			</div>
 		</div>
 	)
 }
 
-export default Pack
+export default EditPack

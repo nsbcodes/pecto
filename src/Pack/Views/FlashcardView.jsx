@@ -23,28 +23,26 @@ function FlashcardView() {
 	const [mcqMode, setMcqMode] = useState(false)
 
 	return (
-		<motion.div
-			animate={{ y: 0 }}
-			initial={{ y: 50 }}
-			className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3"
-		>
+		<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">
 			<div className="container">
 				{/* Mode Options */}
 				<Form.Check
 					className="mb-4"
 					type="switch"
 					label="Multiple Choice Mode"
-					value={mcqMode}
+					checked={mcqMode}
 					onChange={(e) => {
-						setMcqMode(e.target.checked)
+						if (pack.content.length >= 4) {
+							setMcqMode(e.target.checked)
+						} else {
+							alert('Add at least 4 cards to enable Multiple Choice mode')
+						}
 						if (e.target.checked == true) setClicked(true)
 					}}
 				/>
 
 				{/* Flashcard */}
-				<motion.div
-					initial={{ y: -10, x: 25 }}
-					animate={{ y: 0, x: 0 }}
+				<div
 					key={pack.content[currentCard][clicked ? 'definition' : 'term']}
 					className="shadow rounded-3 bg-secondary mx-auto text-center flashCard"
 					onClick={() => {
@@ -54,7 +52,7 @@ function FlashcardView() {
 					<p className="fcText">
 						{pack.content[currentCard][clicked ? 'definition' : 'term']}
 					</p>
-				</motion.div>
+				</div>
 
 				{/* Multiple Choice */}
 				{mcqMode && (
@@ -62,13 +60,8 @@ function FlashcardView() {
 				)}
 
 				{/* Messy controls */}
-				<motion.div
-					initial={{ x: 25 }}
-					animate={{ x: 0 }}
-					className="d-flex justify-content-evenly mt-5"
-					key={currentCard}
-				>
-					{(currentCard - 1 < 0 ? (
+				<div className="d-flex justify-content-evenly mt-5" key={currentCard}>
+					{currentCard - 1 < 0 ? (
 						<Button variant="light" disabled>
 							Previous
 						</Button>
@@ -76,14 +69,14 @@ function FlashcardView() {
 						<Button variant="light" onClick={() => setCurrentCard(currentCard - 1)}>
 							Previous
 						</Button>
-					))}
+					)}
 
 					{/* Current Card */}
 					<span className="align-middle">
 						{currentCard + 1}/{pack.content.length}
 					</span>
 
-					{(currentCard + 2 > pack.content.length ? (
+					{currentCard + 2 > pack.content.length ? (
 						<Button variant="light" disabled>
 							Next
 						</Button>
@@ -91,10 +84,10 @@ function FlashcardView() {
 						<Button variant="light" onClick={() => setCurrentCard(currentCard + 1)}>
 							Next
 						</Button>
-					))}
-				</motion.div>
+					)}
+				</div>
 			</div>
-		</motion.div>
+		</div>
 	)
 }
 
