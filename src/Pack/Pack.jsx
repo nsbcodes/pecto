@@ -54,7 +54,7 @@ function Pack() {
 				loadPack(ref)
 				setError(false)
 				// Data exists in Firebase
-			} else if (ref.exists()) {
+			} else if (ref !== undefined && ref !== {}) {
 				loadPack(ref.data())
 				setError(false)
 				// Data doesn't exist in Firebase or Dexie
