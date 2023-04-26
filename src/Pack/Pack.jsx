@@ -4,6 +4,7 @@ import Cards from './Cards'
 import { CardsContext } from '@/lib/context'
 import { Metadata } from './Metadata'
 import { useParams } from 'react-router-dom'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
@@ -48,13 +49,17 @@ function Pack() {
 	useEffect(() => {
 		async function fetchData() {
 			const ref = await fetcher(packId, displayName)
-			console.log(ref)
-			if (ref.exists()) {
+			// Data exists in Dexie
+			if (user?.uid === undefined && ref !== undefined) {
+				loadPack(ref)
+				setError(false)
+				// Data exists in Firebase
+			} else if (ref.exists()) {
 				loadPack(ref.data())
 				setError(false)
+				// Data doesn't exist in Firebase or Dexie
 			} else {
 				loadPack(undefined)
-				// console.log(ref)
 				setError(true)
 			}
 		}
@@ -158,6 +163,11 @@ function Pack() {
 								'💾 Save'
 							)}
 						</Button>
+						<LinkContainer to={`/edit/${pack.author}/${pack.uuid}`}>
+							<Button variant="light" onClick={saveCards} className="p-3">
+								✏️ Edit
+							</Button>
+						</LinkContainer>
 					</ButtonGroup>
 				</div>
 			)}

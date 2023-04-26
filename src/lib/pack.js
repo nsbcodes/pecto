@@ -5,7 +5,16 @@ import { db as localDb } from './localstore'
 
 const fetcher = async (id, user) => {
 	if (user == 'me') {
-		return await localDb.packs.get(id)
+		var r = await localDb.packs.get(id)
+		// r.exists = () => {
+		// 	if (r === undefined) {
+		// 		return false
+		// 	} else {
+		// 		return true
+		// 	}
+		// }
+		// console.log(r.exists())
+		return r
 	}
 
 	return await getDoc(doc(db, 'packs', user, 'packs', id))

@@ -13,8 +13,6 @@ import Modal from 'react-bootstrap/Modal'
 
 import './Metadata.scss'
 
-import { motion } from 'framer-motion'
-
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
@@ -113,7 +111,7 @@ export function Metadata(props) {
 						<div>
 							Created by{' '}
 							<LinkContainer className="link-primary" to={`/view/${pack.author}`}>
-								<b>{pack.author}</b>
+								<b>{pack.superficialAuthor}</b>
 							</LinkContainer>
 						</div>
 						<div>
@@ -243,7 +241,7 @@ export function Metadata(props) {
 
 				<div className="d-flex justify-content-between">
 					<p>
-						For
+						For{' '}
 						{pack.class == '' ? (
 							<span className="text-muted">My Class</span>
 						) : (

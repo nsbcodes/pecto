@@ -113,7 +113,7 @@ export const usePack = create((set, get) => ({
 	removeCardCategory: (id) =>
 		set(
 			produce((state) => {
-				state.pack.content.forEach((e, i) => {
+				state.pack.content.forEach((_e, i) => {
 					if (state.pack.content[i].category == id) {
 						state.pack.content[i].category = 'default'
 					}

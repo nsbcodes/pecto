@@ -25,11 +25,11 @@ function Cards(props) {
 		shallow
 	)
 
+	const [editing, setEditing] = useState(props.editing)
+
 	useEffect(() => {
 		setEditing(props.editing)
 	}, [props.editing])
-
-	const [editing, setEditing] = useState(props.editing)
 
 	if (pack?.content == undefined) {
 		return <div>Loading...</div>

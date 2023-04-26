@@ -4,6 +4,7 @@ import Cards from './Cards'
 import { CardsContext } from '@/lib/context'
 import { Metadata } from './Metadata'
 import { useParams } from 'react-router-dom'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
@@ -44,13 +45,17 @@ function EditPack() {
 	useEffect(() => {
 		async function fetchData() {
 			const ref = await fetcher(packId, displayName)
-			// console.log(ref)
-			if (ref.exists()) {
+			// Data exists in Dexie
+			if (user?.uid === undefined && ref !== undefined) {
+				loadPack(ref)
+				setError(false)
+				// Data exists in Firebase
+			} else if (ref.exists()) {
 				loadPack(ref.data())
 				setError(false)
+				// Data doesn't exist in Firebase or Dexie
 			} else {
 				loadPack(undefined)
-				// console.log(ref)
 				setError(true)
 			}
 		}
@@ -58,8 +63,16 @@ function EditPack() {
 	}, [])
 
 	useEffect(() => {
-		if (user?.uid === pack?.uid) letMeEdit(true)
-		else letMeEdit(false)
+		if (user?.uid !== pack.uid && pack.uid !== 'me') {
+			return (
+				<div className="text-center">
+					<h1>403</h1>
+					<p>You don&apos;t have permission to edit this pack.</p>
+				</div>
+			)
+		} else {
+			letMeEdit(true)
+		}
 	}, [user])
 
 	// Loading logic
@@ -75,19 +88,6 @@ function EditPack() {
 			<div className="text-center">
 				<h1>404</h1>
 				<p>Sorry, this pack doesn&apos;t exist.</p>
-			</div>
-		)
-	}
-
-	if (user?.uid !== pack.uid) {
-		return (
-			<div className="text-center">
-				<h1>403</h1>
-				<p>
-					You don&apos;t have permission to edit this pack.
-					{/* <br />
-					you little shit */}
-				</p>
 			</div>
 		)
 	}
@@ -144,6 +144,11 @@ function EditPack() {
 							'💾 Save'
 						)}
 					</Button>
+					<LinkContainer to={`/view/${pack.author}/${pack.uuid}`}>
+						<Button variant="light" onClick={saveCards} className="p-3">
+							↩ Return
+						</Button>
+					</LinkContainer>
 				</ButtonGroup>
 			</div>
 		</div>

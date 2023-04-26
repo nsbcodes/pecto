@@ -89,7 +89,7 @@ function EditingPair() {
 								onKeyDown={(e) => {
 									if (
 										e.keyCode === 9 &&
-										// Make sure this is last card
+										// Make sure this is the last card
 										cards.id === pack.content.length - 1 &&
 										// No modifier keys
 										!e.shiftKey &&
@@ -106,6 +106,20 @@ function EditingPair() {
 											category: 'default',
 											uuid: uuidv4(),
 										})
+									}
+								}}
+								onKeyUp={(e) => {
+									if (
+										e.keyCode === 9 &&
+										// Make sure this is the last card
+										cards.id === pack.content.length - 1 &&
+										// No modifier keys
+										!e.shiftKey &&
+										!e.ctrlKey &&
+										!e.altKey &&
+										!e.metaKey
+									) {
+										console.log('yes')
 									}
 								}}
 							/>
