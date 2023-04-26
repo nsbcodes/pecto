@@ -23,99 +23,99 @@ function Answer(props) {
 				<div className="badge bg-success">✓</div> {props.answerText}
 			</>
 		)
-
-		return (
-			<div className="col py-3" key={props.answerText}>
-				<div className="d-grid gap-2 col-10">
-					<Button
-						variant="light"
-						onClick={() => {
-							props.handleAnswerClick(props.correctChoice)
-						}}
-						className="d-flex justify-content-between"
-					>
-						{content}
-					</Button>
-				</div>
-			</div>
-		)
 	}
 
-	function MultipleChoice(props) {
-		const [similarTerms, setSimilarTerms] = useState([])
-		const [pack, getSimilarCards] = usePack(
-			(state) => [state.pack, state.getSimilarCards],
-			shallow
-		)
+	return (
+		<div className="col py-3" key={props.answerText}>
+			<div className="d-grid gap-2 col-10">
+				<Button
+					variant="light"
+					onClick={() => {
+						props.handleAnswerClick(props.correctChoice)
+					}}
+					className="d-flex justify-content-between"
+				>
+					{content}
+				</Button>
+			</div>
+		</div>
+	)
+}
 
-		const [wrongAnswerClicked, clickedWrongAnswer] = useState(false)
+function MultipleChoice(props) {
+	const [similarTerms, setSimilarTerms] = useState([])
+	const [pack, getSimilarCards] = usePack((state) => [state.pack, state.getSimilarCards], shallow)
 
-		function regenerateSimilarTerms() {
-			setSimilarTerms(getSimilarCards(pack.content[props.currentCard]))
-		}
+	const [wrongAnswerClicked, clickedWrongAnswer] = useState(false)
 
-		useEffect(() => {
-			// Go to the term on the next card if not in multiple choice mode
-			regenerateSimilarTerms()
-			clickedWrongAnswer(false)
-		}, [props.currentCard])
+	function regenerateSimilarTerms() {
+		setSimilarTerms(getSimilarCards(pack.content[props.currentCard]))
+	}
 
-		async function nextTermDelayed() {
-			await new Promise((r) => setTimeout(r, 1500))
-			props.setCurrentCard(props.currentCard + 1)
-		}
+	useEffect(() => {
+		// Go to the term on the next card if not in multiple choice mode
+		regenerateSimilarTerms()
+		clickedWrongAnswer(false)
+	}, [props.currentCard])
 
-		async function handleAnswerClick(correctChoice) {
-			if (!correctChoice) {
-				clickedWrongAnswer(true)
-			}
-			nextTermDelayed()
-		}
+	async function nextTermDelayed() {
+		await new Promise((r) => setTimeout(r, 1500))
+		props.setCurrentCard(props.currentCard + 1)
+	}
 
-		const choices = similarTerms.map((card, i) => {
-			const correctChoice = card == pack.content[props.currentCard]
+	async function handleAnswerClick(correctChoice) {
+		// if (!correctChoice) {
+		// 	clickedWrongAnswer(true)
+		// }
+		clickedWrongAnswer(true)
+		nextTermDelayed()
+	}
 
-			return (
-				// <div className="col py-3" key={card.term}>
-				// 	<div className="d-grid gap-2 col-10">
-				// 		<Button
-				// 			variant="light"
-				// 			onClick={() => {
-				// 				if (correctChoice) {
-				// 					props.setCurrentCard(props.currentCard + 1)
-				// 				} else {
-				// 					clickedWrongAnswer(true)
-				// 				}
-				// 			}}
-				// 			className="d-flex justify-content-between"
-				// 		>
-				// 			{correctChoice && wrongAnswerClicked ? (
-				// 				<><div className="badge bg-success">✓</div> {card.term}</>
-				// 			) : (
-				// 				<><div className="badge bg-dark">{i + 1}</div> {card.term}</>
-				// 			)}
-				// 		</Button>
-				// 	</div>
-				// </div>
-				<Answer
-					key={card}
-					i={i}
-					correctChoice={correctChoice}
-					answerText={card.term}
-					wrongAnswerClicked={wrongAnswerClicked}
-					handleAnswerClick={handleAnswerClick}
-				/>
-			)
-		})
+	const choices = similarTerms.map((card, i) => {
+		const correctChoice = card == pack.content[props.currentCard]
 
 		return (
-			<div className="rounded-3 mx-auto text-center mt-4">
-				<div className="container text-center">
-					<div className="row row-cols-2 gx-3">{choices}</div>
-				</div>
-			</div>
+			// <div className="col py-3" key={card.term}>
+			// 	<div className="d-grid gap-2 col-10">
+			// 		<Button
+			// 			variant="light"
+			// 			onClick={() => {
+			// 				if (correctChoice) {
+			// 					props.setCurrentCard(props.currentCard + 1)
+			// 				} else {
+			// 					clickedWrongAnswer(true)
+			// 				}
+			// 			}}
+			// 			className="d-flex justify-content-between"
+			// 		>
+			// 			{correctChoice && wrongAnswerClicked ? (
+			// 				<><div className="badge bg-success">✓</div> {card.term}</>
+			// 			) : (
+			// 				<><div className="badge bg-dark">{i + 1}</div> {card.term}</>
+			// 			)}
+			// 		</Button>
+			// 	</div>
+			// </div>
+			<Answer
+				key={card.term}
+				i={i}
+				correctChoice={correctChoice}
+				answerText={card.term}
+				wrongAnswerClicked={wrongAnswerClicked}
+				handleAnswerClick={handleAnswerClick}
+			/>
 		)
-	}
+	})
+
+	console.log(choices)
+
+	return (
+		<div className="rounded-3 mx-auto text-center mt-4">
+			<div className="container text-center">
+				<div className="row row-cols-2 gx-3">{choices}</div>
+			</div>
+		</div>
+	)
 }
 
 export default MultipleChoice

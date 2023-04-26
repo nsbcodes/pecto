@@ -17,7 +17,7 @@ const fetcher = async (id, user) => {
 		return r
 	}
 
-	return await getDoc(doc(db, 'packs', user, 'packs', id))
+	return await getDoc(doc(db, 'packs', user, 'packs', id)).then((r) => r.data())
 	// if (data.exists()) {
 	// 	return data.data()
 	// } else {

@@ -113,6 +113,8 @@ function Pack() {
 		}, '200')
 	}
 
+	console.log(pack)
+
 	return (
 		<div id="packRoot" className="mx-auto border border-2 p-4 rounded-3">
 			<Metadata />

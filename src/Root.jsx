@@ -95,6 +95,7 @@ function Root() {
 		setUsernameAvailable('Saving to database...')
 		await authenticateWithGoogle(username)
 		setAskForUsername(false)
+		window.location.reload()
 	}
 
 	function openSearchPage() {
