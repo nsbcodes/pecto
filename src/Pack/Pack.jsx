@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { fetcher } from '@/lib/pack'
 import Cards from './Cards'
 import { CardsContext } from '@/lib/context'
 import { Metadata } from './Metadata'
@@ -26,12 +25,12 @@ function Pack() {
 	//const { pack: ogPack, mutate, isLoading, error } = usePack(packId)
 	//const { pack, setPack } = useState(ogPack)
 	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
-	const [pack, error, setError, loadPack, addCards, canEdit, letMeEdit] = usePack(
+	const [pack, error, loading, loadPack, addCards, canEdit, letMeEdit] = usePack(
 		(state) => [
 			// Data
 			state.pack,
 			state.error,
-			state.setError,
+			state.loading,
 			state.loadPack,
 			state.addCards,
 			// Editing
@@ -44,26 +43,8 @@ function Pack() {
 	// For a saving progress spinner
 	const [saving, startSaving] = useState(false)
 
-	// const [editingAll, setEditingAll] = useState(false)
-
 	useEffect(() => {
-		async function fetchData() {
-			const ref = await fetcher(packId, displayName)
-			// Data exists in Dexie
-			if (user?.uid === undefined && ref !== undefined) {
-				loadPack(ref)
-				setError(false)
-				// Data exists in Firebase
-			} else if (ref !== undefined && ref !== {}) {
-				loadPack(ref.data())
-				setError(false)
-				// Data doesn't exist in Firebase or Dexie
-			} else {
-				loadPack(undefined)
-				setError(true)
-			}
-		}
-		if (pack?.content === undefined) fetchData()
+		if (pack === undefined) loadPack(displayName, packId)
 	}, [])
 
 	useEffect(() => {
@@ -74,7 +55,7 @@ function Pack() {
 	}, [user])
 
 	// Loading logic
-	if (error === undefined) {
+	if (loading) {
 		return (
 			<div className="text-center">
 				<h1>📎</h1>
@@ -91,6 +72,7 @@ function Pack() {
 			</div>
 		)
 	}
+
 	async function newCards() {
 		// Add new terms
 		addCards({
@@ -112,8 +94,6 @@ function Pack() {
 			startSaving(false)
 		}, '200')
 	}
-
-	console.log(pack)
 
 	return (
 		<div id="packRoot" className="mx-auto border border-2 p-4 rounded-3">

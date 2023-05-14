@@ -5,14 +5,34 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { levenSort } from '@/lib/utilities'
 
+import { db } from '@/lib/firebase'
+import { doc, getDoc } from 'firebase/firestore'
+
+import { db as localDb } from '@/lib/localstore'
+
 export const usePack = create((set, get) => ({
-	pack: {},
-	error: undefined,
+	pack: undefined,
+	error: false,
+	loading: true,
 	canEdit: false,
-	// Cards
-	// eslint-disable-next-line no-unused-vars
-	loadPack: (pack) => set(() => ({ pack: pack })),
-	setError: (err) => set(() => ({ error: err })),
+	loadPack: async (user, id) => {
+		if (user == 'me') {
+			let ref = await localDb.packs.get(id)
+			if (ref === undefined) {
+				set({ pack: undefined, error: true, loading: false })
+			} else {
+				set({ pack: ref, error: false, loading: false })
+			}
+		} else {
+			let ref = await getDoc(doc(db, 'packs', user, 'packs', id))
+			if (!ref.exists()) {
+				set({ pack: undefined, error: true, loading: false })
+			} else {
+				set({ pack: ref.data(), error: false, loading: false })
+			}
+		}
+		set({ loading: false })
+	},
 	addCards: (cards) =>
 		set(
 			produce((state) => {

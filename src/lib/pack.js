@@ -1,30 +1,5 @@
 import { db } from './firebase'
-import { doc, getDoc, getDocs, collection, query, where } from 'firebase/firestore'
-
-import { db as localDb } from './localstore'
-
-const fetcher = async (id, user) => {
-	if (user == 'me') {
-		var r = await localDb.packs.get(id)
-		// r.exists = () => {
-		// 	if (r === undefined) {
-		// 		return false
-		// 	} else {
-		// 		return true
-		// 	}
-		// }
-		// console.log(r.exists())
-		return r
-	}
-
-	return await getDoc(doc(db, 'packs', user, 'packs', id)).then((r) => r.data())
-	// if (data.exists()) {
-	// 	return data.data()
-	// } else {
-	// 	return null
-	// }
-	// return await getDoc(ref).then((r) => r.data())
-}
+import { getDocs, collection, query, where } from 'firebase/firestore'
 
 async function getMyPacks(user) {
 	let packs = []
@@ -60,4 +35,4 @@ async function getPacks(user) {
 	return packs
 }
 
-export { fetcher, getMyPacks, getUsersPacks, getPacks }
+export { getMyPacks, getUsersPacks, getPacks }

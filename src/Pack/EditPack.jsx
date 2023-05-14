@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { fetcher } from '@/lib/pack'
 import Cards from './Cards'
 import { CardsContext } from '@/lib/context'
 import { Metadata } from './Metadata'
@@ -24,12 +23,12 @@ function EditPack() {
 	//const { pack: ogPack, mutate, isLoading, error } = usePack(packId)
 	//const { pack, setPack } = useState(ogPack)
 	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
-	const [pack, error, setError, loadPack, letMeEdit] = usePack(
+	const [pack, error, loading, loadPack, letMeEdit] = usePack(
 		(state) => [
 			// Data
 			state.pack,
 			state.error,
-			state.setError,
+			state.loading,
 			state.loadPack,
 			// Editing
 			state.letMeEdit,
@@ -43,23 +42,7 @@ function EditPack() {
 	// const [editingAll, setEditingAll] = useState(false)
 
 	useEffect(() => {
-		async function fetchData() {
-			const ref = await fetcher(packId, displayName)
-			// Data exists in Dexie
-			if (user?.uid === undefined && ref !== undefined) {
-				loadPack(ref)
-				setError(false)
-				// Data exists in Firebase
-			} else if (ref.exists()) {
-				loadPack(ref.data())
-				setError(false)
-				// Data doesn't exist in Firebase or Dexie
-			} else {
-				loadPack(undefined)
-				setError(true)
-			}
-		}
-		if (pack?.content === undefined) fetchData()
+		if (pack === undefined) loadPack(displayName, packId)
 	}, [])
 
 	useEffect(() => {
@@ -76,7 +59,7 @@ function EditPack() {
 	}, [user])
 
 	// Loading logic
-	if (error === undefined) {
+	if (loading) {
 		return (
 			<div className="text-center">
 				<h1>📎</h1>
