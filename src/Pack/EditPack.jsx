@@ -20,8 +20,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 function EditPack() {
 	const { displayName, packId } = useParams()
 	// We wrap useState around this so we can modify it (ex. adding new cards)
-	//const { pack: ogPack, mutate, isLoading, error } = usePack(packId)
-	//const { pack, setPack } = useState(ogPack)
 	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
 	const [pack, error, loading, loadPack, letMeEdit] = usePack(
 		(state) => [

@@ -17,7 +17,7 @@ function UserPacks(props) {
 		packsToDelete.forEach((uuid) => {
 			deletePack(uuid)
 		})
-		alert('Packs deleted - refresh the page')
+		window.location.reload()
 	}
 
 	return (
