@@ -18,6 +18,7 @@ import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
 import { v4 as uuidv4 } from 'uuid'
+import { AnimatePresence, motion } from 'framer-motion'
 
 function Pack() {
 	const { displayName, packId } = useParams()
@@ -101,27 +102,24 @@ function Pack() {
 
 			<FlashcardView />
 
-			<div
-				id="packContentContainer"
-				className="mt-3 border border-2 rounded-3"
-				// Trigger a re-render when the pack changes
-				key={pack.content.length}
-			>
-				{pack.content.map((cards, index) => (
-					<CardsContext.Provider
-						key={index}
-						value={{
-							term: cards.term,
-							definition: cards.definition,
-							category: cards.category,
-							uuid: cards.uuid,
-							id: index,
-						}}
-					>
-						<Cards />
-					</CardsContext.Provider>
-				))}
-			</div>
+			<motion.div id="packContentContainer" className="mt-3 border border-2 rounded-3">
+				<AnimatePresence>
+					{pack.content.map((cards, index) => (
+						<CardsContext.Provider
+							key={cards.uuid}
+							value={{
+								term: cards.term,
+								definition: cards.definition,
+								category: cards.category,
+								uuid: cards.uuid,
+								id: index,
+							}}
+						>
+							<Cards />
+						</CardsContext.Provider>
+					))}
+				</AnimatePresence>
+			</motion.div>
 
 			{canEdit && (
 				<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">

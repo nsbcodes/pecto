@@ -44,7 +44,7 @@ function EditPack() {
 	}, [])
 
 	useEffect(() => {
-		if (user?.uid !== pack.uid && pack.uid !== 'me') {
+		if (user?.uid !== pack?.uid && pack?.uid !== 'me') {
 			return (
 				<div className="text-center">
 					<h1>403</h1>
@@ -64,7 +64,9 @@ function EditPack() {
 				<Spinner animation="grow" size="sm" />
 			</div>
 		)
-	} else if (error) {
+	}
+
+	if (error) {
 		return (
 			<div className="text-center">
 				<h1>404</h1>
@@ -89,18 +91,10 @@ function EditPack() {
 		<div id="packRoot" className="mx-auto mb-5 border border-2 p-4 rounded-3">
 			<Metadata editing />
 
-			{/* <FlashcardView /> */}
-
-			<motion.div
-				id="packContentContainer"
-				className="mt-3 border border-2 rounded-3"
-				// style={{ height: 'fit-content' }}
-				// layout
-			>
+			<motion.div id="packContentContainer" className="mt-3 border border-2 rounded-3">
 				<AnimatePresence>
 					{pack.content.map((cards, index) => (
 						<CardsContext.Provider
-							// TODO: generate a better key
 							key={cards.uuid}
 							value={{
 								term: cards.term,

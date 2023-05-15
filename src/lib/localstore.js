@@ -8,7 +8,8 @@ db.version(1).stores({
 })
 
 // No error catching
-// my code doesn't make errors
+// my code doesn't have "errors" it has "features"
+// https://twitter.com/iamdevloper/status/1055265260294399488
 
 const addNewPack = async (id, newPack) => {
 	await db.packs.put({ id: id, ...newPack })
