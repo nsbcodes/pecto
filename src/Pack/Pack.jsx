@@ -49,11 +49,11 @@ function Pack() {
 	}, [])
 
 	useEffect(() => {
-		// TODO: fix this
-		if (user?.uid != '' || displayName == 'me') {
+		if ((pack !== undefined && user?.uid == pack.uid) || pack?.uid == 'me') {
+			console.log('is true, babbu', user?.uid, pack?.uid)
 			letMeEdit(true)
 		}
-	}, [user])
+	}, [user, pack])
 
 	// Loading logic
 	if (loading) {
