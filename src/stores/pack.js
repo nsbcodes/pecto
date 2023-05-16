@@ -24,7 +24,13 @@ export const usePack = create((set, get) => ({
 				set({ pack: ref, error: false, loading: false })
 			}
 		} else {
-			let ref = await getDoc(doc(db, 'packs', user, 'packs', id))
+			var ref
+			try {
+				ref = await getDoc(doc(db, 'packs', user, 'packs', id))
+			} catch (e) {
+				set({ pack: undefined, error: e, loading: false })
+				return
+			}
 			if (!ref.exists()) {
 				set({ pack: undefined, error: true, loading: false })
 			} else {

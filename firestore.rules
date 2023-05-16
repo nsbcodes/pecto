@@ -7,9 +7,21 @@ service cloud.firestore {
     // document. The wildcard expression {userId} makes the userId variable
     // available in rules.
     match /packs/{userId}/packs/{uuid} {
-      allow read;
-      allow update, delete: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow read: if isPublished(resource) || isAuthed(resource);
+      allow update, delete: if isAuthed(resource);
       allow create: if request.auth != null;
+    }
+
+    function isPublished(resource) {
+      // Although it doesn't make sense to fetch a non-existent document,
+      // .exists() returns false for non-existent documents,
+      // which we check for later in the frontend
+      return (resource == null) || (resource.data.published == true);
+      // return resource.data.published == true;
+    }
+
+    function isAuthed(resource) {
+      return request.auth != null && resource.data.uid == request.auth.uid;
     }
 
     // https://fireship.io/lessons/custom-usernames-firebase/

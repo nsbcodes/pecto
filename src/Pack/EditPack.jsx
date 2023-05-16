@@ -66,11 +66,22 @@ function EditPack() {
 		)
 	}
 
-	if (error) {
+	// The === is very important, since it must be a boolean, not an error object
+	if (error === true) {
 		return (
 			<div className="text-center">
 				<h1>404</h1>
 				<p>Sorry, this pack doesn&apos;t exist.</p>
+			</div>
+		)
+	}
+
+	if (error) {
+		return (
+			<div className="text-center">
+				<h1>403</h1>
+				<p>This pack exists, but hasn&apos;t been published.</p>
+				<code>{error.toString()}</code>
 			</div>
 		)
 	}
