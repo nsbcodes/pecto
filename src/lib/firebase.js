@@ -85,6 +85,8 @@ export const addNewPack = async (id, newPack, username) => {
 
 export const deletePack = async (id, username) => {
 	const docRef = doc(db, 'packs', username, 'packs', id)
+	console.log(docRef)
+	console.log('deleting db/packs/' + username + '/packs/' + id)
 	await deleteDoc(docRef)
 }
 

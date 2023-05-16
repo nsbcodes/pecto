@@ -30,20 +30,21 @@ export const useUser = create((set, get) => ({
 	user: {},
 	setUser: async (newUser) => set({ user: { ...newUser, ...(await addUsername(newUser)) } }),
 	// Utility functions
-	newPack: (id, newPack) => {
-		if (userDefined(get().user)) {
-			addNewPackCloud(id, newPack, get().user.username)
+	newPack: async (id, newPack, forceLocal = false) => {
+		if (userDefined(get().user) && !forceLocal) {
+			await addNewPackCloud(id, newPack, get().user.username)
 		} else {
-			addNewPackLocal(id, newPack)
+			await addNewPackLocal(id, newPack)
 		}
 	},
-	deletePack: (id) => {
-		if (userDefined(get().user)) {
-			deletePackCloud(id, get().user.username)
+	deletePack: async (id, forceLocal = false) => {
+		if (userDefined(get().user) && !forceLocal) {
+			await deletePackCloud(id, get().user.username)
 		} else {
-			deletePackLocal(id)
+			await deletePackLocal(id)
 		}
 	},
+	// TODO: Implement forceLocal in this for consistency
 	getMyPacks: async () => {
 		if (userDefined(get().user)) {
 			return await getMyPacksCloud(get().user.username)

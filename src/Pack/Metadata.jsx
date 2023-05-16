@@ -21,7 +21,7 @@ import { shallow } from 'zustand/shallow'
 
 export function Metadata(props) {
 	const [editing, setEditing] = useState(false)
-	const [deletePack] = useUser((state) => [state.deletePack], shallow)
+	const [newPack, deletePack] = useUser((state) => [state.newPack, state.deletePack], shallow)
 	const [pack, togglePublish, editClass, editName, addQuizletCards, canEdit] = usePack(
 		(state) => [
 			// Data
@@ -68,6 +68,9 @@ export function Metadata(props) {
 		editName(name)
 		editClass(packClass)
 		togglePublish(publish)
+
+		// Upload (or save) changes
+		await newPack(pack.uuid, pack)
 
 		// Self-destruct
 		setEditing(!editing)
@@ -151,7 +154,7 @@ export function Metadata(props) {
 						</Button>
 						{!props?.editing && (
 							<Button className="me-2" size="sm" onClick={exitEditingMode}>
-								Finish editing
+								Finish Editing
 							</Button>
 						)}
 					</div>
