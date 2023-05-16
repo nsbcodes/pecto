@@ -45,7 +45,7 @@ function Pack() {
 	const [saving, startSaving] = useState(false)
 
 	useEffect(() => {
-		if (pack === undefined) loadPack(displayName, packId)
+		loadPack(displayName, packId)
 	}, [])
 
 	useEffect(() => {
