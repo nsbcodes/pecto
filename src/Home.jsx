@@ -29,7 +29,7 @@ function Home() {
 			setLocalPacks(await getMyPacksLocal())
 		}
 		fetchData()
-	}, [user])
+	}, [])
 
 	return (
 		<div className="container">
