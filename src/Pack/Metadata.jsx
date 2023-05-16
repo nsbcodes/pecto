@@ -36,23 +36,11 @@ export function Metadata(props) {
 		shallow
 	)
 
-	// Spin this out into a different component?
-	// no u shithead
-	const [name, setName] = useState(pack.name)
-	// conflict with the keyword class
-	const [packClass, setPackClass] = useState(pack.class)
-
 	const [willDelete, startDelete] = useState(false)
-	const [publish, setPublish] = useState(false)
 	const [importing, importFromQuizlet] = useState(false)
 	const [quizletContents, setQuizletContens] = useState('')
 
 	const navigate = useNavigate()
-
-	// why is this here???
-	useEffect(() => {
-		setPublish(pack.published)
-	}, [pack])
 
 	useEffect(() => {
 		setEditing(props.editing)
@@ -63,13 +51,8 @@ export function Metadata(props) {
 	}, [editing])
 
 	async function exitEditingMode() {
-		// When the user clicks "Done" and the component will be switched to the static version,
-		// we send a write to Firebase
-		editName(name)
-		editClass(packClass)
-		togglePublish(publish)
-
 		// Upload (or save) changes
+		console.log(pack)
 		await newPack(pack.uuid, pack)
 
 		// Self-destruct
@@ -94,9 +77,9 @@ export function Metadata(props) {
 					<input
 						id="packNameX"
 						type="text"
-						value={name}
+						value={pack.name}
 						className="form-control form-control-lg"
-						onChange={(e) => setName(e.target.value)}
+						onChange={(e) => editName(e.target.value)}
 					/>
 					<div className="d-flex justify-content-around mt-3 mb-3 align-items-center">
 						<div className="row g-0 align-items-center">
@@ -105,9 +88,9 @@ export function Metadata(props) {
 								<input
 									id="packClass"
 									type="text"
-									value={packClass}
+									value={pack.class}
 									className="form-control form-control-sm ms-2"
-									onChange={(e) => setPackClass(e.target.value)}
+									onChange={(e) => editClass(e.target.value)}
 								/>
 							</div>
 						</div>
@@ -129,7 +112,7 @@ export function Metadata(props) {
 							placement="top"
 							overlay={
 								<Tooltip>
-									{publish
+									{pack.published
 										? 'Currently everyone can view this'
 										: 'Currently only you can see this'}
 								</Tooltip>
@@ -139,9 +122,11 @@ export function Metadata(props) {
 								className="me-2"
 								size="sm"
 								variant="dark"
-								onClick={() => setPublish(!publish)}
+								onClick={() => {
+									togglePublish(!pack.published)
+								}}
 							>
-								{publish ? 'Unpublish' : 'Publish'}
+								{pack.published ? 'Unpublish' : 'Publish'}
 							</Button>
 						</OverlayTrigger>
 						<Button
