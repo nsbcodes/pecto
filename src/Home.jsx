@@ -59,6 +59,7 @@ function Home() {
 												onClick={async () => {
 													await newPack(pack.uuid, {
 														...pack,
+														author: user.username,
 														uid: user.uid,
 														superficialAuthor: user.username,
 													})
