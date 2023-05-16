@@ -56,7 +56,7 @@ function Pack() {
 	}, [user, pack])
 
 	// Loading logic
-	if (loading) {
+	if (loading || pack?.uuid != packId) {
 		return (
 			<div className="text-center">
 				<h1>📎</h1>
