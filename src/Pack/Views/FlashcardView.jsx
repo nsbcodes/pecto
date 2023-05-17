@@ -22,6 +22,11 @@ function FlashcardView() {
 	// Options
 	const [mcqMode, setMcqMode] = useState(false)
 
+	useEffect(() => {
+		// Always go to the term on the next card
+		setClicked(false)
+	}, [currentCard])
+
 	return (
 		<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">
 			<div className="container">
