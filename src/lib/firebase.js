@@ -7,6 +7,7 @@ import {
 	deleteDoc,
 	getDocs,
 	where,
+	query,
 	collection,
 	writeBatch,
 	connectFirestoreEmulator,
@@ -93,13 +94,14 @@ export const deletePack = async (id, username) => {
 
 export const getMyPacks = async (username, uid) => {
 	let packs = []
-	console.log('yoyoyoy', username, uid)
-	// console.log(await db.collection(`packs/${username}/packs`).where('published', '==', true).get())
-	const userPacks = await getDocs(collection(db, 'packs', username, 'packs'))
+
+	const userPacks = await getDocs(
+		query(collection(db, 'packs', username, 'packs'), where('uid', '==', uid))
+	)
 	userPacks.forEach((doc) => {
 		packs.push(doc.data())
-		console.log(packs)
 	})
+
 	return packs
 }
 
