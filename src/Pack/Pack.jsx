@@ -8,6 +8,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Spinner from 'react-bootstrap/Spinner'
+import Form from 'react-bootstrap/Form'
 
 import FlashcardView from './Views/FlashcardView'
 
@@ -44,6 +45,10 @@ function Pack() {
 	// For a saving progress spinner
 	const [saving, startSaving] = useState(false)
 
+	// Category filter
+	const [categoryFilter, setCategoryFilter] = useState(0)
+	const [filteredPack, setFilteredPack] = useState(pack)
+
 	useEffect(() => {
 		loadPack(displayName, packId)
 	}, [])
@@ -53,6 +58,17 @@ function Pack() {
 			letMeEdit(true)
 		}
 	}, [user, pack])
+
+	useEffect(() => {
+		if (categoryFilter == 0) {
+			setFilteredPack(pack)
+		} else {
+			setFilteredPack({
+				...pack,
+				content: pack.content.filter((cards) => cards.category == categoryFilter),
+			})
+		}
+	}, [categoryFilter, pack])
 
 	// The === is very important, since it must be a boolean, not an error object
 	if (error === true) {
@@ -75,7 +91,8 @@ function Pack() {
 	}
 
 	// Loading logic
-	if (loading || pack?.uuid != packId) {
+	// Also wait for the filteredPack to load
+	if (loading || pack?.uuid != packId || filteredPack?.content === undefined) {
 		return (
 			<div className="text-center">
 				<h1>📎</h1>
@@ -112,15 +129,32 @@ function Pack() {
 
 			<FlashcardView />
 
+			<Form.Select
+				aria-label="Default select example"
+				className="w-25 mt-3"
+				onChange={(e) => {
+					setCategoryFilter(e.target.value)
+				}}
+				value={categoryFilter}
+			>
+				<option value="0">All</option>
+				{Object.entries(pack.categories).map(([uuid, content]) => (
+					<option key={uuid} value={uuid} style={{ backgroundColor: content.colors[1] }}>
+						{content.name}
+					</option>
+				))}
+			</Form.Select>
+
 			<motion.div id="packContentContainer" className="mt-3 border border-2 rounded-3">
 				<AnimatePresence>
-					{pack.content.map((cards, index) => (
+					{filteredPack.content.map((cards, index) => (
 						<CardsContext.Provider
 							key={cards.uuid}
 							value={{
 								term: cards.term,
 								definition: cards.definition,
 								category: cards.category,
+								picture: cards.picture,
 								uuid: cards.uuid,
 								id: index,
 							}}

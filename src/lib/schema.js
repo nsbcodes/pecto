@@ -10,6 +10,7 @@ const BasePack = () => {
 		uid: 'me', // Must be defined when imported to Firestore
 		uuid: '',
 		published: false,
+		pictures: [],
 		categories: {
 			// id (key) on new categories should be something generated with uuidV4
 			default: { name: 'Default', colors: ['transparent', 'transparent'] },

@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 
 import Dropdown from 'react-bootstrap/Dropdown'
-import DropdownButton from 'react-bootstrap/DropdownButton'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 

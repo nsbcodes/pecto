@@ -3,6 +3,7 @@ import { useState, useContext } from 'react'
 import StaticPair from './Pair/StaticPair'
 import EditingPair from './Pair/EditingPair'
 import { CategorySelect } from './CategorySelect'
+import { PictureSelect } from './PictureSelect'
 import { CardsContext } from '@/lib/context.js'
 
 import Button from 'react-bootstrap/Button'
@@ -43,6 +44,23 @@ function Cards(props) {
 		// console.log(pack.content)
 	}
 
+	var extra = ''
+	if (cards.id !== 0) {
+		if (pack.content[cards.id - 1].picture !== cards.picture && cards.picture !== undefined) {
+			extra = <img className="w-100" src={cards.picture}></img>
+		}
+	} else if (cards.picture !== undefined) {
+		// max-width: 100px;
+		// width: 100%;
+		// height: auto;
+		extra = (
+			<div>
+				<img className="w-100" src={cards.picture}></img>
+				cummers
+			</div>
+		)
+	}
+
 	return (
 		<motion.div
 			key={cards.id}
@@ -56,13 +74,31 @@ function Cards(props) {
 			animate={{ x: 0 }}
 			exit={{ scale: 0 }}
 		>
-			<div className="d-flex justify-content-between align-items-center">
+			<>{extra}</>
+			<div className="d-flex justify-content-between align-items-center mt-5">
 				{canEdit ? (
 					<CategorySelect />
 				) : (
 					<div className="badge bg-primary ms-2">{cards.category}</div>
 				)}
-				<span className="text-muted me-4">{cards.id + 1}</span>
+				<div className="d-flex align-items-center">
+					{/* <Form.Select
+						size="sm"
+						style={{ display: 'inline !important' }}
+						className="me-3"
+						value={pictureURL}
+						onChange={(e) => {
+							// Set the actual card's picture
+							setCardPicture(cards.id, e.target.value)
+							// Set the state
+							setPictureURL(e.target.value)
+						}}
+					>
+						<option value="">No picture</option>
+					</Form.Select> */}
+					<PictureSelect />
+					<span className="text-muted ms-3 me-4">{cards.id + 1}</span>
+				</div>
 			</div>
 
 			{canEdit && editing ? <EditingPair setEditing={setEditing} /> : <StaticPair />}

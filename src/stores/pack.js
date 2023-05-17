@@ -124,6 +124,12 @@ export const usePack = create((set, get) => ({
 				state.pack.categories[uuidv4()] = { name: newCategory, colors: newColor }
 			})
 		),
+	addPicture: (picture) =>
+		set(
+			produce((state) => {
+				state.pack.pictures.push(picture)
+			})
+		),
 	editCategory: (id, newCategory) =>
 		set(
 			produce((state) => {
@@ -136,6 +142,13 @@ export const usePack = create((set, get) => ({
 				state.pack.content[i]['category'] = categoryId
 			})
 		),
+	setCardPicture: (i, pictureURL) => {
+		set(
+			produce((state) => {
+				state.pack.content[i]['picture'] = pictureURL
+			})
+		)
+	},
 	removeCardCategory: (id) =>
 		set(
 			produce((state) => {
@@ -147,6 +160,13 @@ export const usePack = create((set, get) => ({
 				delete state.pack.categories[id]
 			})
 		),
+	removeCardPicture: (i) => {
+		set(
+			produce((state) => {
+				delete state.pack.content[i].picture
+			})
+		)
+	},
 	// Editor
 	letMeEdit: (val) => set({ canEdit: val }),
 }))

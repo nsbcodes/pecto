@@ -43,3 +43,10 @@ export function debounce(func, timeout = 1000) {
 		}, timeout)
 	}
 }
+
+export function truncateString(input, chars) {
+	if (input.length > chars) {
+		return input.substring(0, chars) + '…'
+	}
+	return input
+}
