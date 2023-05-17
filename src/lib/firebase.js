@@ -6,6 +6,7 @@ import {
 	setDoc,
 	deleteDoc,
 	getDocs,
+	where,
 	collection,
 	writeBatch,
 	connectFirestoreEmulator,
@@ -24,7 +25,7 @@ export const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig)
 export const db = getFirestore(app)
-//connectFirestoreEmulator(db, 'localhost', 8080)
+connectFirestoreEmulator(db, 'localhost', 8080)
 export const auth = getAuth()
 export const provider = new GoogleAuthProvider()
 
@@ -90,11 +91,14 @@ export const deletePack = async (id, username) => {
 	await deleteDoc(docRef)
 }
 
-export const getMyPacks = async (username) => {
+export const getMyPacks = async (username, uid) => {
 	let packs = []
+	console.log('yoyoyoy', username, uid)
+	// console.log(await db.collection(`packs/${username}/packs`).where('published', '==', true).get())
 	const userPacks = await getDocs(collection(db, 'packs', username, 'packs'))
 	userPacks.forEach((doc) => {
 		packs.push(doc.data())
+		console.log(packs)
 	})
 	return packs
 }

@@ -50,20 +50,9 @@ function Pack() {
 
 	useEffect(() => {
 		if ((pack !== undefined && user?.uid == pack.uid) || pack?.uid == 'me') {
-			console.log('is true, babbu', user?.uid, pack?.uid)
 			letMeEdit(true)
 		}
 	}, [user, pack])
-
-	// Loading logic
-	if (loading || pack?.uuid != packId) {
-		return (
-			<div className="text-center">
-				<h1>📎</h1>
-				<Spinner animation="grow" size="sm" />
-			</div>
-		)
-	}
 
 	// The === is very important, since it must be a boolean, not an error object
 	if (error === true) {
@@ -81,6 +70,16 @@ function Pack() {
 				<h1>403</h1>
 				<p>This pack exists, but hasn&apos;t been published.</p>
 				<code>{error.toString()}</code>
+			</div>
+		)
+	}
+
+	// Loading logic
+	if (loading || pack?.uuid != packId) {
+		return (
+			<div className="text-center">
+				<h1>📎</h1>
+				<Spinner animation="grow" size="sm" />
 			</div>
 		)
 	}

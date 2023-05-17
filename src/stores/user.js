@@ -47,7 +47,7 @@ export const useUser = create((set, get) => ({
 	// TODO: Implement forceLocal in this for consistency
 	getMyPacks: async () => {
 		if (userDefined(get().user)) {
-			return await getMyPacksCloud(get().user.username)
+			return await getMyPacksCloud(get().user.username, get().user.uid)
 		} else {
 			return await getMyPacksLocal()
 		}
