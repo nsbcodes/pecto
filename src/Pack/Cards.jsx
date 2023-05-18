@@ -63,7 +63,7 @@ function Cards(props) {
 		// height: auto;
 		extra = <img className="w-100" src={cards.picture}></img>
 		cardCSS = {
-			boxShadow: '-1px 0 0 #DEE2E6',
+			boxShadow: '-2px 0 0 #DEE2E6',
 		}
 	}
 
