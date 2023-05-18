@@ -122,6 +122,7 @@ export function Metadata(props) {
 								className="me-2"
 								size="sm"
 								variant="dark"
+								disabled={pack.author == 'me' ? true : false}
 								onClick={() => {
 									togglePublish(!pack.published)
 								}}
