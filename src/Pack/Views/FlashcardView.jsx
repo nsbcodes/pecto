@@ -24,7 +24,11 @@ function FlashcardView() {
 
 	useEffect(() => {
 		// Always go to the term on the next card
-		setClicked(false)
+		if (mcqMode) {
+			setClicked(true)
+		} else {
+			setClicked(false)
+		}
 	}, [currentCard])
 
 	return (

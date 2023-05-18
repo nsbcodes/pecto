@@ -46,13 +46,13 @@ function Cards(props) {
 
 	var extra = ''
 	var cardCSS = {}
-	if (cards.id !== 0) {
+	if (cards.id !== 0 && cards.picture !== undefined) {
 		if (pack.content[cards.id - 1]?.picture !== cards?.picture && cards.picture !== undefined) {
 			extra = <img className="w-100" src={cards.picture}></img>
 			cardCSS = {
 				boxShadow: '-2px 0 0 #D7DDFC',
 			}
-		} else if (pack.content[cards.id - 1]?.picture == cards.picture) {
+		} else if (pack.content[cards.id - 1]?.picture === cards?.picture) {
 			cardCSS = {
 				boxShadow: '-2px 0 0 #DEE2E6',
 			}
@@ -67,6 +67,7 @@ function Cards(props) {
 		}
 	}
 
+	console.log(pack.categories[cards.category])
 	return (
 		<motion.div
 			key={cards.id}

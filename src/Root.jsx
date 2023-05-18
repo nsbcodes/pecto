@@ -184,7 +184,11 @@ function Root() {
 					<Form.Text>{usernameAvailable}</Form.Text>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="primary" onClick={confirmUsername}>
+					<Button
+						variant="primary"
+						disabled={!usernameAvailable}
+						onClick={confirmUsername}
+					>
 						Confirm
 					</Button>
 				</Modal.Footer>

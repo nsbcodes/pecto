@@ -248,8 +248,9 @@ export function Metadata(props) {
 						onClick={() => {
 							navigator.clipboard.writeText(window.location.href)
 						}}
+						disabled={pack.author == 'me'}
 					>
-						📋 Copy
+						{pack.author == 'me' ? 'Create an account to share your pack' : '📋 Copy'}
 					</Button>
 
 					{canEdit ? (
