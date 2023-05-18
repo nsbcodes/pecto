@@ -45,15 +45,26 @@ function Cards(props) {
 	}
 
 	var extra = ''
+	var cardCSS = {}
 	if (cards.id !== 0) {
 		if (pack.content[cards.id - 1].picture !== cards.picture && cards.picture !== undefined) {
 			extra = <img className="w-100" src={cards.picture}></img>
+			cardCSS = {
+				boxShadow: '-2px 0 0 #D7DDFC',
+			}
+		} else if (pack.content[cards.id - 1].picture == cards.picture) {
+			cardCSS = {
+				boxShadow: '-2px 0 0 #DEE2E6',
+			}
 		}
 	} else if (cards.picture !== undefined) {
 		// max-width: 100px;
 		// width: 100%;
 		// height: auto;
 		extra = <img className="w-100" src={cards.picture}></img>
+		cardCSS = {
+			boxShadow: '-1px 0 0 #DEE2E6',
+		}
 	}
 
 	return (
@@ -64,6 +75,7 @@ function Cards(props) {
 				backgroundImage: `linear-gradient(to right, ${
 					pack.categories[cards.category]['colors'][0]
 				},${pack.categories[cards.category]['colors'][1]})`,
+				...cardCSS,
 			}}
 			initial={{ x: -100 }}
 			animate={{ x: 0 }}
