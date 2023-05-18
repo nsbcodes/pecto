@@ -55,7 +55,17 @@ function FlashcardView() {
 					}}
 				>
 					<p className="fcText">
-						{pack.content[currentCard][clicked ? 'definition' : 'term']}
+						{clicked ? (
+							<>{pack.content[currentCard]['definition']}</>
+						) : (
+							<>
+								<img
+									className="w-100 mb-5 rounded-3 shadow"
+									src={pack.content[currentCard]['picture']}
+								></img>
+								{pack.content[currentCard]['term']}
+							</>
+						)}
 					</p>
 				</div>
 

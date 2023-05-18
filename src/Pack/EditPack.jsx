@@ -15,19 +15,21 @@ import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
+import { v4 as uuidv4 } from 'uuid'
 import { AnimatePresence, motion } from 'framer-motion'
 
 function EditPack() {
 	const { displayName, packId } = useParams()
 	// We wrap useState around this so we can modify it (ex. adding new cards)
 	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
-	const [pack, error, loading, loadPack, letMeEdit] = usePack(
+	const [pack, error, loading, loadPack, addCards, letMeEdit] = usePack(
 		(state) => [
 			// Data
 			state.pack,
 			state.error,
 			state.loading,
 			state.loadPack,
+			state.addCards,
 			// Editing
 			state.letMeEdit,
 		],
@@ -98,6 +100,16 @@ function EditPack() {
 		}, '200')
 	}
 
+	function newCards() {
+		// Add new terms
+		addCards({
+			term: '',
+			definition: '',
+			category: 'default',
+			uuid: uuidv4(),
+		})
+	}
+
 	return (
 		<div id="packRoot" className="mx-auto mb-5 border border-2 p-4 rounded-3">
 			<Metadata editing />
@@ -129,6 +141,9 @@ function EditPack() {
 						) : (
 							'💾 Save'
 						)}
+					</Button>
+					<Button variant="light" onClick={newCards} className="p-3">
+						➕ Add Cards
 					</Button>
 					<LinkContainer to={`/view/${pack.author}/${pack.uuid}`}>
 						<Button variant="light" onClick={saveCards} className="p-3">

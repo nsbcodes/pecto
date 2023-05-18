@@ -53,12 +53,7 @@ function Cards(props) {
 		// max-width: 100px;
 		// width: 100%;
 		// height: auto;
-		extra = (
-			<div>
-				<img className="w-100" src={cards.picture}></img>
-				cummers
-			</div>
-		)
+		extra = <img className="w-100" src={cards.picture}></img>
 	}
 
 	return (

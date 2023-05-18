@@ -101,7 +101,7 @@ function Pack() {
 		)
 	}
 
-	async function newCards() {
+	function newCards() {
 		// Add new terms
 		addCards({
 			term: '',
@@ -168,9 +168,6 @@ function Pack() {
 			{canEdit && (
 				<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
 					<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
-						<Button variant="light" onClick={newCards} className="p-3">
-							➕ New
-						</Button>
 						{/* <Button
 							variant="light"
 							onClick={() => {
@@ -186,6 +183,9 @@ function Pack() {
 							) : (
 								'💾 Save'
 							)}
+						</Button>
+						<Button variant="light" onClick={newCards} className="p-3">
+							➕ New
 						</Button>
 						<LinkContainer to={`/edit/${pack.author}/${pack.uuid}`}>
 							<Button variant="light" onClick={saveCards} className="p-3">
