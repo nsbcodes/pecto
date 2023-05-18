@@ -123,6 +123,7 @@ function EditPack() {
 								term: cards.term,
 								definition: cards.definition,
 								category: cards.category,
+								picture: cards.picture,
 								uuid: cards.uuid,
 								id: index,
 							}}
