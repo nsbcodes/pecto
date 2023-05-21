@@ -15,9 +15,11 @@ export function hslToHex(h, s, l) {
 
 export function levenSort(a, baseIndex = 0, property = 'term') {
 	var levenArr = []
-	a.forEach(
-		(e, i) => (levenArr[i] = { element: e, leven: leven(a[baseIndex][property], e[property]) })
-	)
+	console.log(a)
+	a.forEach((e, i) => {
+		console.log(a[baseIndex], property)
+		levenArr[i] = { element: e, leven: leven(a[baseIndex][property], e[property]) }
+	})
 
 	levenArr.sort((a, b) => {
 		if (a.leven < b.leven) {
@@ -49,4 +51,10 @@ export function truncateString(input, chars) {
 		return input.substring(0, chars) + '…'
 	}
 	return input
+}
+
+export function toTitleCase(str) {
+	return str.replace(/\w\S*/g, function (txt) {
+		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+	})
 }

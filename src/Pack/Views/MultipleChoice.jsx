@@ -44,12 +44,15 @@ function Answer(props) {
 
 function MultipleChoice(props) {
 	const [similarTerms, setSimilarTerms] = useState([])
-	const [pack, getSimilarCards] = usePack((state) => [state.pack, state.getSimilarCards], shallow)
+	const [cards, getSimilarCards] = usePack(
+		(state) => [state.pack.content[props.currentCard], state.getSimilarCards],
+		shallow
+	)
 
 	const [wrongAnswerClicked, clickedWrongAnswer] = useState(false)
 
 	function regenerateSimilarTerms() {
-		setSimilarTerms(getSimilarCards(pack.content[props.currentCard]))
+		setSimilarTerms(getSimilarCards(cards))
 	}
 
 	useEffect(() => {
@@ -72,7 +75,7 @@ function MultipleChoice(props) {
 	}
 
 	const choices = similarTerms.map((card, i) => {
-		const correctChoice = card == pack.content[props.currentCard]
+		const correctChoice = card == cards
 
 		return (
 			// <div className="col py-3" key={card.term}>

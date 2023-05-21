@@ -9,6 +9,7 @@ import { UserView } from './UserView'
 import { SearchPacks } from './SearchPacks'
 import Home from './Home'
 import EditPack from './Pack/EditPack'
+import Blitz from './Pack/Experiences/Blitz'
 
 const router = createBrowserRouter([
 	{
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
 			{
 				path: 'edit/:displayName/:packId',
 				element: <EditPack />,
+			},
+			{
+				path: 'blitz/:displayName/:packId',
+				element: <Blitz />,
 			},
 			{
 				path: 'new/pack',

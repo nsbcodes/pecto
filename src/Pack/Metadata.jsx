@@ -10,6 +10,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { LinkContainer } from 'react-router-bootstrap'
 import Modal from 'react-bootstrap/Modal'
+import FloatingLabel from 'react-bootstrap/FloatingLabel'
 
 import './Metadata.scss'
 
@@ -17,28 +18,33 @@ import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
+import { v4 as uuidv4 } from 'uuid'
+
 // Lots of logic is shared with EditingPair
 
 export function Metadata(props) {
 	const [editing, setEditing] = useState(false)
 	const [newPack, deletePack] = useUser((state) => [state.newPack, state.deletePack], shallow)
-	const [pack, togglePublish, editClass, editName, addQuizletCards, canEdit] = usePack(
-		(state) => [
-			// Data
-			state.pack,
-			state.togglePublish,
-			state.editClass,
-			state.editName,
-			state.addQuizletCards,
-			// Editing
-			state.canEdit,
-		],
-		shallow
-	)
+	const [pack, togglePublish, editClass, editName, addQuizletCards, addCategory, canEdit] =
+		usePack(
+			(state) => [
+				// Data
+				state.pack,
+				state.togglePublish,
+				state.editClass,
+				state.editName,
+				state.addQuizletCards,
+				state.addCategory,
+				// Editing
+				state.canEdit,
+			],
+			shallow
+		)
 
 	const [willDelete, startDelete] = useState(false)
 	const [importing, importFromQuizlet] = useState(false)
 	const [quizletContents, setQuizletContens] = useState('')
+	const [category, setCategory] = useState('default')
 
 	const navigate = useNavigate()
 
@@ -66,7 +72,9 @@ export function Metadata(props) {
 	}
 
 	function importQuizlet() {
-		addQuizletCards(quizletContents)
+		let uuid = uuidv4()
+		addCategory(category, ['transparent', 'transparent'], uuid)
+		addQuizletCards(quizletContents, uuid)
 		importFromQuizlet(false)
 	}
 
@@ -192,14 +200,25 @@ export function Metadata(props) {
 							<li>
 								Click <span className="badge bg-primary">Copy Text</span>
 							</li>
-							<li>Paste it below:</li>
+							<li>Select a category and paste it below</li>
 						</ol>
-						<input
-							type="text"
-							value={quizletContents}
-							onChange={(e) => setQuizletContens(e.target.value)}
-							className="form-control"
-						/>
+						<FloatingLabel controlId="floatingCategory" label="Category">
+							<Form.Control
+								type="text"
+								value={category}
+								onChange={(e) => {
+									setCategory(e.target.value)
+								}}
+							/>
+						</FloatingLabel>
+						<FloatingLabel controlId="floatingContents" label="Content">
+							<input
+								type="text"
+								value={quizletContents}
+								onChange={(e) => setQuizletContens(e.target.value)}
+								className="form-control mt-3"
+							/>
+						</FloatingLabel>
 					</Modal.Body>
 					<Modal.Footer>
 						<Button variant="primary" onClick={importQuizlet}>

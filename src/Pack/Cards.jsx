@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react'
-import { useState, useContext } from 'react'
+import React, { useEffect, memo } from 'react'
+import { useState } from 'react'
 import StaticPair from './Pair/StaticPair'
 import EditingPair from './Pair/EditingPair'
-import { CategorySelect } from './CategorySelect'
-import { PictureSelect } from './PictureSelect'
-import { CardsContext } from '@/lib/context.js'
+import CategorySelect from './CategorySelect'
+import PictureSelect from './PictureSelect'
 
 import Button from 'react-bootstrap/Button'
 
@@ -13,12 +12,25 @@ import { shallow } from 'zustand/shallow'
 
 import { motion } from 'framer-motion'
 
-function Cards(props) {
-	const cards = useContext(CardsContext)
-	const [pack, deleteCard, canEdit] = usePack(
+/**
+ * Rendered for each element in `pack.content`
+ *
+ * Creates either a `StaticPair` or `EditingPair` depending on the `edit` prop
+ *
+ * If `edit` is false, it includes an edit button that locally overrides the `edit` prop
+ *
+ * @component
+ * @param {number} index - The index of the card in the pack
+ * @param {boolean} edit - Whether or not the card is being edited
+ */
+function Cards({ index, edit }) {
+	const [cards, previousCard, categories, packLength, deleteCard, canEdit] = usePack(
 		(state) => [
 			// Data
-			state.pack,
+			state.pack.content[index],
+			state.pack.content[index - 1],
+			state.pack.categories,
+			state.pack.content.length,
 			state.deleteCard,
 			// Editing
 			state.canEdit,
@@ -26,38 +38,39 @@ function Cards(props) {
 		shallow
 	)
 
-	const [editing, setEditing] = useState(props.editing)
+	const [editing, setEditing] = useState(edit)
 
 	useEffect(() => {
-		setEditing(props.editing)
-	}, [props.editing])
-
-	if (pack?.content == undefined) {
-		return <div>Loading...</div>
-	}
+		setEditing(edit)
+	}, [edit])
 
 	function deletePair() {
 		// let p = [...pack.content]
-		// p.splice(cards.id, 1)
-		// console.log(cards.id, p)
-		deleteCard(cards.id)
+		// p.splice(index, 1)
+		// console.log(index, p)
+		deleteCard(index)
 		// console.log(pack.content)
+	}
+
+	if (cards === undefined) {
+		// If the card is undefined, this is probably the first card being deleted
+		return <></>
 	}
 
 	var extra = ''
 	var cardCSS = {}
-	if (cards.id !== 0 && cards.picture !== undefined) {
-		if (pack.content[cards.id - 1]?.picture !== cards?.picture && cards.picture !== undefined) {
+	if (index !== 0 && cards?.picture !== undefined) {
+		if (previousCard?.picture !== cards?.picture && cards.picture !== undefined) {
 			extra = <img className="w-100" src={cards.picture}></img>
 			cardCSS = {
 				boxShadow: '-2px 0 0 #D7DDFC',
 			}
-		} else if (pack.content[cards.id - 1]?.picture === cards?.picture) {
+		} else if (previousCard?.picture === cards?.picture) {
 			cardCSS = {
 				boxShadow: '-2px 0 0 #DEE2E6',
 			}
 		}
-	} else if (cards.picture !== undefined) {
+	} else if (cards?.picture !== undefined) {
 		// max-width: 100px;
 		// width: 100%;
 		// height: auto;
@@ -67,15 +80,14 @@ function Cards(props) {
 		}
 	}
 
-	console.log(pack.categories[cards.category])
 	return (
 		<motion.div
-			key={cards.id}
+			key={index}
 			className="p-3"
 			style={{
 				backgroundImage: `linear-gradient(to right, ${
-					pack.categories[cards.category]['colors'][0]
-				},${pack.categories[cards.category]['colors'][1]})`,
+					categories[cards.category]['colors'][0]
+				},${categories[cards.category]['colors'][1]})`,
 				...cardCSS,
 			}}
 			initial={{ x: -100 }}
@@ -85,36 +97,24 @@ function Cards(props) {
 			<>{extra}</>
 			<div className="d-flex justify-content-between align-items-center mt-5">
 				{canEdit ? (
-					<CategorySelect />
+					<CategorySelect index={index} />
 				) : (
-					<div className="badge bg-primary ms-2">{cards.category}</div>
+					<div className="badge bg-primary ms-2">
+						{categories[cards.category]['name']}
+					</div>
 				)}
 				<div className="d-flex align-items-center">
-					{/* <Form.Select
-						size="sm"
-						style={{ display: 'inline !important' }}
-						className="me-3"
-						value={pictureURL}
-						onChange={(e) => {
-							// Set the actual card's picture
-							setCardPicture(cards.id, e.target.value)
-							// Set the state
-							setPictureURL(e.target.value)
-						}}
-					>
-						<option value="">No picture</option>
-					</Form.Select> */}
-					<PictureSelect />
-					<span className="text-muted ms-3 me-4">{cards.id + 1}</span>
+					<PictureSelect index={index} />
+					<span className="text-muted ms-3 me-4">{index + 1}</span>
 				</div>
 			</div>
 
-			{canEdit && editing ? <EditingPair setEditing={setEditing} /> : <StaticPair />}
+			{canEdit && editing ? <EditingPair index={index} /> : <StaticPair index={index} />}
 
 			{/* Edit/Remove buttons underneath the cards */}
 			{canEdit && (
 				<div className="d-flex justify-content-between">
-					{!props.editing && (
+					{!edit && (
 						<Button
 							className="text-muted text-decoration-none"
 							variant="link"
@@ -125,7 +125,7 @@ function Cards(props) {
 						</Button>
 					)}
 					{/* eslint-disable-next-line prettier/prettier */}
-					{pack.content.length > 1 && (
+					{packLength > 1 && (
 						<Button
 							className="text-muted text-decoration-none"
 							variant="link"
@@ -142,4 +142,5 @@ function Cards(props) {
 	)
 }
 
-export default Cards
+// Memo is necessary to prevent the re-rendering of all cards when one is edited
+export default memo(Cards)

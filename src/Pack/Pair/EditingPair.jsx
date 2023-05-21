@@ -1,6 +1,5 @@
 import React from 'react'
 import { useState } from 'react'
-import { CardsContext } from '@/lib/context'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
@@ -9,12 +8,20 @@ import Form from 'react-bootstrap/Form'
 
 import { v4 as uuidv4 } from 'uuid'
 
-function EditingPair() {
-	const cards = React.useContext(CardsContext)
-	const [pack, setCard, addCards] = usePack(
+/**
+ * Rendered by `Cards` when editing
+ *
+ * Directly edits the `Pack` store
+ *
+ * @component
+ * @param {number} index - The index of the card in the pack
+ */
+function EditingPair({ index }) {
+	const [cards, packLength, setCard, addCards] = usePack(
 		(state) => [
 			// Data
-			state.pack,
+			state.pack.content[index],
+			state.pack.content.length,
 			state.setCard,
 			state.addCards,
 		],
@@ -26,12 +33,12 @@ function EditingPair() {
 	// async function exitEditingMode() {
 	// 	// When the user clicks "Done" and the component will be switched to the static version,
 	// 	// we commit our changes
-	// 	console.log(cards.id, { term: term, definition: definition })
-	// 	setCard(cards.id, { term: term, definition: definition })
+	// 	console.log(index, { term: term, definition: definition })
+	// 	setCard(index, { term: term, definition: definition })
 
 	// 	// Self-destruct
 	// 	// No other code below here
-	// 	props.setEditing(false)
+	// 	setEditing(false)
 	// }
 
 	return (
@@ -70,7 +77,7 @@ function EditingPair() {
 								type="text"
 								value={term}
 								onChange={(e) => {
-									setCard(cards.id, { term: e.target.value })
+									setCard(index, { term: e.target.value })
 									setTerm(e.target.value)
 								}}
 							/>
@@ -83,14 +90,14 @@ function EditingPair() {
 								type="text"
 								value={definition}
 								onChange={(e) => {
-									setCard(cards.id, { definition: e.target.value })
+									setCard(index, { definition: e.target.value })
 									setDefinition(e.target.value)
 								}}
 								onKeyDown={(e) => {
 									if (
 										e.keyCode === 9 &&
 										// Make sure this is the last card
-										cards.id === pack.content.length - 1 &&
+										index === packLength - 1 &&
 										// No modifier keys
 										!e.shiftKey &&
 										!e.ctrlKey &&
@@ -108,20 +115,20 @@ function EditingPair() {
 										})
 									}
 								}}
-								onKeyUp={(e) => {
-									if (
-										e.keyCode === 9 &&
-										// Make sure this is the last card
-										cards.id === pack.content.length - 1 &&
-										// No modifier keys
-										!e.shiftKey &&
-										!e.ctrlKey &&
-										!e.altKey &&
-										!e.metaKey
-									) {
-										console.log('yes')
-									}
-								}}
+								// onKeyUp={(e) => {
+								// 	if (
+								// 		e.keyCode === 9 &&
+								// 		// Make sure this is the last card
+								// 		index === packLength - 1 &&
+								// 		// No modifier keys
+								// 		!e.shiftKey &&
+								// 		!e.ctrlKey &&
+								// 		!e.altKey &&
+								// 		!e.metaKey
+								// 	) {
+								// 		console.log('yes')
+								// 	}
+								// }}
 							/>
 						</div>
 					</div>

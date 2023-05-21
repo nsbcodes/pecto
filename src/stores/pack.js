@@ -10,7 +10,10 @@ import { doc, getDoc } from 'firebase/firestore'
 
 import { db as localDb } from '@/lib/localstore'
 
+// import { mountStoreDevtool } from 'simple-zustand-devtools'
+
 export const usePack = create((set, get) => ({
+	defaultPack: undefined,
 	pack: undefined,
 	error: false,
 	loading: true,
@@ -21,7 +24,7 @@ export const usePack = create((set, get) => ({
 			if (ref === undefined) {
 				set({ pack: undefined, error: true, loading: false })
 			} else {
-				set({ pack: ref, error: false, loading: false })
+				set({ defaultPack: ref, pack: ref, error: false, loading: false })
 			}
 		} else {
 			var ref
@@ -34,10 +37,22 @@ export const usePack = create((set, get) => ({
 			if (!ref.exists()) {
 				set({ pack: undefined, error: true, loading: false })
 			} else {
-				set({ pack: ref.data(), error: false, loading: false })
+				set({ defaultPack: ref.data(), pack: ref.data(), error: false, loading: false })
 			}
 		}
 		set({ loading: false })
+	},
+	filterPackCategory: (category) => {
+		if (category == 0) {
+			set({ pack: get().defaultPack })
+		} else {
+			set({
+				pack: {
+					...get().defaultPack,
+					content: get().defaultPack.content.filter((c) => c.category == category),
+				},
+			})
+		}
 	},
 	addCards: (cards) =>
 		set(
@@ -58,7 +73,7 @@ export const usePack = create((set, get) => ({
 			})
 		),
 	// Utility
-	addQuizletCards: (quizletContents) =>
+	addQuizletCards: (quizletContents, category = 'default') =>
 		set(
 			produce((state) => {
 				let cards = []
@@ -70,7 +85,7 @@ export const usePack = create((set, get) => ({
 					cards.push({
 						term: a[0],
 						definition: a[1],
-						category: 'default',
+						category: category,
 						uuid: uuidv4(),
 					})
 				})
@@ -78,7 +93,8 @@ export const usePack = create((set, get) => ({
 				// Remove the last (empty) element
 				cards.pop()
 
-				state.pack.content = cards
+				// Add the cards to the pack
+				state.pack.content = state.pack.content.concat(cards)
 			})
 		),
 	getSimilarCards: (card) => {
@@ -86,6 +102,7 @@ export const usePack = create((set, get) => ({
 
 		// Get the index of the card we want to use as a base
 		let i = p.findIndex((c) => c === card)
+		console.log(i)
 
 		// Sort using the Levenshtein algorithm
 		p = levenSort(p, i)
@@ -118,10 +135,10 @@ export const usePack = create((set, get) => ({
 			})
 		),
 	// Categories
-	addCategory: (newCategory, newColor) =>
+	addCategory: (newCategory, newColor, uuid = uuidv4()) =>
 		set(
 			produce((state) => {
-				state.pack.categories[uuidv4()] = { name: newCategory, colors: newColor }
+				state.pack.categories[uuid] = { name: newCategory, colors: newColor }
 			})
 		),
 	addPicture: (picture) =>
@@ -170,3 +187,7 @@ export const usePack = create((set, get) => ({
 	// Editor
 	letMeEdit: (val) => set({ canEdit: val }),
 }))
+
+// if (import.meta.env.DEV) {
+// 	mountStoreDevtool('Pack', usePack)
+// }

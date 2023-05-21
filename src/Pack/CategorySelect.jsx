@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 
 import Dropdown from 'react-bootstrap/Dropdown'
 import Modal from 'react-bootstrap/Modal'
@@ -9,21 +9,28 @@ import { hslToHex } from '@/lib/utilities'
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
-import { CardsContext } from '@/lib/context.js'
-
-export function CategorySelect() {
-	const cards = useContext(CardsContext)
-	const [pack, addCategory, editCategory, setCardCategory, removeCardCategory] = usePack(
-		(state) => [
-			// Data
-			state.pack,
-			state.addCategory,
-			state.editCategory,
-			state.setCardCategory,
-			state.removeCardCategory,
-		],
-		shallow
-	)
+/**
+ * A dropdown menu that allows the user to select a category for a card and contains a modal to add or edit categories
+ *
+ * Directly modifies the `Pack` state
+ *
+ * @component
+ * @param {number} index - The index of the card in the pack
+ */
+function CategorySelect({ index }) {
+	const [cards, categories, addCategory, editCategory, setCardCategory, removeCardCategory] =
+		usePack(
+			(state) => [
+				// Data
+				state.pack.content[index].category,
+				state.pack.categories,
+				state.addCategory,
+				state.editCategory,
+				state.setCardCategory,
+				state.removeCardCategory,
+			],
+			shallow
+		)
 
 	// New Category modal
 	const [show, setShow] = useState(false)
@@ -46,7 +53,7 @@ export function CategorySelect() {
 	}
 
 	function changeCardCategory(category) {
-		setCardCategory(cards.id, category)
+		setCardCategory(index, category)
 	}
 
 	function generateNewColor(currentHexCode) {
@@ -76,11 +83,11 @@ export function CategorySelect() {
 					variant="outline-light rounded-3 text-muted"
 					tabIndex="-1"
 				>
-					{pack.categories[cards.category].name}
+					{categories[cards].name}
 				</Dropdown.Toggle>
 
 				<Dropdown.Menu>
-					{Object.entries(pack.categories).map(([id, category]) => (
+					{Object.entries(categories).map(([id, category]) => (
 						<div key={id}>
 							<Dropdown.Item
 								onClick={() => changeCardCategory(id)}
@@ -170,3 +177,5 @@ export function CategorySelect() {
 		</>
 	)
 }
+
+export default CategorySelect

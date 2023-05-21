@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Cards from './Cards'
-import { CardsContext } from '@/lib/context'
 import { Metadata } from './Metadata'
 import { useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -19,7 +18,6 @@ import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
 import { v4 as uuidv4 } from 'uuid'
-import { AnimatePresence, motion } from 'framer-motion'
 
 function Pack() {
 	const { displayName, packId } = useParams()
@@ -27,48 +25,55 @@ function Pack() {
 	//const { pack: ogPack, mutate, isLoading, error } = usePack(packId)
 	//const { pack, setPack } = useState(ogPack)
 	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
-	const [pack, error, loading, loadPack, addCards, canEdit, letMeEdit] = usePack(
-		(state) => [
-			// Data
-			state.pack,
-			state.error,
-			state.loading,
-			state.loadPack,
-			state.addCards,
-			// Editing
-			state.canEdit,
-			state.letMeEdit,
-		],
-		shallow
-	)
+	const [pack, error, loading, filterPackCategory, loadPack, addCards, canEdit, letMeEdit] =
+		usePack(
+			(state) => [
+				// Data
+				state.pack,
+				state.error,
+				state.loading,
+				state.filterPackCategory,
+				state.loadPack,
+				state.addCards,
+				// Editing
+				state.canEdit,
+				state.letMeEdit,
+			],
+			shallow
+		)
 
 	// For a saving progress spinner
 	const [saving, startSaving] = useState(false)
 
 	// Category filter
 	const [categoryFilter, setCategoryFilter] = useState(0)
-	const [filteredPack, setFilteredPack] = useState(pack)
+	// const [filteredPack, setFilteredPack] = useState(pack)
 
 	useEffect(() => {
 		loadPack(displayName, packId)
 	}, [])
 
 	useEffect(() => {
-		if ((pack !== undefined && user?.uid == pack.uid) || pack?.uid == 'me') {
+		if (
+			((pack !== undefined && user?.uid == pack.uid) || pack?.uid == 'me') &&
+			categoryFilter == 0
+		) {
 			letMeEdit(true)
+		} else {
+			letMeEdit(false)
 		}
 	}, [user, pack])
 
-	useEffect(() => {
-		if (categoryFilter == 0) {
-			setFilteredPack(pack)
-		} else {
-			setFilteredPack({
-				...pack,
-				content: pack.content.filter((cards) => cards.category == categoryFilter),
-			})
-		}
-	}, [categoryFilter, pack])
+	// useEffect(() => {
+	// 	if (categoryFilter == 0) {
+	// 		setFilteredPack(pack)
+	// 	} else {
+	// 		setFilteredPack({
+	// 			...pack,
+	// 			content: pack.content.filter((cards) => cards.category == categoryFilter),
+	// 		})
+	// 	}
+	// }, [categoryFilter, pack])
 
 	// The === is very important, since it must be a boolean, not an error object
 	if (error === true) {
@@ -92,7 +97,7 @@ function Pack() {
 
 	// Loading logic
 	// Also wait for the filteredPack to load
-	if (loading || pack?.uuid != packId || filteredPack?.content === undefined) {
+	if (loading || pack?.uuid != packId) {
 		return (
 			<div className="text-center">
 				<h1>📎</h1>
@@ -127,12 +132,15 @@ function Pack() {
 		<div id="packRoot" className="mx-auto border border-2 p-4 rounded-3">
 			<Metadata />
 
-			<FlashcardView />
+			<FlashcardView category={categoryFilter} />
 
 			<Form.Select
-				aria-label="Default select example"
 				className="w-25 mt-3"
 				onChange={(e) => {
+					filterPackCategory(e.target.value)
+					// TODO: very very very complicated
+					// allow editing in filtered packs
+					// will require us to add uuids for each card
 					setCategoryFilter(e.target.value)
 				}}
 				value={categoryFilter}
@@ -145,25 +153,13 @@ function Pack() {
 				))}
 			</Form.Select>
 
-			<motion.div id="packContentContainer" className="mt-3 border border-2 rounded-3">
-				<AnimatePresence>
-					{filteredPack.content.map((cards, index) => (
-						<CardsContext.Provider
-							key={cards.uuid}
-							value={{
-								term: cards.term,
-								definition: cards.definition,
-								category: cards.category,
-								picture: cards.picture,
-								uuid: cards.uuid,
-								id: index,
-							}}
-						>
-							<Cards />
-						</CardsContext.Provider>
-					))}
-				</AnimatePresence>
-			</motion.div>
+			<div id="packContentContainer" className="mt-3 border border-2 rounded-3">
+				{/* <AnimatePresence> */}
+				{pack.content.map((cards, index) => (
+					<Cards index={index} edit={false} key={cards + index} />
+				))}
+				{/* </AnimatePresence> */}
+			</div>
 
 			{canEdit && (
 				<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">

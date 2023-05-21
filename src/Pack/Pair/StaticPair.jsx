@@ -1,10 +1,19 @@
 import React from 'react'
-import { CardsContext } from '@/lib/context'
+import { usePack } from '@/stores/pack'
+import { shallow } from 'zustand/shallow'
 
 // import './Pair.scss'
 
-function StaticPair() {
-	const cards = React.useContext(CardsContext)
+/**
+ * Rendered by `Cards` if not editing
+ *
+ * Could easily be a static component, but accesses the `Pack` store to get the card data for uniformity
+ *
+ * @component
+ * @param {number} index - The index of the card in the pack
+ */
+function StaticPair({ index }) {
+	const [cards] = usePack((state) => [state.pack.content[index]], shallow)
 
 	// Muy padding
 	return (
@@ -13,7 +22,7 @@ function StaticPair() {
 				<div className="col p-2">
 					<div className="p-2 py-4 shadow-sm bg-light rounded-3">
 						{cards.term == '' ? (
-							<span className="text-muted">Term {cards.id + 1}</span>
+							<span className="text-muted">Term {index + 1}</span>
 						) : (
 							cards.term
 						)}
@@ -22,7 +31,7 @@ function StaticPair() {
 				<div className="col p-2">
 					<div className="p-2 py-4 shadow-sm bg-light rounded-3">
 						{cards.definition == '' ? (
-							<span className="text-muted">Definition {cards.id + 1}</span>
+							<span className="text-muted">Definition {index + 1}</span>
 						) : (
 							cards.definition
 						)}

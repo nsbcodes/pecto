@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
-import { motion } from 'framer-motion'
-
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
@@ -12,7 +10,7 @@ import './FlashcardView.scss'
 
 import MultipleChoice from './MultipleChoice'
 
-function FlashcardView() {
+function FlashcardView({ category }) {
 	const [pack] = usePack((state) => [state.pack], shallow)
 	const [currentCard, setCurrentCard] = useState(0)
 
@@ -30,6 +28,16 @@ function FlashcardView() {
 			setClicked(false)
 		}
 	}, [currentCard])
+
+	if (pack.content.length == 0) {
+		return (
+			<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">
+				<div className="container">
+					<h3 className="text-center text-muted">No cards are set to {category}</h3>
+				</div>
+			</div>
+		)
+	}
 
 	return (
 		<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">

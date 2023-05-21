@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 
 import Dropdown from 'react-bootstrap/Dropdown'
 import Modal from 'react-bootstrap/Modal'
@@ -7,15 +7,22 @@ import Button from 'react-bootstrap/Button'
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
-import { CardsContext } from '@/lib/context.js'
 import { truncateString } from '@/lib/utilities'
 
-export function PictureSelect() {
-	const cards = useContext(CardsContext)
-	const [pack, addPicture, setCardPicture, removeCardPicture] = usePack(
+/**
+ * A dropdown menu that allows the user to select a picture for a card and contains a modal to add pictures
+ *
+ * Directly modifies the `Pack` state
+ *
+ * @component
+ * @param {number} index - The index of the card in the pack
+ */
+function PictureSelect({ index }) {
+	const [cards, pictures, addPicture, setCardPicture, removeCardPicture] = usePack(
 		(state) => [
 			// Data
-			state.pack,
+			state.pack.content[index]?.picture,
+			state.pack.pictures,
 			state.addPicture,
 			state.setCardPicture,
 			state.removeCardPicture,
@@ -43,12 +50,12 @@ export function PictureSelect() {
 				</Dropdown.Toggle>
 
 				<Dropdown.Menu>
-					<Dropdown.Item onClick={() => removeCardPicture(cards.id)}>
+					<Dropdown.Item onClick={() => removeCardPicture(index)}>
 						Remove Picture
 					</Dropdown.Item>
-					{pack.pictures.map((picture) => (
+					{pictures.map((picture) => (
 						<div key={picture}>
-							<Dropdown.Item onClick={() => setCardPicture(cards.id, picture)}>
+							<Dropdown.Item onClick={() => setCardPicture(index, picture)}>
 								{picture}
 							</Dropdown.Item>
 						</div>
@@ -79,7 +86,7 @@ export function PictureSelect() {
 						value={newPicture}
 						onChange={(e) => {
 							if (
-								pack.pictures.includes(e.target.value) ||
+								pictures.includes(e.target.value) ||
 								!e.target.value.startsWith('http') ||
 								!e.target.value.includes('.') ||
 								!e.target.value.includes('://') ||
@@ -110,3 +117,5 @@ export function PictureSelect() {
 		</>
 	)
 }
+
+export default PictureSelect

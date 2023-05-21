@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Cards from './Cards'
-import { CardsContext } from '@/lib/context'
 import { Metadata } from './Metadata'
 import { useParams } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -16,7 +15,6 @@ import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
 import { v4 as uuidv4 } from 'uuid'
-import { AnimatePresence, motion } from 'framer-motion'
 
 function EditPack() {
 	const { displayName, packId } = useParams()
@@ -25,7 +23,7 @@ function EditPack() {
 	const [pack, error, loading, loadPack, addCards, letMeEdit] = usePack(
 		(state) => [
 			// Data
-			state.pack,
+			state.defaultPack,
 			state.error,
 			state.loading,
 			state.loadPack,
@@ -42,7 +40,11 @@ function EditPack() {
 	// const [editingAll, setEditingAll] = useState(false)
 
 	useEffect(() => {
-		if (pack === undefined) loadPack(displayName, packId)
+		if (pack === undefined) {
+			;(async () => {
+				await loadPack(displayName, packId)
+			})()
+		}
 	}, [])
 
 	useEffect(() => {
@@ -114,25 +116,13 @@ function EditPack() {
 		<div id="packRoot" className="mx-auto mb-5 border border-2 p-4 rounded-3">
 			<Metadata editing />
 
-			<motion.div id="packContentContainer" className="mt-3 border border-2 rounded-3">
-				<AnimatePresence>
-					{pack.content.map((cards, index) => (
-						<CardsContext.Provider
-							key={cards.uuid}
-							value={{
-								term: cards.term,
-								definition: cards.definition,
-								category: cards.category,
-								picture: cards.picture,
-								uuid: cards.uuid,
-								id: index,
-							}}
-						>
-							<Cards editing />
-						</CardsContext.Provider>
-					))}
-				</AnimatePresence>
-			</motion.div>
+			<div id="packContentContainer" className="mt-3 border border-2 rounded-3">
+				{/* <AnimatePresence> */}
+				{pack.content.map((cards, index) => (
+					<Cards index={index} edit={true} key={cards + index} />
+				))}
+				{/* </AnimatePresence> */}
+			</div>
 
 			<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
 				<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
