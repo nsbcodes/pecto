@@ -13,21 +13,25 @@ import Spinner from 'react-bootstrap/Spinner'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import InputGroup from 'react-bootstrap/InputGroup'
-import Dropdown from 'react-bootstrap/Dropdown'
 
 function Blitz() {
 	const { displayName, packId } = useParams()
 
 	// No need to be specfic with selectors here,
 	// since we aren't editing the pack
-	const [pack, error, loading, loadPack] = usePack(
-		(state) => [state.pack, state.error, state.loading, state.loadPack],
+	const [pack, error, loading, loadPack, filterPackCategory] = usePack(
+		(state) => [
+			state.pack,
+			state.error,
+			state.loading,
+			state.loadPack,
+			state.filterPackCategory,
+		],
 		shallow
 	)
 
 	// Category filter
 	const [categoryFilter, setCategoryFilter] = useState(0)
-	const [filteredPack, setFilteredPack] = useState(pack)
 
 	// Guided/Unguided mode
 	const [guided, setGuided] = useState(true)
@@ -44,47 +48,51 @@ function Blitz() {
 	}, [])
 
 	useEffect(() => {
-		if (categoryFilter == 0) {
-			setFilteredPack(pack)
+		if (pack?.content === undefined) return
+		if (
+			['?', 'how', 'what', 'where', 'why'].some((v) =>
+				pack?.content[index].term.toLowerCase().includes(v)
+			)
+		) {
+			// Go to the next term (if possible)
+			if (index + 1 < pack.content.length) {
+				setIndex(index + 1)
+			} else {
+				setFeedbackVariant('danger')
+				setFeedback(<div>You have reached the end of the pack</div>)
+			}
 		} else {
-			setFilteredPack({
-				...pack,
-				content: pack.content.filter((cards) => cards.category == categoryFilter),
-			})
-		}
-	}, [categoryFilter, pack])
+			var resetLastTen = 0
 
-	useEffect(() => {
-		var resetLastTen = 0
+			if (index % 10 == 0 && index != 0) {
+				Object.values(responses).forEach((value) => {
+					if (!value) {
+						console.log('false')
+						resetLastTen += 1
+					}
+				})
 
-		if (index % 10 == 0 && index != 0) {
-			Object.values(responses).forEach((value) => {
-				if (!value) {
-					console.log('false')
-					resetLastTen += 1
+				if (resetLastTen > 0) {
+					;(async () => {
+						setFeedbackVariant('warning')
+						setFeedback(
+							<div>
+								You got {resetLastTen} of the last 10 questions wrong!
+								<br />
+								<br />
+								Rewinding to Term {index - 10}
+							</div>
+						)
+						setTimeout(() => {
+							setIndex(index - 10)
+							setFeedbackVariant('none')
+							setFeedback('')
+						}, '5000')
+					})()
 				}
-			})
-
-			if (resetLastTen > 0) {
-				;(async () => {
-					setFeedbackVariant('warning')
-					setFeedback(
-						<div>
-							You got {resetLastTen} of the last 10 questions wrong!
-							<br />
-							<br />
-							Rewinding to Term {index - 10}
-						</div>
-					)
-					setTimeout(() => {
-						setIndex(index - 10)
-						setFeedbackVariant('none')
-						setFeedback('')
-					}, '5000')
-				})()
 			}
 		}
-	}, [index])
+	}, [index, pack])
 
 	// The === is very important, since it must be a boolean, not an error object
 	if (error === true) {
@@ -107,8 +115,8 @@ function Blitz() {
 	}
 
 	// Loading logic
-	// Also wait for the filteredPack to load
-	if (loading || pack?.uuid != packId || filteredPack?.content === undefined) {
+	// Also wait for the pack to load
+	if (loading) {
 		return (
 			<div className="text-center">
 				<h1>📎</h1>
@@ -117,18 +125,61 @@ function Blitz() {
 		)
 	}
 
-	if (
-		['?', 'how', 'what', 'where', 'why'].some((v) =>
-			filteredPack.content[index].term.toLowerCase().includes(v)
+	// If the filtered content is empty
+	if (pack.content.length === 0) {
+		return (
+			<div className="container">
+				<Form.Select
+					className="w-25"
+					onChange={(e) => {
+						filterPackCategory(categoryFilter)
+						setCategoryFilter(e.target.value)
+					}}
+					value={categoryFilter}
+				>
+					<option value="0">All</option>
+					{Object.entries(pack.categories).map(([uuid, content]) => (
+						<option
+							key={uuid}
+							value={uuid}
+							style={{ backgroundColor: content.colors[1] }}
+						>
+							{content.name}
+						</option>
+					))}
+				</Form.Select>
+
+				<Form.Check
+					type="switch"
+					label="Guided Mode"
+					className="mt-2"
+					checked={guided}
+					onChange={(e) => {
+						if (
+							e.target.checked == false &&
+							confirm(
+								'Disabling Guided Mode will erase your progress.\n\nAre you sure you want to continue?'
+							)
+						) {
+							setResponses({})
+							setGuided(false)
+						} else {
+							setResponses({})
+							setGuided(true)
+							setIndex(0)
+						}
+					}}
+				/>
+			</div>
 		)
-	)
-		setIndex(index + 1)
+	}
 
 	return (
 		<div className="container">
 			<Form.Select
 				className="w-25"
 				onChange={(e) => {
+					filterPackCategory(categoryFilter)
 					setCategoryFilter(e.target.value)
 				}}
 				value={categoryFilter}
@@ -179,7 +230,7 @@ function Blitz() {
 					<Button
 						variant="light"
 						onClick={() => {
-							if (index + 1 < filteredPack.content.length) setIndex(index + 1)
+							if (index + 1 < pack.content.length) setIndex(index + 1)
 						}}
 					>
 						➡️
@@ -193,7 +244,7 @@ function Blitz() {
 
 			<div className="d-flex justify-content-center mt-5">
 				<div>
-					<h3 className="w-75 mt-5 mx-auto">{filteredPack.content[index].definition}</h3>
+					<h3 className="w-75 mt-5 mx-auto">{pack.content[index].definition}</h3>
 
 					{feedbackVariant != 'none' && (
 						<Alert className="w-50 mx-auto" variant={feedbackVariant}>
@@ -201,9 +252,8 @@ function Blitz() {
 						</Alert>
 					)}
 
-					<Form.Control
-						className="w-50 mx-auto mt-3"
-						size="lg"
+					<input
+						className="w-50 mx-auto mt-3 form-control form-control-lg"
 						type="text"
 						placeholder="Answer"
 						value={answer}
@@ -211,10 +261,11 @@ function Blitz() {
 						onChange={(e) => {
 							setAnswer(toTitleCase(e.target.value))
 						}}
-						autoFocus
+						// autoFocus only focuses on the initial render
+						ref={(input) => input && input.focus()}
 						onKeyDown={(e) => {
 							if (e.key === 'Enter') {
-								let correctAnswer = toTitleCase(filteredPack.content[index].term)
+								let correctAnswer = toTitleCase(pack.content[index].term)
 								let correctness = leven(answer, correctAnswer)
 								if (correctness == 0) {
 									setResponses({ ...responses, [index]: true })
@@ -251,7 +302,7 @@ function Blitz() {
 									setFeedbackVariant('none')
 									setFeedback('')
 									setAnswer('')
-									setIndex(index + 1)
+									if (index + 1 < pack.content.length) setIndex(index + 1)
 								}, '2000')
 							}
 						}}

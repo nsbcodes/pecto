@@ -11,23 +11,41 @@ import './FlashcardView.scss'
 import MultipleChoice from './MultipleChoice'
 
 function FlashcardView({ category }) {
-	const [pack] = usePack((state) => [state.pack], shallow)
+	const [pack, editing] = usePack((state) => [state.pack, state.editing], shallow)
 	const [currentCard, setCurrentCard] = useState(0)
 
 	// Term/Definition switch click
-	const [clicked, setClicked] = useState(false)
+	const [showDefinition, setShowDefinition] = useState(false)
 
 	// Options
 	const [mcqMode, setMcqMode] = useState(false)
 
-	useEffect(() => {
-		// Always go to the term on the next card
-		if (mcqMode) {
-			setClicked(true)
-		} else {
-			setClicked(false)
+	// Arrow Keys Navigation
+	function handleKey(e) {
+		console.log(e.key)
+		if (e.key === 'ArrowRight' && currentCard + 1 < pack.content.length) {
+			setShowDefinition(false)
+			setCurrentCard(currentCard + 1)
+		} else if (e.key === 'ArrowLeft' && currentCard - 1 >= 0) {
+			setShowDefinition(false)
+			setCurrentCard(currentCard - 1)
+		} else if (e.key === ' ') {
+			e.preventDefault()
+			setShowDefinition(!showDefinition)
 		}
-	}, [currentCard])
+	}
+
+	console.log(currentCard)
+
+	// All state referenced must be in the dependency array
+	useEffect(() => {
+		if (!mcqMode && !editing) {
+			document.addEventListener('keydown', handleKey)
+		}
+		return () => {
+			document.removeEventListener('keydown', handleKey)
+		}
+	}, [mcqMode, editing, currentCard, showDefinition])
 
 	if (pack.content.length == 0) {
 		return (
@@ -50,35 +68,52 @@ function FlashcardView({ category }) {
 					checked={mcqMode}
 					onChange={(e) => {
 						if (pack.content.length >= 4) {
+							setShowDefinition(false)
 							setMcqMode(e.target.checked)
 						} else {
 							alert('Add at least 4 cards to enable Multiple Choice mode')
 						}
-						if (e.target.checked == true) setClicked(true)
+						if (e.target.checked == true) setShowDefinition(true)
 					}}
 				/>
 
 				{/* Flashcard */}
 				<div
-					key={pack.content[currentCard][clicked ? 'definition' : 'term']}
-					className="shadow rounded-3 bg-secondary mx-auto text-center flashCard"
+					key={pack.content[currentCard][showDefinition ? 'definition' : 'term']}
+					className="shadow rounded-3 bg-secondary mx-auto text-center d-flex justify-content-center px-5 align-items-center flashCard"
 					onClick={() => {
-						if (!mcqMode) setClicked(!clicked)
+						if (!mcqMode) setShowDefinition(!showDefinition)
 					}}
 				>
-					<p className="fcText">
-						{clicked ? (
-							<>{pack.content[currentCard]['definition']}</>
-						) : (
-							<>
+					{showDefinition ? (
+						<p
+							className={
+								pack.content[currentCard]['definition'].length > 150 ||
+								pack.content[currentCard]['definition'].split('\n').length > 4
+									? 'fcTextSmall'
+									: 'fcTextBig'
+							}
+						>
+							{pack.content[currentCard]['definition']}
+						</p>
+					) : (
+						<p
+							className={
+								pack.content[currentCard]['term'].length > 150 ||
+								pack.content[currentCard]['term'].split('\n').length > 4
+									? 'fcTextSmall'
+									: 'fcTextBig'
+							}
+						>
+							{pack.content[currentCard]?.picture !== undefined && (
 								<img
 									className="w-100 mb-5 rounded-3 shadow"
 									src={pack.content[currentCard]['picture']}
 								></img>
-								{pack.content[currentCard]['term']}
-							</>
-						)}
-					</p>
+							)}
+							{pack.content[currentCard]['term']}
+						</p>
+					)}
 				</div>
 
 				{/* Multiple Choice */}
@@ -93,7 +128,13 @@ function FlashcardView({ category }) {
 							Previous
 						</Button>
 					) : (
-						<Button variant="light" onClick={() => setCurrentCard(currentCard - 1)}>
+						<Button
+							variant="light"
+							onClick={() => {
+								setShowDefinition(false)
+								setCurrentCard(currentCard - 1)
+							}}
+						>
 							Previous
 						</Button>
 					)}
@@ -103,12 +144,18 @@ function FlashcardView({ category }) {
 						{currentCard + 1}/{pack.content.length}
 					</span>
 
-					{currentCard + 2 > pack.content.length ? (
+					{currentCard + 1 >= pack.content.length ? (
 						<Button variant="light" disabled>
 							Next
 						</Button>
 					) : (
-						<Button variant="light" onClick={() => setCurrentCard(currentCard + 1)}>
+						<Button
+							variant="light"
+							onClick={() => {
+								setShowDefinition(false)
+								setCurrentCard(currentCard + 1)
+							}}
+						>
 							Next
 						</Button>
 					)}

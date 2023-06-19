@@ -5,40 +5,48 @@
 @import "../node_modules/bootstrap/scss/root";
 
 .flashCard {
-	width: 100%;
-	padding: 30px 10px;
+	width: 75%;
+	height: 40vh;
 }
 
 // Flashcard text
-.fcText {
+.fcTextBig {
 	font-size: 2vw;
 }
 
-@include media-breakpoint-up(sm) { 
-	.flashCard {
-		width: 95%;
-		padding: 40px 20px;
-	}
+.fcTextSmall {
+	font-size: 1vw;
 }
-@include media-breakpoint-up(md) {
-	.flashCard {
-		width: 90%;
-		padding: 60px 25px;
-	}
+
+textarea {
+	resize: none !important;
 }
-@include media-breakpoint-up(lg) {
-	.flashCard {
-		width: 80%
-	}
-}
-@include media-breakpoint-up(xl) {
-	.flashCard {
-		width: 75%;
-		padding: 120px 50px;
-	}
-}
-@include media-breakpoint-up(xxl) {
-	.flashCard {
-		width: 70%
-	}
-}
+
+// @include media-breakpoint-up(sm) { 
+// 	.flashCard {
+// 		width: 95%;
+// 		padding: 40px 20px;
+// 	}
+// }
+// @include media-breakpoint-up(md) {
+// 	.flashCard {
+// 		width: 90%;
+// 		padding: 60px 25px;
+// 	}
+// }
+// @include media-breakpoint-up(lg) {
+// 	.flashCard {
+// 		width: 80%
+// 	}
+// }
+// @include media-breakpoint-up(xl) {
+// 	.flashCard {
+// 		width: 75%;
+// 		padding: 120px 50px;
+// 	}
+// }
+// @include media-breakpoint-up(xxl) {
+// 	.flashCard {
+// 		width: 70%
+// 	}
+// }

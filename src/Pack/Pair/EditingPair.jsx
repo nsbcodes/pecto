@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
@@ -17,18 +16,39 @@ import { v4 as uuidv4 } from 'uuid'
  * @param {number} index - The index of the card in the pack
  */
 function EditingPair({ index }) {
-	const [cards, packLength, setCard, addCards] = usePack(
+	const [cards, packLength, setCard, addCards, setEditing] = usePack(
 		(state) => [
 			// Data
 			state.pack.content[index],
 			state.pack.content.length,
 			state.setCard,
 			state.addCards,
+			state.setEditing,
 		],
 		shallow
 	)
 	const [term, setTerm] = useState(cards.term)
 	const [definition, setDefinition] = useState(cards.definition)
+
+	const termRef = useRef(null)
+	const definitionRef = useRef(null)
+
+	useEffect(() => {
+		setEditing(true)
+		return () => setEditing(false)
+	})
+
+	useEffect(() => {
+		termRef.current.style.height = '0px'
+		const scrollHeight = termRef.current.scrollHeight + 1
+		termRef.current.style.height = scrollHeight + 'px'
+	}, [term])
+
+	useEffect(() => {
+		definitionRef.current.style.height = '0px'
+		const scrollHeight = definitionRef.current.scrollHeight + 1
+		definitionRef.current.style.height = scrollHeight + 'px'
+	}, [definition])
 
 	// async function exitEditingMode() {
 	// 	// When the user clicks "Done" and the component will be switched to the static version,
@@ -76,6 +96,8 @@ function EditingPair({ index }) {
 								className="bg-transparent"
 								type="text"
 								value={term}
+								as="textarea"
+								ref={termRef}
 								onChange={(e) => {
 									setCard(index, { term: e.target.value })
 									setTerm(e.target.value)
@@ -89,6 +111,8 @@ function EditingPair({ index }) {
 								className="bg-transparent"
 								type="text"
 								value={definition}
+								as="textarea"
+								ref={definitionRef}
 								onChange={(e) => {
 									setCard(index, { definition: e.target.value })
 									setDefinition(e.target.value)

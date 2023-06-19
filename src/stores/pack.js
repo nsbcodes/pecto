@@ -13,7 +13,10 @@ import { db as localDb } from '@/lib/localstore'
 // import { mountStoreDevtool } from 'simple-zustand-devtools'
 
 export const usePack = create((set, get) => ({
+	// Unfiltered Pack
 	defaultPack: undefined,
+	// Filtered Pack
+	// See filterPackCategory
 	pack: undefined,
 	error: false,
 	loading: true,
@@ -186,6 +189,8 @@ export const usePack = create((set, get) => ({
 	},
 	// Editor
 	letMeEdit: (val) => set({ canEdit: val }),
+	editing: false,
+	setEditing: (val) => set({ editing: val }),
 }))
 
 // if (import.meta.env.DEV) {

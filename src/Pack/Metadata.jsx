@@ -44,7 +44,7 @@ export function Metadata(props) {
 	const [willDelete, startDelete] = useState(false)
 	const [importing, importFromQuizlet] = useState(false)
 	const [quizletContents, setQuizletContens] = useState('')
-	const [category, setCategory] = useState('default')
+	const [category, setCategory] = useState('Default')
 
 	const navigate = useNavigate()
 
@@ -72,8 +72,11 @@ export function Metadata(props) {
 	}
 
 	function importQuizlet() {
-		let uuid = uuidv4()
-		addCategory(category, ['transparent', 'transparent'], uuid)
+		let uuid = 'default'
+		if (category.toLowerCase() !== 'default') {
+			let uuid = uuidv4()
+			addCategory(category, ['transparent', 'transparent'], uuid)
+		}
 		addQuizletCards(quizletContents, uuid)
 		importFromQuizlet(false)
 	}
