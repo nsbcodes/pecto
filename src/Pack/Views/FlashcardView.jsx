@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
+import { Markup } from 'interweave'
 
 import './FlashcardView.scss'
 
@@ -94,7 +95,7 @@ function FlashcardView({ category }) {
 									: 'fcTextBig'
 							}
 						>
-							{pack.content[currentCard]['definition']}
+							<Markup content={pack.content[currentCard]['definition']} />
 						</p>
 					) : (
 						<p
@@ -111,7 +112,7 @@ function FlashcardView({ category }) {
 									src={pack.content[currentCard]['picture']}
 								></img>
 							)}
-							{pack.content[currentCard]['term']}
+							<Markup content={pack.content[currentCard]['term']} />
 						</p>
 					)}
 				</div>

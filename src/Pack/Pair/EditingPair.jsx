@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
 import Form from 'react-bootstrap/Form'
+
+import { Editor } from './Editor'
 
 import { v4 as uuidv4 } from 'uuid'
 
@@ -27,142 +29,58 @@ function EditingPair({ index }) {
 		],
 		shallow
 	)
-	const [term, setTerm] = useState(cards.term)
-	const [definition, setDefinition] = useState(cards.definition)
-
-	const termRef = useRef(null)
-	const definitionRef = useRef(null)
 
 	useEffect(() => {
 		setEditing(true)
 		return () => setEditing(false)
 	})
 
-	useEffect(() => {
-		termRef.current.style.height = '0px'
-		const scrollHeight = termRef.current.scrollHeight + 1
-		termRef.current.style.height = scrollHeight + 'px'
-	}, [term])
-
-	useEffect(() => {
-		definitionRef.current.style.height = '0px'
-		const scrollHeight = definitionRef.current.scrollHeight + 1
-		definitionRef.current.style.height = scrollHeight + 'px'
-	}, [definition])
-
-	// async function exitEditingMode() {
-	// 	// When the user clicks "Done" and the component will be switched to the static version,
-	// 	// we commit our changes
-	// 	console.log(index, { term: term, definition: definition })
-	// 	setCard(index, { term: term, definition: definition })
-
-	// 	// Self-destruct
-	// 	// No other code below here
-	// 	setEditing(false)
-	// }
+	function createNewCard(e) {
+		if (
+			e.keyCode === 9 &&
+			// Make sure this is the last card
+			index === packLength - 1 &&
+			// No modifier keys
+			!e.shiftKey &&
+			!e.ctrlKey &&
+			!e.altKey &&
+			!e.metaKey
+		) {
+			// Tab
+			//e.preventDefault()
+			// Add a new card
+			addCards({
+				term: '',
+				definition: '',
+				category: 'default',
+				uuid: uuidv4(),
+			})
+		}
+	}
 
 	return (
-		// <div>
-		//     <form>
-		//         <label>
-		//             Term
-		//             <input
-		//                 type="text"
-		//                 value={term}
-		//                 onChange={(e) => setTerm(e.target.value)}
-		//             />
-		//         </label>
-
-		//         <label>
-		//             Definition
-		//             <input
-		//                 type="text"
-		//                 value={definition}
-		//                 onChange={(e) => setDefinition(e.target.value)}
-		//             />
-		//         </label>
-		//     </form>
-		//     <button onClick={exitEditingMode}>
-		//         Done
-		//     </button>
-		// </div>
-
 		<Form>
-			<div className="container overflow-hidden text-center">
+			<div className="container overflow-hidden">
 				<div className="row">
 					<div className="col p-2">
 						<div className="p-2 py-2 shadow-sm bg-light rounded-3">
-							<Form.Control
-								className="bg-transparent"
-								type="text"
-								value={term}
-								as="textarea"
-								ref={termRef}
-								onChange={(e) => {
-									setCard(index, { term: e.target.value })
-									setTerm(e.target.value)
-								}}
+							<Editor
+								content={cards.term}
+								save={(val) => setCard(index, { term: val })}
 							/>
 						</div>
 					</div>
 					<div className="col p-2">
 						<div className="p-2 py-2 shadow-sm bg-light rounded-3">
-							<Form.Control
-								className="bg-transparent"
-								type="text"
-								value={definition}
-								as="textarea"
-								ref={definitionRef}
-								onChange={(e) => {
-									setCard(index, { definition: e.target.value })
-									setDefinition(e.target.value)
-								}}
-								onKeyDown={(e) => {
-									if (
-										e.keyCode === 9 &&
-										// Make sure this is the last card
-										index === packLength - 1 &&
-										// No modifier keys
-										!e.shiftKey &&
-										!e.ctrlKey &&
-										!e.altKey &&
-										!e.metaKey
-									) {
-										// Tab
-										//e.preventDefault()
-										// Add a new card
-										addCards({
-											term: '',
-											definition: '',
-											category: 'default',
-											uuid: uuidv4(),
-										})
-									}
-								}}
-								// onKeyUp={(e) => {
-								// 	if (
-								// 		e.keyCode === 9 &&
-								// 		// Make sure this is the last card
-								// 		index === packLength - 1 &&
-								// 		// No modifier keys
-								// 		!e.shiftKey &&
-								// 		!e.ctrlKey &&
-								// 		!e.altKey &&
-								// 		!e.metaKey
-								// 	) {
-								// 		console.log('yes')
-								// 	}
-								// }}
+							<Editor
+								content={cards.definition}
+								save={(val) => setCard(index, { definition: val })}
+								onKeyDown={createNewCard}
 							/>
 						</div>
 					</div>
 				</div>
 			</div>
-
-			{/* 
-			<Button variant="success" size="sm" onClick={exitEditingMode}>
-				Done
-			</Button> */}
 		</Form>
 	)
 }

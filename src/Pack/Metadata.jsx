@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { useState, useEffect } from 'react'
+import { React, useState, useEffect } from 'react'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -25,21 +23,30 @@ import { v4 as uuidv4 } from 'uuid'
 export function Metadata(props) {
 	const [editing, setEditing] = useState(false)
 	const [newPack, deletePack] = useUser((state) => [state.newPack, state.deletePack], shallow)
-	const [pack, togglePublish, editClass, editName, addQuizletCards, addCategory, canEdit] =
-		usePack(
-			(state) => [
-				// Data
-				state.pack,
-				state.togglePublish,
-				state.editClass,
-				state.editName,
-				state.addQuizletCards,
-				state.addCategory,
-				// Editing
-				state.canEdit,
-			],
-			shallow
-		)
+	const [
+		pack,
+		togglePublish,
+		editClass,
+		editName,
+		addQuizletCards,
+		addCategory,
+		canEdit,
+		setEditingPack,
+	] = usePack(
+		(state) => [
+			// Data
+			state.pack,
+			state.togglePublish,
+			state.editClass,
+			state.editName,
+			state.addQuizletCards,
+			state.addCategory,
+			// Editing
+			state.canEdit,
+			state.setEditing,
+		],
+		shallow
+	)
 
 	const [willDelete, startDelete] = useState(false)
 	const [importing, importFromQuizlet] = useState(false)
@@ -52,16 +59,24 @@ export function Metadata(props) {
 		setEditing(props.editing)
 	}, [props.editing])
 
+	// TODO: unnecessary useEffect
 	useEffect(() => {
-		if (!editing) startDelete(false)
+		if (editing) {
+			// Disable arrow key flashcard navigation
+			setEditingPack(false)
+		} else {
+			startDelete(false)
+		}
 	}, [editing])
 
 	async function exitEditingMode() {
 		// Upload (or save) changes
-		console.log(pack)
 		await newPack(pack.uuid, pack)
 
-		// Self-destruct
+		// Allow arrow key flashcard navigation
+		setEditingPack(false)
+
+		// Return to the static version
 		setEditing(!editing)
 	}
 

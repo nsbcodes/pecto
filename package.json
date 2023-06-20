@@ -23,6 +23,7 @@
     "firebase": "^9.15.0",
     "framer-motion": "^8.5.0",
     "immer": "^9.0.19",
+    "interweave": "^13.1.0",
     "leven": "^4.0.0",
     "pdf.js-extract": "^0.2.1",
     "pdfjs": "^2.4.7",

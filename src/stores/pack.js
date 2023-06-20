@@ -14,6 +14,7 @@ import { db as localDb } from '@/lib/localstore'
 
 export const usePack = create((set, get) => ({
 	// Unfiltered Pack
+	// Read-only!
 	defaultPack: undefined,
 	// Filtered Pack
 	// See filterPackCategory

@@ -1,6 +1,8 @@
 import React from 'react'
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
+import { Markup } from 'interweave'
+
 
 // import './Pair.scss'
 
@@ -24,7 +26,7 @@ function StaticPair({ index }) {
 						{cards.term == '' ? (
 							<span className="text-muted">Term {index + 1}</span>
 						) : (
-							cards.term
+							<Markup content={cards.term} />
 						)}
 					</div>
 				</div>
@@ -33,7 +35,7 @@ function StaticPair({ index }) {
 						{cards.definition == '' ? (
 							<span className="text-muted">Definition {index + 1}</span>
 						) : (
-							cards.definition
+							<Markup content={cards.definition} />
 						)}
 					</div>
 				</div>

@@ -20,13 +20,14 @@ function EditPack() {
 	const { displayName, packId } = useParams()
 	// We wrap useState around this so we can modify it (ex. adding new cards)
 	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
-	const [pack, error, loading, loadPack, addCards, letMeEdit] = usePack(
+	const [pack, error, loading, loadPack, filterPackCategory, addCards, letMeEdit] = usePack(
 		(state) => [
 			// Data
-			state.defaultPack,
+			state.pack,
 			state.error,
 			state.loading,
 			state.loadPack,
+			state.filterPackCategory,
 			state.addCards,
 			// Editing
 			state.letMeEdit,
@@ -43,6 +44,7 @@ function EditPack() {
 		if (pack === undefined) {
 			;(async () => {
 				await loadPack(displayName, packId)
+				filterPackCategory(0)
 			})()
 		}
 	}, [])
@@ -101,6 +103,8 @@ function EditPack() {
 			startSaving(false)
 		}, '200')
 	}
+
+	console.log(pack.content[0])
 
 	function newCards() {
 		// Add new terms
