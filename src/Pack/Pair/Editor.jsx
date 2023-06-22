@@ -16,8 +16,25 @@ import {
 	OrderedListExtension,
 	StrikeExtension,
 	TableExtension,
-	// MarkdownExtension,
+	HorizontalRuleExtension,
+	SubExtension,
+	SupExtension,
+	UnderlineExtension,
+	ShortcutsExtension,
 } from 'remirror/extensions'
+
+import css from 'refractor/lang/css.js'
+import javascript from 'refractor/lang/javascript.js'
+import json from 'refractor/lang/json.js'
+import markdown from 'refractor/lang/markdown.js'
+import typescript from 'refractor/lang/typescript.js'
+import python from 'refractor/lang/python.js'
+import csharp from 'refractor/lang/csharp.js'
+import bash from 'refractor/lang/bash.js'
+import c from 'refractor/lang/c.js'
+import cpp from 'refractor/lang/cpp.js'
+import rust from 'refractor/lang/rust.js'
+import go from 'refractor/lang/go.js'
 
 import 'remirror/styles/all.css'
 import './Editor.scss'
@@ -37,7 +54,22 @@ export const Editor = ({ content, save }) => {
 			new ListItemExtension({ priority: ExtensionPriority.High, enableCollapsible: true }),
 			new CodeExtension(),
 			// TODO: select languages to add to code blocks
-			new CodeBlockExtension(),
+			new CodeBlockExtension({
+				supportedLanguages: [
+					css,
+					javascript,
+					json,
+					markdown,
+					typescript,
+					python,
+					csharp,
+					bash,
+					c,
+					cpp,
+					rust,
+					go,
+				],
+			}),
 			new TableExtension(),
 			// new MarkdownExtension({ copyAsMarkdown: false }),
 			/**
@@ -45,6 +77,11 @@ export const Editor = ({ content, save }) => {
 			 * e.g. in a list item
 			 */
 			new HardBreakExtension(),
+			new HorizontalRuleExtension(),
+			new SubExtension(),
+			new SupExtension(),
+			new UnderlineExtension(),
+			new ShortcutsExtension(),
 		],
 		stringHandler: 'html',
 	})

@@ -1,8 +1,7 @@
 import React from 'react'
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
-import { Markup } from 'interweave'
-
+import { Markup } from '@/lib/Markup'
 
 // import './Pair.scss'
 
@@ -22,7 +21,7 @@ function StaticPair({ index }) {
 		<div className="container overflow-hidden text-center">
 			<div className="row row-cols-1 row-cols-sm-2">
 				<div className="col p-2">
-					<div className="p-2 py-4 shadow-sm bg-light rounded-3">
+					<div className="p-4 shadow-sm bg-light rounded-3 noBottomMargin">
 						{cards.term == '' ? (
 							<span className="text-muted">Term {index + 1}</span>
 						) : (
@@ -31,7 +30,7 @@ function StaticPair({ index }) {
 					</div>
 				</div>
 				<div className="col p-2">
-					<div className="p-2 py-4 shadow-sm bg-light rounded-3">
+					<div className="p-4 shadow-sm bg-light rounded-3 noBottomMargin">
 						{cards.definition == '' ? (
 							<span className="text-muted">Definition {index + 1}</span>
 						) : (

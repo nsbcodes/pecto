@@ -2,12 +2,9 @@ import React, { useEffect } from 'react'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
-
-import Form from 'react-bootstrap/Form'
+import { v4 as uuidv4 } from 'uuid'
 
 import { Editor } from './Editor'
-
-import { v4 as uuidv4 } from 'uuid'
 
 /**
  * Rendered by `Cards` when editing
@@ -59,29 +56,27 @@ function EditingPair({ index }) {
 	}
 
 	return (
-		<Form>
-			<div className="container overflow-hidden">
-				<div className="row">
-					<div className="col p-2">
-						<div className="p-2 py-2 shadow-sm bg-light rounded-3">
-							<Editor
-								content={cards.term}
-								save={(val) => setCard(index, { term: val })}
-							/>
-						</div>
+		<div className="container overflow-hidden">
+			<div className="row">
+				<div className="col p-2">
+					<div className="p-2 py-2 shadow-sm bg-light rounded-3">
+						<Editor
+							content={cards.term}
+							save={(val) => setCard(index, { term: val })}
+						/>
 					</div>
-					<div className="col p-2">
-						<div className="p-2 py-2 shadow-sm bg-light rounded-3">
-							<Editor
-								content={cards.definition}
-								save={(val) => setCard(index, { definition: val })}
-								onKeyDown={createNewCard}
-							/>
-						</div>
+				</div>
+				<div className="col p-2">
+					<div className="p-2 py-2 shadow-sm bg-light rounded-3">
+						<Editor
+							content={cards.definition}
+							save={(val) => setCard(index, { definition: val })}
+							onKeyDown={createNewCard}
+						/>
 					</div>
 				</div>
 			</div>
-		</Form>
+		</div>
 	)
 }
 

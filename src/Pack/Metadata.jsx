@@ -63,18 +63,16 @@ export function Metadata(props) {
 	useEffect(() => {
 		if (editing) {
 			// Disable arrow key flashcard navigation
-			setEditingPack(false)
+			setEditingPack(true)
 		} else {
+			setEditingPack(false)
 			startDelete(false)
 		}
 	}, [editing])
 
 	async function exitEditingMode() {
-		// Upload (or save) changes
+		// Save (upload) changes
 		await newPack(pack.uuid, pack)
-
-		// Allow arrow key flashcard navigation
-		setEditingPack(false)
 
 		// Return to the static version
 		setEditing(!editing)

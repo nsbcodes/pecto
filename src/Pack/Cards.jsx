@@ -12,6 +12,25 @@ import { shallow } from 'zustand/shallow'
 
 import { motion } from 'framer-motion'
 
+function MotionWrapper({ yes, index, style, children }) {
+	if (yes) {
+		return (
+			<motion.div
+				key={index}
+				className="p-3"
+				style={style}
+				initial={{ x: -100 }}
+				animate={{ x: 0 }}
+				exit={{ scale: 0 }}
+			>
+				{children}
+			</motion.div>
+		)
+	} else {
+		return children
+	}
+}
+
 /**
  * Rendered for each element in `pack.content`
  *
@@ -81,18 +100,15 @@ function Cards({ index, edit }) {
 	}
 
 	return (
-		<motion.div
-			key={index}
-			className="p-3"
+		<MotionWrapper
+			yes={!edit}
+			index={index}
 			style={{
 				backgroundImage: `linear-gradient(to right, ${
 					categories[cards.category]['colors'][0]
 				},${categories[cards.category]['colors'][1]})`,
 				...cardCSS,
 			}}
-			initial={{ x: -100 }}
-			animate={{ x: 0 }}
-			exit={{ scale: 0 }}
 		>
 			<>{extra}</>
 			<div className="d-flex justify-content-between align-items-center mt-5">
@@ -138,7 +154,7 @@ function Cards({ index, edit }) {
 					)}
 				</div>
 			)}
-		</motion.div>
+		</MotionWrapper>
 	)
 }
 

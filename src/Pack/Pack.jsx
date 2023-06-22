@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import Cards from './Cards'
 import { Metadata } from './Metadata'
-import { useParams } from 'react-router-dom'
-import { LinkContainer } from 'react-router-bootstrap'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Spinner from 'react-bootstrap/Spinner'
 import Form from 'react-bootstrap/Form'
 
-import FlashcardView from './Views/FlashcardView'
+import { Navigation } from './Navigation'
+import { FlashcardView } from './Views/FlashcardView'
 
 import './Pack.scss'
 
@@ -48,6 +48,8 @@ function Pack() {
 	// Category filter
 	const [categoryFilter, setCategoryFilter] = useState(0)
 	// const [filteredPack, setFilteredPack] = useState(pack)
+
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		loadPack(displayName, packId)
@@ -116,81 +118,89 @@ function Pack() {
 		})
 	}
 
-	async function saveCards() {
+	async function saveCards(editMode = false) {
 		startSaving(true)
 
 		await newPack(packId, pack)
 
-		// This isn't a stopgap for async, it just shows the saving spinner,
-		// providing feedback to the user
-		setTimeout(() => {
-			startSaving(false)
-		}, '200')
+		if (editMode) {
+			navigate(`/edit/${pack.author}/${pack.uuid}`)
+		} else {
+			// This isn't a stopgap for async, it just shows the saving spinner,
+			// providing feedback to the user
+			setTimeout(() => {
+				startSaving(false)
+			}, '200')
+		}
 	}
 
 	return (
-		<div id="packRoot" className="mx-auto border border-2 p-4 rounded-3">
-			<Metadata />
+		<div id="packRoot" className="mx-auto">
+			<Navigation baseURL={`${pack.author}/${pack.uuid}`} currentPage="view" />
 
-			<FlashcardView category={categoryFilter} />
-
-			<Form.Select
-				className="w-25 mt-3"
-				onChange={(e) => {
-					filterPackCategory(e.target.value)
-					// TODO: very very very complicated
-					// allow editing in filtered packs
-					// will require us to add uuids for each card
-					setCategoryFilter(e.target.value)
-				}}
-				value={categoryFilter}
-			>
-				<option value="0">All</option>
-				{Object.entries(pack.categories).map(([uuid, content]) => (
-					<option key={uuid} value={uuid} style={{ backgroundColor: content.colors[1] }}>
-						{content.name}
-					</option>
-				))}
-			</Form.Select>
-
-			<div id="packContentContainer" className="mt-3 border border-2 rounded-3">
-				{/* <AnimatePresence> */}
-				{pack.content.map((cards, index) => (
-					<Cards index={index} edit={false} key={cards + index} />
-				))}
-				{/* </AnimatePresence> */}
-			</div>
-
-			{canEdit && (
-				<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
-					<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
-						{/* <Button
-							variant="light"
-							onClick={() => {
-								setEditingAll(!editingAll)
-							}}
-							className="p-3"
+			<div className="border border-2 p-4 rounded-3">
+				<Metadata />
+				<FlashcardView category={categoryFilter} />
+				<Form.Select
+					className="w-25 mt-3"
+					onChange={(e) => {
+						filterPackCategory(e.target.value)
+						// TODO: very very very complicated
+						// allow editing in filtered packs
+						// will require us to add uuids for each card
+						setCategoryFilter(e.target.value)
+					}}
+					value={categoryFilter}
+				>
+					<option value="0">All</option>
+					{Object.entries(pack.categories).map(([uuid, content]) => (
+						<option
+							key={uuid}
+							value={uuid}
+							style={{ backgroundColor: content.colors[1] }}
 						>
-							{editingAll ? '✔️ Done' : '✏️ Edit All'}
-						</Button> */}
-						<Button variant="light" onClick={saveCards} className="p-3">
-							{saving ? (
-								<Spinner animation="border" variant="dark" size="sm" />
-							) : (
-								'💾 Save'
-							)}
-						</Button>
-						<Button variant="light" onClick={newCards} className="p-3">
-							➕ New
-						</Button>
-						<LinkContainer to={`/edit/${pack.author}/${pack.uuid}`}>
-							<Button variant="light" onClick={saveCards} className="p-3">
-								✏️ Edit
-							</Button>
-						</LinkContainer>
-					</ButtonGroup>
+							{content.name}
+						</option>
+					))}
+				</Form.Select>
+				<div id="packContentContainer" className="mt-3 border border-2 rounded-3">
+					{/* <AnimatePresence> */}
+					{pack.content.map((cards, index) => (
+						<Cards index={index} edit={false} key={cards + index} />
+					))}
+					{/* </AnimatePresence> */}
 				</div>
-			)}
+				{canEdit && (
+					<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
+						<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
+							{/* <Button
+								variant="light"
+								onClick={() => {
+									setEditingAll(!editingAll)
+								}}
+								className="p-3"
+							>
+								{editingAll ? '✔️ Done' : '✏️ Edit All'}
+							</Button> */}
+							<Button variant="light" onClick={saveCards} className="p-3">
+								{saving ? (
+									<Spinner animation="border" variant="dark" size="sm" />
+								) : (
+									'💾 Save'
+								)}
+							</Button>
+							<Button variant="light" onClick={newCards} className="p-3">
+								➕ New
+							</Button>
+							{/* <LinkContainer to={`/edit/${pack.author}/${pack.uuid}`}> */}
+							<Button variant="light" onClick={() => saveCards(true)} className="p-3">
+								{saving ? 'Saving...' : '✏️ Edit'}
+							</Button>
+							{/* </LinkContainer> */}
+						</ButtonGroup>
+					</div>
+				)}
+			</div>
 		</div>
 	)
 }

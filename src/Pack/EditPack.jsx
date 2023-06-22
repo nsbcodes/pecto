@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
+
 import Cards from './Cards'
 import { Metadata } from './Metadata'
 import { useParams } from 'react-router-dom'
-import { LinkContainer } from 'react-router-bootstrap'
+import { useNavigate } from 'react-router-dom'
 
 import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
@@ -35,10 +36,12 @@ function EditPack() {
 		shallow
 	)
 
-	// For a saving progress spinner
+	// Saving progress spinner
 	const [saving, startSaving] = useState(false)
 
 	// const [editingAll, setEditingAll] = useState(false)
+
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		if (pack === undefined) {
@@ -92,19 +95,22 @@ function EditPack() {
 		)
 	}
 
-	async function saveCards() {
+	async function saveCards(viewMode = false) {
 		startSaving(true)
 
 		await newPack(packId, pack)
 
-		// This isn't a stopgap for async, it just shows the saving spinner,
-		// providing feedback to the user
-		setTimeout(() => {
-			startSaving(false)
-		}, '200')
+		if (viewMode) {
+			navigate(`/view/${pack.author}/${pack.uuid}`)
+		} else {
+			console.log('stop saving')
+			// This isn't a stopgap for async, it just shows the saving spinner,
+			// providing feedback to the user
+			setTimeout(() => {
+				startSaving(false)
+			}, '200')
+		}
 	}
-
-	console.log(pack.content[0])
 
 	function newCards() {
 		// Add new terms
@@ -130,7 +136,7 @@ function EditPack() {
 
 			<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
 				<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
-					<Button variant="light" onClick={saveCards} className="p-3">
+					<Button variant="light" onClick={() => saveCards()} className="p-3">
 						{saving ? (
 							<Spinner animation="border" variant="dark" size="sm" />
 						) : (
@@ -140,11 +146,11 @@ function EditPack() {
 					<Button variant="light" onClick={newCards} className="p-3">
 						➕ Add Cards
 					</Button>
-					<LinkContainer to={`/view/${pack.author}/${pack.uuid}`}>
-						<Button variant="light" onClick={saveCards} className="p-3">
-							↩ Return
-						</Button>
-					</LinkContainer>
+					{/* <LinkContainer to={`/view/${pack.author}/${pack.uuid}`}> */}
+					<Button variant="light" onClick={() => saveCards(true)} className="p-3">
+						{saving ? 'Saving...' : '↩ Return'}
+					</Button>
+					{/* </LinkContainer> */}
 				</ButtonGroup>
 			</div>
 		</div>

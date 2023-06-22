@@ -5,13 +5,13 @@ import Form from 'react-bootstrap/Form'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
-import { Markup } from 'interweave'
+import { Markup } from '@/lib/Markup'
 
 import './FlashcardView.scss'
 
 import MultipleChoice from './MultipleChoice'
 
-function FlashcardView({ category }) {
+export function FlashcardView({ category }) {
 	const [pack, editing] = usePack((state) => [state.pack, state.editing], shallow)
 	const [currentCard, setCurrentCard] = useState(0)
 
@@ -23,7 +23,6 @@ function FlashcardView({ category }) {
 
 	// Arrow Keys Navigation
 	function handleKey(e) {
-		console.log(e.key)
 		if (e.key === 'ArrowRight' && currentCard + 1 < pack.content.length) {
 			setShowDefinition(false)
 			setCurrentCard(currentCard + 1)
@@ -36,7 +35,9 @@ function FlashcardView({ category }) {
 		}
 	}
 
-	console.log(currentCard)
+	function smallText(text) {
+		return text.length > 150 || text.split('<p>').length > 3 || text.includes('<h')
+	}
 
 	// All state referenced must be in the dependency array
 	useEffect(() => {
@@ -87,21 +88,19 @@ function FlashcardView({ category }) {
 					}}
 				>
 					{showDefinition ? (
-						<p
+						<div
 							className={
-								pack.content[currentCard]['definition'].length > 150 ||
-								pack.content[currentCard]['definition'].split('\n').length > 4
+								smallText(pack.content[currentCard]['definition'])
 									? 'fcTextSmall'
 									: 'fcTextBig'
 							}
 						>
-							<Markup content={pack.content[currentCard]['definition']} />
-						</p>
+							<Markup dark content={pack.content[currentCard]['definition']} />
+						</div>
 					) : (
-						<p
+						<div
 							className={
-								pack.content[currentCard]['term'].length > 150 ||
-								pack.content[currentCard]['term'].split('\n').length > 4
+								smallText(pack.content[currentCard]['term'])
 									? 'fcTextSmall'
 									: 'fcTextBig'
 							}
@@ -112,8 +111,8 @@ function FlashcardView({ category }) {
 									src={pack.content[currentCard]['picture']}
 								></img>
 							)}
-							<Markup content={pack.content[currentCard]['term']} />
-						</p>
+							<Markup dark content={pack.content[currentCard]['term']} />
+						</div>
 					)}
 				</div>
 
@@ -165,5 +164,3 @@ function FlashcardView({ category }) {
 		</div>
 	)
 }
-
-export default FlashcardView
