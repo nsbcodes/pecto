@@ -64,9 +64,11 @@ function ComprehendComponent() {
 					variant="dark"
 					size="lg"
 					className="mb-4"
-					onClick={alert(
-						'Not implemented yet!\n\nAll AI results should already be shown in the rightmost columns below.'
-					)}
+					onClick={() =>
+						alert(
+							'Not implemented yet!\n\nAll AI results should already be shown in the rightmost columns below.'
+						)
+					}
 				>
 					🏭 Generate
 				</Button>
