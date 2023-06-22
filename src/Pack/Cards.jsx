@@ -66,9 +66,7 @@ function Cards({ index, edit }) {
 	function deletePair() {
 		// let p = [...pack.content]
 		// p.splice(index, 1)
-		// console.log(index, p)
 		deleteCard(index)
-		// console.log(pack.content)
 	}
 
 	if (cards === undefined) {

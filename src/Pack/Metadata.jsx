@@ -80,7 +80,7 @@ export function Metadata(props) {
 
 	// sadge
 	async function deleteP() {
-		await deletePack(pack.id)
+		await deletePack(pack.uuid)
 		navigate('/')
 	}
 

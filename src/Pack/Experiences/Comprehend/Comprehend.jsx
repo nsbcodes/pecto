@@ -52,6 +52,18 @@ function ComprehendComponent() {
 		return output
 	}
 
+	function toPresentTense(text) {
+		text = text.replace(/<[^>]*>?/gm, '')
+		let doc = nlp(text)
+		// ignore spaces when calculating equality
+		if (
+			doc.sentences().toPresentTense().text().trim().replaceAll(' ', '') !=
+			text.trim().replaceAll(' ', '')
+		) {
+			return text
+		}
+	}
+
 	return (
 		<>
 			<div className="text-center">
@@ -80,6 +92,7 @@ function ComprehendComponent() {
 						<th>#</th>
 						<th>Term</th>
 						<th>Definition</th>
+						{/* <th>Present Tense</th> */}
 						<th>Summary</th>
 					</tr>
 				</thead>
@@ -94,6 +107,7 @@ function ComprehendComponent() {
 								<td>
 									<Markup content={card.definition} />
 								</td>
+								{/* <td>{toPresentTense(card.definition)}</td> */}
 								<td>{minifyDefinition(card.definition)}</td>
 							</tr>
 						)

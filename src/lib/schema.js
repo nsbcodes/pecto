@@ -27,4 +27,3 @@ const BasePack = () => {
 }
 
 export { BasePack }
-console.log(Object.keys(BasePack()).join(','))

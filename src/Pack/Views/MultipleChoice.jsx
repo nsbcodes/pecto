@@ -110,8 +110,6 @@ function MultipleChoice(props) {
 		)
 	})
 
-	console.log(choices)
-
 	return (
 		<div className="rounded-3 mx-auto text-center mt-4">
 			<div className="container text-center">

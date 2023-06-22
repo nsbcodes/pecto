@@ -50,7 +50,6 @@ export const authenticateWithGoogle = async (username) => {
 	if (user?.displayName == undefined) {
 		await initUser()
 	}
-	console.log(username, user)
 	const batch = writeBatch(db)
 
 	// Add to users (uids)
@@ -87,8 +86,6 @@ export const addNewPack = async (id, newPack, username) => {
 
 export const deletePack = async (id, username) => {
 	const docRef = doc(db, 'packs', username, 'packs', id)
-	console.log(docRef)
-	console.log('deleting db/packs/' + username + '/packs/' + id)
 	await deleteDoc(docRef)
 }
 
@@ -112,6 +109,5 @@ export const getUsername = async (username) => {
 
 export const getUser = async (uid) => {
 	let u = await getDoc(doc(db, 'users', uid))
-	console.log(u.data()?.username)
 	return u.data()?.username
 }

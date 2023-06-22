@@ -15,9 +15,7 @@ export function hslToHex(h, s, l) {
 
 export function levenSort(a, baseIndex = 0, property = 'term') {
 	var levenArr = []
-	console.log(a)
 	a.forEach((e, i) => {
-		console.log(a[baseIndex], property)
 		levenArr[i] = { element: e, leven: leven(a[baseIndex][property], e[property]) }
 	})
 

@@ -103,7 +103,6 @@ function EditPack() {
 		if (viewMode) {
 			navigate(`/view/${pack.author}/${pack.uuid}`)
 		} else {
-			console.log('stop saving')
 			// This isn't a stopgap for async, it just shows the saving spinner,
 			// providing feedback to the user
 			setTimeout(() => {

@@ -60,7 +60,6 @@ function CategorySelect({ index }) {
 		var hue = currentHexCode
 		if (currentHexCode == null) {
 			hue = Math.floor(Math.random() * 360)
-			console.log([hslToHex(hue, 100, 97), hslToHex(hue, 100, 99)])
 			setNewColor([hslToHex(hue, 100, 97), hslToHex(hue, 100, 99)])
 		} else {
 			setNewColor([hue, hue])

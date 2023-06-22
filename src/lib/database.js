@@ -25,7 +25,6 @@ const Database = {
 		}
 	},
 	getMyPacks: async function() {
-		console.log('auth status:', this._authenticated)
 		if (this._authenticated) {
 			return await getMyPacksCloud()
 		} else {

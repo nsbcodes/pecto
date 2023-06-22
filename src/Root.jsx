@@ -46,7 +46,6 @@ function Root() {
 	// Validate the new username
 	useEffect(() => {
 		async function checkAvailability() {
-			console.log(await getUsername(username))
 			if ((await getUsername(username)) !== undefined) {
 				setUsernameAvailable('❌ Username has been taken')
 			}
