@@ -13,6 +13,7 @@ export function Navigation({ baseURL, currentPage }) {
 				{ link: false, text: 'Utilities' },
 				{ link: 'comprehend', text: 'Comprehend' },
 				{ link: 'assess', text: 'Assess' },
+				{ link: 'extrapolate', text: 'Extrapolate' }
 			].map(({ link, text }) => (
 				<Nav.Item key={text}>
 					<Nav.Link

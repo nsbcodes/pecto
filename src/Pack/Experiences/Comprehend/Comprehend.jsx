@@ -16,6 +16,7 @@ function ComprehendComponent() {
 	const [pack, length] = usePack((state) => [state.pack, state.pack.content.length], shallow)
 
 	// Must be a single sentence
+	// TODO: implement https://github.com/spencermountain/compromise/issues/388#issuecomment-1602804777
 	function minifyDefinition(sentence, includeSubject = false) {
 		// Strip HTML
 		sentence = sentence.replace(/<[^>]*>?/gm, '')

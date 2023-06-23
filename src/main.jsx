@@ -11,6 +11,7 @@ import Home from './Home'
 import EditPack from './Pack/EditPack'
 import { Blitz } from './Pack/Experiences/Blitz/Blitz'
 import { Comprehend } from './Pack/Experiences/Comprehend/Comprehend'
+import { Extrapolate } from './Pack/Experiences/Extrapolate/Extrapolate'
 
 const router = createBrowserRouter([
 	{
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
 			{
 				path: 'comprehend/:displayName/:packId',
 				element: <Comprehend />,
+			},
+			{
+				path: 'extrapolate/:displayName/:packId',
+				element: <Extrapolate />,
 			},
 			{
 				path: 'new/pack',

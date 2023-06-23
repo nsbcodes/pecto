@@ -61,7 +61,7 @@ export const usePack = create((set, get) => ({
 	addCards: (cards) =>
 		set(
 			produce((state) => {
-				state.pack.content.push(cards)
+				state.pack.content = state.pack.content.concat(cards)
 			})
 		),
 	setCard: (i, newCard) =>
@@ -141,7 +141,13 @@ export const usePack = create((set, get) => ({
 	addCategory: (newCategory, newColor, uuid = uuidv4()) =>
 		set(
 			produce((state) => {
-				state.pack.categories[uuid] = { name: newCategory, colors: newColor }
+				let categoryExists = false
+				Object.entries(state.pack.categories).map((uuid, category) => {
+					if (category.name == newCategory) categoryExists = true
+				})
+				if (!categoryExists) {
+					state.pack.categories[uuid] = { name: newCategory, colors: newColor }
+				}
 			})
 		),
 	addPicture: (picture) =>

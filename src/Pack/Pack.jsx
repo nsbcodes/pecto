@@ -182,7 +182,11 @@ function Pack() {
 							>
 								{editingAll ? '✔️ Done' : '✏️ Edit All'}
 							</Button> */}
-							<Button variant="light" onClick={saveCards} className="p-3">
+							<Button
+								variant="light"
+								onClick={() => saveCards(false)}
+								className="p-3"
+							>
 								{saving ? (
 									<Spinner animation="border" variant="dark" size="sm" />
 								) : (
