@@ -126,6 +126,7 @@ function ExtrapolateComponent() {
 						term: capitalizeFirstLetter(np),
 						definition: capitalizeFirstLetter(vp + sentence.sentence.predicate),
 						category: uuid,
+						starred: false,
 						uuid: uuidv4(),
 					})
 				}
@@ -251,7 +252,7 @@ function ExtrapolateComponent() {
 						</tbody>
 					</Table>
 
-					<div className="text-center">
+					<div className="text-center mb-5">
 						<Button variant="light" size="lg" onClick={saveCards}>
 							➕ Add to pack
 						</Button>

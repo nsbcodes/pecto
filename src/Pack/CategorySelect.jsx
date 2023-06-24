@@ -18,19 +18,29 @@ import { shallow } from 'zustand/shallow'
  * @param {number} index - The index of the card in the pack
  */
 function CategorySelect({ index }) {
-	const [cards, categories, addCategory, editCategory, setCardCategory, removeCardCategory] =
-		usePack(
-			(state) => [
-				// Data
-				state.pack.content[index].category,
-				state.pack.categories,
-				state.addCategory,
-				state.editCategory,
-				state.setCardCategory,
-				state.removeCardCategory,
-			],
-			shallow
-		)
+	const [
+		cards,
+		starred,
+		categories,
+		addCategory,
+		editCategory,
+		setCardCategory,
+		setCardStarred,
+		removeCardCategory,
+	] = usePack(
+		(state) => [
+			// Data
+			state.pack.content[index].category,
+			state.pack.content[index].starred,
+			state.pack.categories,
+			state.addCategory,
+			state.editCategory,
+			state.setCardCategory,
+			state.setCardStarred,
+			state.removeCardCategory,
+		],
+		shallow
+	)
 
 	// New Category modal
 	const [show, setShow] = useState(false)
@@ -75,72 +85,76 @@ function CategorySelect({ index }) {
 
 	return (
 		<>
-			<Dropdown>
-				<Dropdown.Toggle
-					size="sm"
-					className="ms-2"
-					variant="outline-light rounded-3 text-muted"
-					tabIndex="-1"
-				>
-					{categories[cards].name}
-				</Dropdown.Toggle>
-
-				<Dropdown.Menu>
-					{Object.entries(categories).map(([id, category]) => (
-						<div key={id}>
-							<Dropdown.Item
-								onClick={() => changeCardCategory(id)}
-								key={category.name}
+			<div className="d-flex justify-content-between align-items-center">
+				{starred ? (
+					<Button size="sm" variant="dark" onClick={() => setCardStarred(index, false)}>
+						⭐
+					</Button>
+				) : (
+					<Button size="sm" variant="light" onClick={() => setCardStarred(index, true)}>
+						⭐
+					</Button>
+				)}
+				<Dropdown>
+					<Dropdown.Toggle size="sm" className="ms-2" variant="light" tabIndex="-1">
+						{categories[cards].name}
+					</Dropdown.Toggle>
+					<Dropdown.Menu>
+						{Object.entries(categories).map(([id, category]) => (
+							<div key={id}>
+								<Dropdown.Item
+									onClick={() => changeCardCategory(id)}
+									key={category.name}
+								>
+									{category.name}
+								</Dropdown.Item>
+								{editingCategoryDropdown && category.name !== 'Default' && (
+									<div className="d-flex justify-content-between align-items-center ps-2 pe-2 pt-1 pb-1">
+										<Button
+											size="sm"
+											variant="outline-light"
+											onClick={() => showEditModal(id, category)}
+										>
+											✏️
+										</Button>
+										<Button
+											size="sm"
+											variant="outline-light"
+											onClick={() => removeCardCategory(id)}
+										>
+											🗑️
+										</Button>
+									</div>
+								)}
+							</div>
+						))}
+						<li>
+							<hr className="dropdown-divider" />
+						</li>
+						<div className="text-center d-flex justify-content-between align-items-center ps-2 pe-2">
+							<Button
+								size="sm"
+								variant="light"
+								onClick={() => editCategoryDropdown(!editingCategoryDropdown)}
 							>
-								{category.name}
-							</Dropdown.Item>
-
-							{editingCategoryDropdown && category.name !== 'Default' && (
-								<div className="d-flex justify-content-between align-items-center ps-2 pe-2 pt-1 pb-1">
-									<Button
-										size="sm"
-										variant="outline-light"
-										onClick={() => showEditModal(id, category)}
-									>
-										✏️
-									</Button>
-									<Button
-										size="sm"
-										variant="outline-light"
-										onClick={() => removeCardCategory(id)}
-									>
-										🗑️
-									</Button>
-								</div>
-							)}
+								⚒️
+							</Button>
 						</div>
-					))}
-					<li>
-						<hr className="dropdown-divider" />
-					</li>
-					<div className="text-center d-flex justify-content-between align-items-center ps-2 pe-2">
-						<Button
-							size="sm"
-							variant="light"
-							onClick={() => editCategoryDropdown(!editingCategoryDropdown)}
+						<li>
+							<hr className="dropdown-divider" />
+						</li>
+						<Dropdown.Item
+							className="text-center"
+							onClick={() => {
+								generateNewColor()
+								setShow(true)
+							}}
 						>
-							⚒️
-						</Button>
-					</div>
-					<li>
-						<hr className="dropdown-divider" />
-					</li>
-					<Dropdown.Item
-						className="text-center"
-						onClick={() => {
-							generateNewColor()
-							setShow(true)
-						}}
-					>
-						New
-					</Dropdown.Item>
-				</Dropdown.Menu>
-			</Dropdown>
+							New
+						</Dropdown.Item>
+					</Dropdown.Menu>
+				</Dropdown>
+			</div>
 
 			{/* New Category Modal */}
 			<Modal show={show} onHide={() => setShow(false)}>

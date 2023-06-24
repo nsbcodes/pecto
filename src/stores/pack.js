@@ -58,6 +58,18 @@ export const usePack = create((set, get) => ({
 			})
 		}
 	},
+	filterPackStarred: (starred) => {
+		if (starred === 0) {
+			set({ pack: get().defaultPack })
+		} else {
+			set({
+				pack: {
+					...get().defaultPack,
+					content: get().defaultPack.content.filter((c) => c.starred == starred),
+				},
+			})
+		}
+	},
 	addCards: (cards) =>
 		set(
 			produce((state) => {
@@ -90,6 +102,7 @@ export const usePack = create((set, get) => ({
 						term: a[0],
 						definition: a[1],
 						category: category,
+						starred: false,
 						uuid: uuidv4(),
 					})
 				})
@@ -172,6 +185,13 @@ export const usePack = create((set, get) => ({
 		set(
 			produce((state) => {
 				state.pack.content[i]['picture'] = pictureURL
+			})
+		)
+	},
+	setCardStarred: (i, value) => {
+		set(
+			produce((state) => {
+				state.pack.content[i]['starred'] = value
 			})
 		)
 	},

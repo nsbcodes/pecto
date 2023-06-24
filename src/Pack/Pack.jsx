@@ -25,22 +25,32 @@ function Pack() {
 	//const { pack: ogPack, mutate, isLoading, error } = usePack(packId)
 	//const { pack, setPack } = useState(ogPack)
 	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
-	const [pack, error, loading, filterPackCategory, loadPack, addCards, canEdit, letMeEdit] =
-		usePack(
-			(state) => [
-				// Data
-				state.pack,
-				state.error,
-				state.loading,
-				state.filterPackCategory,
-				state.loadPack,
-				state.addCards,
-				// Editing
-				state.canEdit,
-				state.letMeEdit,
-			],
-			shallow
-		)
+	const [
+		pack,
+		error,
+		loading,
+		filterPackCategory,
+		filterPackStarred,
+		loadPack,
+		addCards,
+		canEdit,
+		letMeEdit,
+	] = usePack(
+		(state) => [
+			// Data
+			state.pack,
+			state.error,
+			state.loading,
+			state.filterPackCategory,
+			state.filterPackStarred,
+			state.loadPack,
+			state.addCards,
+			// Editing
+			state.canEdit,
+			state.letMeEdit,
+		],
+		shallow
+	)
 
 	// For a saving progress spinner
 	const [saving, startSaving] = useState(false)
@@ -48,6 +58,9 @@ function Pack() {
 	// Category filter
 	const [categoryFilter, setCategoryFilter] = useState(0)
 	// const [filteredPack, setFilteredPack] = useState(pack)
+
+	// Starred filter
+	const [starredFilter, setStarredFilter] = useState(0)
 
 	const navigate = useNavigate()
 
@@ -58,7 +71,8 @@ function Pack() {
 	useEffect(() => {
 		if (
 			((pack !== undefined && user?.uid == pack.uid) || pack?.uid == 'me') &&
-			categoryFilter == 0
+			categoryFilter == 0 &&
+			starredFilter == 0
 		) {
 			letMeEdit(true)
 		} else {
@@ -114,6 +128,7 @@ function Pack() {
 			term: '',
 			definition: '',
 			category: 'default',
+			starred: false,
 			uuid: uuidv4(),
 		})
 	}
@@ -128,9 +143,13 @@ function Pack() {
 		} else {
 			// This isn't a stopgap for async, it just shows the saving spinner,
 			// providing feedback to the user
-			setTimeout(() => {
-				startSaving(false)
-			}, '200')
+			// setTimeout(() => {
+			// 	startSaving(false)
+			// }, '200')
+
+			// Do you want to know what is a stopgap?
+			// Allows filters to work and not be weird
+			window.location.reload()
 		}
 	}
 
@@ -140,29 +159,65 @@ function Pack() {
 
 			<div className="border border-2 p-4 rounded-3">
 				<Metadata />
+
 				<FlashcardView category={categoryFilter} />
-				<Form.Select
-					className="w-25 mt-3"
-					onChange={(e) => {
-						filterPackCategory(e.target.value)
-						// TODO: very very very complicated
-						// allow editing in filtered packs
-						// will require us to add uuids for each card
-						setCategoryFilter(e.target.value)
-					}}
-					value={categoryFilter}
-				>
-					<option value="0">All</option>
-					{Object.entries(pack.categories).map(([uuid, content]) => (
-						<option
-							key={uuid}
-							value={uuid}
-							style={{ backgroundColor: content.colors[1] }}
+
+				<div className="d-flex justify-content-between align-items-center">
+					<div>
+						<Button
+							variant="light"
+							size="sm"
+							className="me-3"
+							inline
+							onClick={() => {
+								setStarredFilter(0)
+								setCategoryFilter(0)
+								filterPackStarred(0)
+								filterPackCategory(0)
+							}}
 						>
-							{content.name}
-						</option>
-					))}
-				</Form.Select>
+							🔄
+						</Button>
+						<Form.Check
+							className="mt-3"
+							label="Starred"
+							type="checkbox"
+							inline
+							onChange={(e) => {
+								filterPackStarred(e.target.checked)
+								// TODO: very very very complicated
+								// allow editing in filtered packs
+								// will require us to a	dd uuids for each card
+								setStarredFilter(e.target.checked)
+							}}
+							value={starredFilter}
+						/>
+					</div>
+
+					<Form.Select
+						className="w-25 mt-3"
+						onChange={(e) => {
+							filterPackCategory(e.target.value)
+							// TODO: very very very complicated
+							// allow editing in filtered packs
+							// will require us to add uuids for each card
+							setCategoryFilter(e.target.value)
+						}}
+						value={categoryFilter}
+					>
+						<option value="0">All</option>
+						{Object.entries(pack.categories).map(([uuid, content]) => (
+							<option
+								key={uuid}
+								value={uuid}
+								style={{ backgroundColor: content.colors[1] }}
+							>
+								{content.name}
+							</option>
+						))}
+					</Form.Select>
+				</div>
+
 				<div id="packContentContainer" className="mt-3 border border-2 rounded-3">
 					{/* <AnimatePresence> */}
 					{pack.content.map((cards, index) => (
@@ -170,6 +225,7 @@ function Pack() {
 					))}
 					{/* </AnimatePresence> */}
 				</div>
+
 				{canEdit && (
 					<div id="parentToolbar" className="d-flex justify-content-between fixed-bottom">
 						<ButtonGroup className="mx-auto fw-bold" id="bottomToolbar">
