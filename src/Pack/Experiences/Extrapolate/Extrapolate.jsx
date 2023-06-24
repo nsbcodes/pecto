@@ -91,6 +91,11 @@ function ExtrapolateComponent() {
 					vp = sentence.sentence.verb.replaceAll(lv, '').trim() + ' '
 				}
 
+				// By now, if the verb phrase isn't a string,
+				// it probably contains no linking verbs,
+				// so we can just use the original verb phrase
+				if (typeof vp !== 'string') vp = sentence.sentence.verb + ' '
+
 				// Get the subject in json form
 				let np = nlp(sentence.sentence.subject).json()[0]
 
@@ -192,17 +197,15 @@ function ExtrapolateComponent() {
 				</FloatingLabel>
 
 				<FloatingLabel label="Excerpt">
-					<Form.Control
-						type="text"
-						value={text}
-						onChange={(e) => {
-							setText(e.target.value)
-						}}
-						className="mb-3"
-					/>
+					<InputWrapper value={text} save={(e) => setText(e.target.value)} />
 				</FloatingLabel>
 
-				<Button variant="dark" size="lg" onClick={() => generateCards()} className="mb-3">
+				<Button
+					variant="dark"
+					size="lg"
+					onClick={() => generateCards()}
+					className="mt-3 mb-3"
+				>
 					🏭 Generate
 				</Button>
 			</div>
