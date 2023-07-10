@@ -47,7 +47,7 @@ export const usePack = create((set, get) => ({
 		set({ loading: false })
 	},
 	filterPackCategory: (category) => {
-		if (category == 0) {
+		if (category === 0) {
 			set({ pack: get().defaultPack })
 		} else {
 			set({
@@ -114,7 +114,7 @@ export const usePack = create((set, get) => ({
 				state.pack.content = state.pack.content.concat(cards)
 			})
 		),
-	getSimilarCards: (card) => {
+	getSimilarCards: (card, n = 4) => {
 		let p = get().pack.content
 
 		// Get the index of the card we want to use as a base
@@ -123,8 +123,8 @@ export const usePack = create((set, get) => ({
 		// Sort using the Levenshtein algorithm
 		p = levenSort(p, i)
 
-		// Only use the first 4 elements
-		p = p.slice(0, 4)
+		// Only use the first nth elements
+		p = p.slice(0, n)
 
 		// Randomize it!
 		p.sort(() => 0.5 - Math.random())

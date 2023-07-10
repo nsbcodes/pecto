@@ -265,7 +265,7 @@ function ExtrapolateComponent() {
 
 export function Extrapolate() {
 	return (
-		<Experience name="extrapolate">
+		<Experience name="extrapolate" showFilter={false}>
 			<ExtrapolateComponent />
 		</Experience>
 	)

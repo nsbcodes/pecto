@@ -1,32 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import { useParams } from 'react-router-dom'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
-import Form from 'react-bootstrap/Form'
 import Spinner from 'react-bootstrap/Spinner'
 import { Navigation } from '../Navigation'
+import { Filter } from './Filter'
 
-export function Experience(props) {
+export function Experience({ children, name, showFilter = true }) {
 	const { displayName, packId } = useParams()
 
 	// No need to be specfic with selectors here,
 	// since we aren't editing the pack
-	const [pack, error, loading, loadPack, filterPackCategory] = usePack(
-		(state) => [
-			state.pack,
-			state.error,
-			state.loading,
-			state.loadPack,
-			state.filterPackCategory,
-		],
+	const [pack, error, loading, loadPack] = usePack(
+		(state) => [state.defaultPack, state.error, state.loading, state.loadPack],
 		shallow
 	)
-
-	// Category filter
-	const [categoryFilter, setCategoryFilter] = useState(0)
 
 	// Load the pack
 	useEffect(() => {
@@ -68,29 +59,11 @@ export function Experience(props) {
 	if (pack.content.length === 0) {
 		return (
 			<div className="container">
-				<Form.Select
-					className="w-25"
-					onChange={(e) => {
-						filterPackCategory(categoryFilter)
-						setCategoryFilter(e.target.value)
-					}}
-					value={categoryFilter}
-				>
-					<option value="0">All</option>
-					{Object.entries(pack.categories).map(([uuid, content]) => (
-						<option
-							key={uuid}
-							value={uuid}
-							style={{ backgroundColor: content.colors[1] }}
-						>
-							{content.name}
-						</option>
-					))}
-				</Form.Select>
+				<Filter />
 
 				<div className="text-center">
 					<h1>📎</h1>
-					<p>This category contains no cards</p>
+					<p>This category or pack contains no cards</p>
 				</div>
 			</div>
 		)
@@ -98,25 +71,11 @@ export function Experience(props) {
 
 	return (
 		<div className="container">
-			<Navigation baseURL={`${pack.author}/${pack.uuid}`} currentPage={props.name} />
+			<Navigation baseURL={`${pack.author}/${pack.uuid}`} currentPage={name} />
 
-			<Form.Select
-				className="w-25"
-				onChange={(e) => {
-					filterPackCategory(categoryFilter)
-					setCategoryFilter(e.target.value)
-				}}
-				value={categoryFilter}
-			>
-				<option value="0">All</option>
-				{Object.entries(pack.categories).map(([uuid, content]) => (
-					<option key={uuid} value={uuid} style={{ backgroundColor: content.colors[1] }}>
-						{content.name}
-					</option>
-				))}
-			</Form.Select>
+			{showFilter && <Filter />}
 
-			{props.children}
+			{children}
 		</div>
 	)
 }

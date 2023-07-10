@@ -71,8 +71,8 @@ function Pack() {
 	useEffect(() => {
 		if (
 			((pack !== undefined && user?.uid == pack.uid) || pack?.uid == 'me') &&
-			categoryFilter == 0 &&
-			starredFilter == 0
+			categoryFilter === 0 &&
+			starredFilter === 0
 		) {
 			letMeEdit(true)
 		} else {
@@ -180,7 +180,9 @@ function Pack() {
 						</Button>
 						<Form.Check
 							className="mt-3"
-							label="Starred"
+							label={
+								starredFilter === 0 ? 'Starred Filter (Disabled)' : 'Starred Filter'
+							}
 							type="checkbox"
 							inline
 							onChange={(e) => {
@@ -221,7 +223,7 @@ function Pack() {
 				<div id="packContentContainer" className="mt-3 border border-2 rounded-3">
 					{/* <AnimatePresence> */}
 					{pack.content.map((cards, index) => (
-						<Cards index={index} edit={false} key={cards + index} />
+						<Cards index={index} edit={false} key={cards.uuid + index} />
 					))}
 					{/* </AnimatePresence> */}
 				</div>

@@ -51,6 +51,7 @@ function MultipleChoice(props) {
 
 	const [wrongAnswerClicked, clickedWrongAnswer] = useState(false)
 
+	// TODO: why do we have a seperate function for this?
 	function regenerateSimilarTerms() {
 		setSimilarTerms(getSimilarCards(cards))
 	}

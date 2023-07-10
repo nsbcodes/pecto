@@ -13,7 +13,7 @@ import nlp from 'compromise'
 import { v4 as uuidv4 } from 'uuid'
 
 function ComprehendComponent() {
-	const [pack, length] = usePack((state) => [state.pack, state.pack.content.length], shallow)
+	const [pack] = usePack((state) => [state.pack], shallow)
 
 	// Must be a single sentence
 	// TODO: implement https://github.com/spencermountain/compromise/issues/388#issuecomment-1602804777
@@ -53,17 +53,17 @@ function ComprehendComponent() {
 		return output
 	}
 
-	function toPresentTense(text) {
-		text = text.replace(/<[^>]*>?/gm, '')
-		let doc = nlp(text)
-		// ignore spaces when calculating equality
-		if (
-			doc.sentences().toPresentTense().text().trim().replaceAll(' ', '') !=
-			text.trim().replaceAll(' ', '')
-		) {
-			return text
-		}
-	}
+	// function toPresentTense(text) {
+	// 	text = text.replace(/<[^>]*>?/gm, '')
+	// 	let doc = nlp(text)
+	// 	// ignore spaces when calculating equality
+	// 	if (
+	// 		doc.sentences().toPresentTense().text().trim().replaceAll(' ', '') !=
+	// 		text.trim().replaceAll(' ', '')
+	// 	) {
+	// 		return text
+	// 	}
+	// }
 
 	return (
 		<>
@@ -73,7 +73,7 @@ function ComprehendComponent() {
 					Generate reports, mnemonics, and ___ using Artificial Intelligence and Natural
 					Language Processing
 				</p>
-				<Button
+				{/* <Button
 					variant="dark"
 					size="lg"
 					className="mb-4"
@@ -84,7 +84,7 @@ function ComprehendComponent() {
 					}
 				>
 					🏭 Generate
-				</Button>
+				</Button> */}
 			</div>
 
 			<Table striped bordered>

@@ -129,7 +129,7 @@ function EditPack() {
 			<div id="packContentContainer" className="mt-3 border border-2 rounded-3">
 				{/* <AnimatePresence> */}
 				{pack.content.map((cards, index) => (
-					<Cards index={index} edit={true} key={cards + index} />
+					<Cards index={index} edit={true} key={cards.uuid + index} />
 				))}
 				{/* </AnimatePresence> */}
 			</div>
