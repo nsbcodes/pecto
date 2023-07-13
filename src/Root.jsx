@@ -19,7 +19,7 @@ import { Outlet } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import './Root.scss'
-import './themes/main.scss'
+import './themes/light.scss'
 
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
@@ -78,12 +78,21 @@ function Root() {
 		}
 	}, [username])
 
+	// Lazy-load other themes
+	// We need to use a glob since we can't use import.meta.url for a dynamic import
 	useEffect(() => {
-		if (Themes[theme] !== undefined) {
+		Themes.forEach((theme) => async () => {
+			if (theme.id !== 'light') await import(`./themes/${theme.id}.theme.scss`)
+		})
+	}, [])
+
+	useEffect(() => {
+		const applyTheme = async () => {
 			document.documentElement.setAttribute('data-bs-theme', Themes[theme].color)
 			document.documentElement.setAttribute('theme', Themes[theme].id)
 			localStorage.setItem('theme', theme)
 		}
+		if (Themes[theme] !== undefined) applyTheme()
 	}, [theme])
 
 	async function handleAuthClick() {

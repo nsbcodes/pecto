@@ -1,30 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-@import '_bs/functions';
-@import '_bs/variables';
-@import '_bs/variables-dark';
-
-$font-family-sans-serif:
-	Inter,
-	// Cross-platform generic font family (default user interface font)
-	system-ui,
-	// Safari for macOS and iOS (San Francisco)
-	-apple-system,
-	// Windows
-	'Segoe UI',
-	// Android
-	Roboto,
-	// older macOS and iOS
-	'Helvetica Neue', // Linux
-	'Noto Sans',
-	'Liberation Sans',
-	// Basic web fallback
-	Arial,
-	// Sans serif fallback
-	sans-serif,
-	// Emoji fonts
-	'Apple Color Emoji',
-	'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+// Components or features not used should be commented out
 
 @import '_bs/maps';
 @import '_bs/mixins';
@@ -68,15 +42,3 @@ $font-family-sans-serif:
 
 // Utilities
 @import '_bs/utilities/api';
-
-
-// TODO: is there any programmatic way to do this that doesn't require a page reload?
-[theme="light"] {
-	@import 'light';
-}
-[theme="dark"] {
-	@import 'dark';
-}
-[theme="night"] {
-	@import 'night';
-}
