@@ -1,16 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@500&display=swap');
 
-@import "../node_modules/bootstrap/scss/functions";
-@import "../node_modules/bootstrap/scss/variables";
-@import "../node_modules/bootstrap/scss/variables-dark";
+// @import "../node_modules/bootstrap/scss/functions";
+// @import "../node_modules/bootstrap/scss/variables";
+// @import "../node_modules/bootstrap/scss/variables-dark";
 
-@import "../node_modules/bootstrap/scss/maps";
-@import "../node_modules/bootstrap/scss/mixins";
-@import "../node_modules/bootstrap/scss/root";
+// @import "../node_modules/bootstrap/scss/maps";
+// @import "../node_modules/bootstrap/scss/mixins";
+// @import "../node_modules/bootstrap/scss/root";
 
 #packRoot {
 	margin-left: 5rem;
 	width: 90%;
+	width: 70vw;
 }
 
 #packContentContainer {
@@ -23,40 +24,40 @@
 	transform: translateY(-25%);
 }
 
-@include media-breakpoint-up(sm) { 
-	#packRoot {
-		width: 80vw;
-	}
-	#parentToolbar {
-		transform: translateY(-47.5%);
-	}
-}
-@include media-breakpoint-up(md) {
-	#packRoot {
-		width: 77.5vw;
-	}
-	#packContentContainer {
-		padding: 1.5em;
-	}
-	#parentToolbar {
-		transform: translateY(-75%);
-	}
-}
-@include media-breakpoint-up(lg) {
-	#packRoot {
-		width: 70vw
-	}
-}
-@include media-breakpoint-up(xl) {
-	#packRoot {
-		width: 65vw
-	}
-}
-@include media-breakpoint-up(xxl) {
-	#packRoot {
-		width: 60vw
-	}
-}
+// @include media-breakpoint-up(sm) { 
+// 	#packRoot {
+// 		width: 80vw;
+// 	}
+// 	#parentToolbar {
+// 		transform: translateY(-47.5%);
+// 	}
+// }
+// @include media-breakpoint-up(md) {
+// 	#packRoot {
+// 		width: 77.5vw;
+// 	}
+// 	#packContentContainer {
+// 		padding: 1.5em;
+// 	}
+// 	#parentToolbar {
+// 		transform: translateY(-75%);
+// 	}
+// }
+// @include media-breakpoint-up(lg) {
+// 	#packRoot {
+// 		width: 70vw
+// 	}
+// }
+// @include media-breakpoint-up(xl) {
+// 	#packRoot {
+// 		width: 65vw
+// 	}
+// }
+// @include media-breakpoint-up(xxl) {
+// 	#packRoot {
+// 		width: 60vw
+// 	}
+// }
 
 #packName {
 	font-family: 'Lexend Exa', 'Inter', sans-serif;
