@@ -3,6 +3,8 @@
 [theme='night'] {
 	@import 'pre';
 
+	@import 'bootstrap';
+
 	body {
 		background-color: color.scale(#242933, $lightness: -20%);
 	}
@@ -32,6 +34,4 @@
 	#navbar {
 		background-color: color.scale(#2e3440, $lightness: -20%);
 	}
-
-	@import 'bootstrap';
 }

@@ -265,10 +265,12 @@ function ExtrapolateComponent() {
 	)
 }
 
-export function Extrapolate() {
+const Extrapolate = function () {
 	return (
 		<Experience name="extrapolate" showFilter={false}>
 			<ExtrapolateComponent />
 		</Experience>
 	)
 }
+
+export default Extrapolate

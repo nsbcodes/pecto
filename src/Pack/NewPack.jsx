@@ -18,7 +18,7 @@ import { shallow } from 'zustand/shallow'
 //
 // This is why we use an id variable
 
-export function NewPack() {
+const NewPack = function () {
 	const [user, newPack, authenticated] = useUser(
 		(state) => [state.user, state.newPack, state.authenticated],
 		shallow
@@ -52,3 +52,5 @@ export function NewPack() {
 		</div>
 	)
 }
+
+export default NewPack

@@ -1,0 +1,30 @@
+// Doesn't work for whatever reason
+// $font-family-sans-serif:
+// 	Inter,
+// 	// Cross-platform generic font family (default user interface font)
+// 	system-ui,
+// 	// Safari for macOS and iOS (San Francisco)
+// 	-apple-system,
+// 	// Windows
+// 	'Segoe UI',
+// 	// Android
+// 	Roboto,
+// 	// older macOS and iOS
+// 	'Helvetica Neue',
+// 	// Linux
+// 	'Noto Sans',
+// 	'Liberation Sans',
+// 	// Basic web fallback
+// 	Arial,
+// 	// Sans serif fallback
+// 	sans-serif,
+// 	// Emoji fonts
+// 	'Apple Color Emoji',
+// 	'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+// TODO: when Bootstap 6 comes out, refactor all themes
+// https://github.com/twbs/bootstrap/issues/37983
+
+@import '_bs/functions';
+@import '_bs/variables';
+@import '_bs/variables-dark';

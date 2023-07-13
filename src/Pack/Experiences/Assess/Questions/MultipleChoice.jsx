@@ -20,7 +20,7 @@ export default function MultipleChoice({ i, hard, submit, save }) {
 		if (cards !== undefined) {
 			setQs(
 				similarTerms.map((card, i) => (
-					<li key={card.uuid + cards.uuid + i} className="list-group-item">
+					<li key={card.uuid + cards.uuid + i} className="list-group-item bg-transparent">
 						{(() => {
 							// TODO: Refactor this into a seperate function with arguments for card and cards
 

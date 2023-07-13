@@ -3,7 +3,7 @@ import { getUsersPacks } from '@/lib/pack'
 import UserPacks from './Home/UserPacks'
 import { useParams } from 'react-router-dom'
 
-export function UserView() {
+const UserView = function () {
 	const { displayName } = useParams()
 	const [usersPacks, setUsersPacks] = useState([])
 
@@ -34,3 +34,5 @@ export function UserView() {
 		</div>
 	)
 }
+
+export default UserView

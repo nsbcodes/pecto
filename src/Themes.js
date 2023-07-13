@@ -6,6 +6,12 @@ export const Themes = [
 		id: 'light',
 		dark: false,
 	},
+	{
+		name: 'Neopolitan',
+		color: 'light',
+		id: 'neo',
+		dark: false,
+	},
 	// { name: 'Gold', dark: false, accent: '#fffaa5' },
 	{
 		name: 'Dark (Nord)',

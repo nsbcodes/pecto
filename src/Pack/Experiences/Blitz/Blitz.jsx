@@ -287,10 +287,12 @@ function BlitzComponent() {
 	)
 }
 
-export function Blitz() {
+const Blitz = function () {
 	return (
 		<Experience name="blitz">
 			<BlitzComponent />
 		</Experience>
 	)
 }
+
+export default Blitz

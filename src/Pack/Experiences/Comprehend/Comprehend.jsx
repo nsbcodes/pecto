@@ -119,10 +119,12 @@ function ComprehendComponent() {
 	)
 }
 
-export function Comprehend() {
+const Comprehend = function () {
 	return (
 		<Experience name="comprehend">
 			<ComprehendComponent />
 		</Experience>
 	)
 }
+
+export default Comprehend

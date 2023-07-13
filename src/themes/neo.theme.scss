@@ -1,0 +1,59 @@
+@use "sass:color";
+
+[theme='neo'] {
+
+	// https://coolors.co/palette/ff99c8-fcf6bd-d0f4de-a9def9-e4c1f9
+
+	$primary: #A9DEF9;
+	$warning: #FCF6BD;
+	$danger: #FF99C8;
+	$light: color.scale($primary, $lightness: 75%);
+	$success: #D0F4DE;
+
+	$background: color.scale($warning, $lightness: 80%);
+	$foreground: color.scale($warning, $lightness: 72.5%);
+	$foreground-2: color.scale($danger, $lightness: 90%);
+
+	// Card background
+	// body-bg doesn't work
+	// $body-bg: color.scale($primary, $lightness: 80%);
+	// $card-bg: $body-bg;
+
+	@import 'pre';
+
+	$theme-colors: map-merge(
+		$theme-colors,
+		(
+			'primary': $primary,
+			'warning': $warning,
+			'danger': $danger,
+			'light': $light,
+			'success': $success,
+		)
+	);
+
+	@import 'bootstrap';
+
+	body {
+		background-color: $background;
+	}
+
+	#navbar {
+		background-color: $light;
+	}
+
+	.nav-pills .nav-link.active {
+		background-color: $primary;
+		color: $body-color;
+	}
+
+	.pack {
+		@extend .shadow-lg;
+	}
+
+	#packContentContainer, .card {
+		background-color: $foreground-2;
+	}
+
+	--bs-body-bg: #{$foreground};
+}

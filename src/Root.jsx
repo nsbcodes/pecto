@@ -78,16 +78,18 @@ function Root() {
 		}
 	}, [username])
 
-	// Lazy-load other themes
-	// We need to use a glob since we can't use import.meta.url for a dynamic import
-	useEffect(() => {
-		Themes.forEach((theme) => async () => {
-			if (theme.id !== 'light') await import(`./themes/${theme.id}.theme.scss`)
-		})
-	}, [])
+	// // Lazy-load other themes
+	// // We need to use a glob since we can't use import.meta.url for a dynamic import
+	// useEffect(() => {
+	// 	Themes.forEach((theme) => async () => {
+	// 		if (theme.id !== 'light') await import(`./themes/${theme.id}.theme.scss`)
+	// 	})
+	// }, [])
 
 	useEffect(() => {
 		const applyTheme = async () => {
+			if (Themes[theme].id !== 'light')
+				await import(`./themes/${Themes[theme].id}.theme.scss`)
 			document.documentElement.setAttribute('data-bs-theme', Themes[theme].color)
 			document.documentElement.setAttribute('theme', Themes[theme].id)
 			localStorage.setItem('theme', theme)

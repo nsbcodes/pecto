@@ -200,10 +200,12 @@ function AssessComponent() {
 	)
 }
 
-export function Assess() {
+const Assess = function () {
 	return (
 		<Experience name="assess" showFilter={false}>
 			<AssessComponent />
 		</Experience>
 	)
 }
+
+export default Assess
