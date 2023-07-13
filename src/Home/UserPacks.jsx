@@ -62,70 +62,68 @@ function UserPacks(props) {
 					))}
 			</div>
 
-			<div className="container">
-				<div className="row row-cols-1 row-cols-sm-3 gy-4">
-					{props.canEdit && (
-						<div className="col">
-							<LinkContainer to={`/new/pack`}>
-								<div className="card text-center h-100">
-									<div className="card-body">
-										<div className="mx-auto">
-											<h2>➕</h2>
-											<h5>New Pack</h5>
-										</div>
+			<div className="row row-cols-1 row-cols-sm-3 gy-4">
+				{props.canEdit && (
+					<div className="col">
+						<LinkContainer to={`/new/pack`}>
+							<div className="card text-center h-100">
+								<div className="card-body">
+									<div className="mx-auto">
+										<h2>➕</h2>
+										<h5>New Pack</h5>
 									</div>
 								</div>
-							</LinkContainer>
-						</div>
-					)}
+							</div>
+						</LinkContainer>
+					</div>
+				)}
 
-					{props.packs.map((pack) => (
-						<div className="col" key={pack.uuid}>
-							<LinkContainer to={`/view/${pack.author}/${pack.uuid}`}>
-								<div className="card">
-									<div className="card-body">
-										<h5 className="card-title">
-											{pack.name == '' ? (
-												<span className="text-muted">Empty Title</span>
-											) : (
-												pack.name
-											)}
-										</h5>
-										<h6 className="card-subtitle mb-2 text-muted">
-											✏️ {pack.superficialAuthor}
-										</h6>
-										For{' '}
-										{pack.class == '' ? (
-											<span className="text-muted">N/A</span>
+				{props.packs.map((pack) => (
+					<div className="col" key={pack.uuid}>
+						<LinkContainer to={`/view/${pack.author}/${pack.uuid}`}>
+							<div className="card">
+								<div className="card-body">
+									<h5 className="card-title">
+										{pack.name == '' ? (
+											<span className="text-muted">Empty Title</span>
 										) : (
-											pack.class
+											pack.name
 										)}
-										<br />
-										Created on {pack.date}
-									</div>
+									</h5>
+									<h6 className="card-subtitle mb-2 text-muted">
+										✏️ {pack.superficialAuthor}
+									</h6>
+									For{' '}
+									{pack.class == '' ? (
+										<span className="text-muted">N/A</span>
+									) : (
+										pack.class
+									)}
+									<br />
+									Created on {pack.date}
 								</div>
-							</LinkContainer>
+							</div>
+						</LinkContainer>
 
-							{props.canEdit && editing && (
-								<div className="mt-2">
-									<Form.Check
-										reverse
-										label="Remove"
-										onClick={(e) => {
-											if (e.target.checked == true) {
-												packsToDelete.push(pack.uuid)
-											} else {
-												packsToDelete = packsToDelete.filter(
-													(e) => e != pack.uuid
-												)
-											}
-										}}
-									/>
-								</div>
-							)}
-						</div>
-					))}
-				</div>
+						{props.canEdit && editing && (
+							<div className="mt-2">
+								<Form.Check
+									reverse
+									label="Remove"
+									onClick={(e) => {
+										if (e.target.checked == true) {
+											packsToDelete.push(pack.uuid)
+										} else {
+											packsToDelete = packsToDelete.filter(
+												(e) => e != pack.uuid
+											)
+										}
+									}}
+								/>
+							</div>
+						)}
+					</div>
+				))}
 			</div>
 		</>
 	)
