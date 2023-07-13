@@ -11,7 +11,7 @@ import './FlashcardView.scss'
 
 import MultipleChoice from './MultipleChoice'
 
-export function FlashcardView({ category }) {
+export function FlashcardView() {
 	const [pack, editing] = usePack((state) => [state.pack, state.editing], shallow)
 	const [currentCard, setCurrentCard] = useState(0)
 
@@ -53,7 +53,7 @@ export function FlashcardView({ category }) {
 		return (
 			<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">
 				<div className="container">
-					<h3 className="text-center text-muted">No cards are set to {category}</h3>
+					<h3 className="text-center text-muted">No cards match your filters</h3>
 				</div>
 			</div>
 		)

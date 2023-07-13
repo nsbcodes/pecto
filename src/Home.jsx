@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import UserPacks from './Home/UserPacks'
-import './Home.scss'
 
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 import { getMyPacks as getMyPacksLocal } from '@/lib/localstore'
+import { ThemeContext } from './lib/context'
 
 import ListGroup from 'react-bootstrap/ListGroup'
 import Button from 'react-bootstrap/Button'
@@ -16,6 +16,7 @@ function Home() {
 	)
 	const [usersPacks, setUsersPacks] = useState([])
 	const [localPacks, setLocalPacks] = useState([])
+	const theme = useContext(ThemeContext)
 
 	useEffect(() => {
 		async function fetchData() {
@@ -42,18 +43,21 @@ function Home() {
 						<h3 className="mt-3">Manage Local Packs</h3>
 						<ListGroup className="mt-3">
 							{localPacks.map((pack) => (
-								<ListGroup.Item key={pack.uuid}>
-									<div className="d-flex justify-content-between">
-										<div>
-											{pack.name == '' ? (
-												<span className="text-muted">No Name</span>
-											) : (
-												<span>{pack.name}</span>
-											)}
-										</div>
+								<ListGroup.Item key={pack.uuid} className="theme-fg">
+									<div className="d-flex justify-content-between align-items-center">
+										{pack.name == '' ? (
+											<a
+												className="text-muted"
+												href={`/view/me/${pack.uuid}`}
+											>
+												No Name
+											</a>
+										) : (
+											<a href={`/view/me/${pack.uuid}`}>{pack.name}</a>
+										)}
 										<div>
 											<Button
-												variant="light"
+												variant={theme.color ? 'light' : 'dark'}
 												size="sm"
 												className="ms-2"
 												onClick={async () => {
@@ -72,7 +76,7 @@ function Home() {
 												variant="danger"
 												size="sm"
 												className="ms-2 me-2"
-												onClick={deletePack(pack.uuid, true)}
+												onClick={() => deletePack(pack.uuid, true)}
 											>
 												Delete
 											</Button>

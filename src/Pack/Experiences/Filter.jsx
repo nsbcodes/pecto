@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { ThemeContext } from '@/lib/context'
 
 export function Filter({ disabled = false }) {
 	const [pack, filterPackCategory, filterPackStarred] = usePack(
 		(state) => [state.defaultPack, state.filterPackCategory, state.filterPackStarred],
 		shallow
 	)
+	const theme = useContext(ThemeContext)
 
 	// Category filter
 	const [categoryFilter, setCategoryFilter] = useState(0)
@@ -25,7 +27,7 @@ export function Filter({ disabled = false }) {
 		>
 			<div>
 				<Button
-					variant="light"
+					variant={theme.color}
 					size="sm"
 					className="me-3"
 					inline="true"

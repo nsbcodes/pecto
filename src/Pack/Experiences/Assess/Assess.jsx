@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
@@ -12,9 +12,11 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import { Test } from './Test'
+import { ThemeContext } from '@/lib/context'
 
 function AssessComponent() {
 	const [pack] = usePack((state) => [state.pack], shallow)
+	const theme = useContext(ThemeContext)
 
 	const [startedTest, setStartedTest] = useState(false)
 
@@ -69,7 +71,7 @@ function AssessComponent() {
 
 				<div
 					className={`w-75 mx-auto border p-4 rounded-3 text-start ${
-						startedTest && 'bg-light'
+						startedTest && `bg-${theme.color}`
 					}`}
 				>
 					<h3>🔑 Filters</h3>
@@ -166,7 +168,7 @@ function AssessComponent() {
 								<div className="d-grid h-100">
 									<Button
 										onClick={handleSubmit}
-										variant="dark"
+										variant={theme.dark ? 'light' : 'dark'}
 										disabled={startedTest}
 									>
 										Generate Test

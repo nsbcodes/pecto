@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import Dropdown from 'react-bootstrap/Dropdown'
 import Modal from 'react-bootstrap/Modal'
@@ -8,6 +8,7 @@ import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
 import { truncateString } from '@/lib/utilities'
+import { ThemeContext } from '@/lib/context'
 
 /**
  * A dropdown menu that allows the user to select a picture for a card and contains a modal to add pictures
@@ -29,6 +30,7 @@ function PictureSelect({ index }) {
 		],
 		shallow
 	)
+	const theme = useContext(ThemeContext)
 
 	// Valid URL
 	const [validURL, setValidURL] = useState(false)
@@ -42,8 +44,8 @@ function PictureSelect({ index }) {
 			<Dropdown>
 				<Dropdown.Toggle
 					size="sm"
-					className="ms-2"
-					variant="outline-light rounded-3 text-muted"
+					className="ms-2 rounded-3 text-muted"
+					variant={`outline-${theme.color}`}
 					tabIndex="-1"
 				>
 					{cards?.picture ? truncateString(cards.picture, 15) : 'No Picture'}

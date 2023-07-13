@@ -10,27 +10,27 @@ import {
 } from './localstore'
 
 const Database = {
-	newPack: async function(id, newPack) {
+	newPack: async function (id, newPack) {
 		if (this._authenticated) {
 			addNewPackCloud(id, newPack)
 		} else {
 			addNewPackLocal(id, newPack)
 		}
 	},
-	deletePack: async function(id) {
+	deletePack: async function (id) {
 		if (this._authenticated) {
 			deletePackCloud(id)
 		} else {
 			deletePackLocal(id)
 		}
 	},
-	getMyPacks: async function() {
+	getMyPacks: async function () {
 		if (this._authenticated) {
 			return await getMyPacksCloud()
 		} else {
 			return await getMyPacksLocal()
 		}
-	}
+	},
 }
 
 export { Database }

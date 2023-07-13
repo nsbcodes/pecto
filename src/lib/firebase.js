@@ -10,7 +10,7 @@ import {
 	query,
 	collection,
 	writeBatch,
-	connectFirestoreEmulator,
+	// connectFirestoreEmulator,
 } from 'firebase/firestore'
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from 'firebase/auth'
 

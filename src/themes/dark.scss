@@ -1,0 +1,31 @@
+body {
+	background-color: #242933;
+}
+
+.card,
+.pack,
+.theme-fg-container {
+	background-color: #2e3440;
+	@extend .shadow;
+	.card-body {
+		border-radius: 10px;
+	}
+}
+
+.theme-fg {
+	background-color: #2e3440;
+}
+
+.card * {
+	background-color: #2e3440;
+}
+
+.border {
+	border-color: #3b4252 !important;
+}
+
+#navbar {
+	background-color: #2e3440;
+}
+
+@import 'bootstrap';

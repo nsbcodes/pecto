@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 import { v4 as uuidv4 } from 'uuid'
 
 import { Editor } from './Editor'
+import { ThemeContext } from '@/lib/context'
 
 /**
  * Rendered by `Cards` when editing
@@ -26,6 +27,7 @@ function EditingPair({ index }) {
 		],
 		shallow
 	)
+	const theme = useContext(ThemeContext)
 
 	useEffect(() => {
 		setEditing(true)
@@ -60,7 +62,7 @@ function EditingPair({ index }) {
 		<div className="container overflow-hidden">
 			<div className="row">
 				<div className="col p-2">
-					<div className="p-2 py-2 shadow-sm bg-light rounded-3">
+					<div className={`p-2 py-2 shadow-sm bg-${theme.color} rounded-3`}>
 						<Editor
 							content={cards.term}
 							save={(val) => setCard(index, { term: val })}
@@ -68,7 +70,7 @@ function EditingPair({ index }) {
 					</div>
 				</div>
 				<div className="col p-2">
-					<div className="p-2 py-2 shadow-sm bg-light rounded-3">
+					<div className={`p-2 py-2 shadow-sm bg-${theme.color} rounded-3`}>
 						<Editor
 							content={cards.definition}
 							save={(val) => setCard(index, { definition: val })}

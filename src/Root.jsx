@@ -11,29 +11,33 @@ import Modal from 'react-bootstrap/Modal'
 import { auth, authenticateWithGoogle, getUser, signOutOfGoogle } from '@/lib/firebase'
 import { getUsername, initUser } from '@/lib/firebase'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { UserContext } from '@/lib/context'
+import { ThemeContext } from '@/lib/context'
 
 import { Outlet } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
 import { LinkContainer } from 'react-router-bootstrap'
 
 import './Root.scss'
+import './themes/main.scss'
 
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
 import { debounce } from './lib/utilities'
+import Theme from './Theme'
+import { Themes } from './Themes'
 
 function Root() {
-	const [user, loading, error] = useAuthState(auth)
+	const [user, loading] = useAuthState(auth)
 	const [setUser] = useUser((state) => [state.setUser], shallow)
-	const navigate = useNavigate()
+	// const navigate = useNavigate()
 
-	const [search, setSearch] = useState('')
+	// const [search, setSearch] = useState('')
 	const [askForUsername, setAskForUsername] = useState(false)
 	const [username, setUsername] = useState('')
 	const [usernameAvailable, setUsernameAvailable] = useState('Great Username!')
+	const [theme, setTheme] = useState(localStorage.getItem('theme') || 0)
 
 	useEffect(() => {
 		if (user?.displayName == undefined) {
@@ -74,6 +78,14 @@ function Root() {
 		}
 	}, [username])
 
+	useEffect(() => {
+		if (Themes[theme] !== undefined) {
+			document.documentElement.setAttribute('data-bs-theme', Themes[theme].color)
+			document.documentElement.setAttribute('theme', Themes[theme].id)
+			localStorage.setItem('theme', theme)
+		}
+	}, [theme])
+
 	async function handleAuthClick() {
 		if (user) {
 			// Log-Out functionality
@@ -97,15 +109,15 @@ function Root() {
 		window.location.reload()
 	}
 
-	function openSearchPage() {
-		navigate(`/search/${encodeURIComponent(search)}`)
-	}
+	// function openSearchPage() {
+	// 	navigate(`/search/${encodeURIComponent(search)}`)
+	// }
 
 	return (
 		<>
 			<Navbar
 				id="navbar"
-				bg="light"
+				data-bs-theme={Themes[theme]?.color}
 				expand="lg"
 				className="shadow-sm rounded-3 position-absolute fixed-top"
 			>
@@ -131,17 +143,8 @@ function Root() {
 							</NavDropdown>
 						</Nav>
 
-						<Form className="d-flex" onSubmit={openSearchPage}>
-							<Form.Control
-								type="search"
-								placeholder="Enter Pack Name"
-								className="me-2"
-								aria-label="Enter Pack Name"
-								onChange={(e) => setSearch(e.target.value)}
-							/>
-							<Button type="submit" className="me-2">
-								Search
-							</Button>
+						<div className="d-flex justify-content-between">
+							<Theme theme={theme} setTheme={setTheme} />
 							<Button
 								variant={user ? 'danger' : 'success'}
 								onClick={handleAuthClick}
@@ -149,21 +152,16 @@ function Root() {
 							>
 								{user ? 'Sign Out' : 'Sign in with Google'}
 							</Button>
-							{/* <LinkContainer to={'/donate'}>
-                                <a className="btn btn-primary text-light ms-2">
-                                    Donate
-                                </a>
-                            </LinkContainer> */}
-						</Form>
+						</div>
 					</Navbar.Collapse>
 				</Container>
 			</Navbar>
 
-			<div id="detail">
-				<UserContext.Provider value={{ user: user, loading: loading, error: error }}>
+			<ThemeContext.Provider value={Themes[theme]}>
+				<div id="detail">
 					<Outlet />
-				</UserContext.Provider>
-			</div>
+				</div>
+			</ThemeContext.Provider>
 
 			{/* Username sign-in modal */}
 			<Modal show={askForUsername}>

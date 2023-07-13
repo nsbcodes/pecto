@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Cards from './Cards'
 import { Metadata } from './Metadata'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -18,6 +18,7 @@ import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
 import { v4 as uuidv4 } from 'uuid'
+import { ThemeContext } from '@/lib/context'
 
 function Pack() {
 	const { displayName, packId } = useParams()
@@ -51,6 +52,7 @@ function Pack() {
 		],
 		shallow
 	)
+	const theme = useContext(ThemeContext)
 
 	// For a saving progress spinner
 	const [saving, startSaving] = useState(false)
@@ -69,14 +71,16 @@ function Pack() {
 	}, [])
 
 	useEffect(() => {
-		if (
-			((pack !== undefined && user?.uid == pack.uid) || pack?.uid == 'me') &&
-			categoryFilter === 0 &&
-			starredFilter === 0
-		) {
-			letMeEdit(true)
-		} else {
-			letMeEdit(false)
+		if (pack !== undefined) {
+			if (
+				(user?.uid === pack.uid || (pack?.uid == 'me' && !user?.uid)) &&
+				categoryFilter === 0 &&
+				starredFilter === 0
+			) {
+				letMeEdit(true)
+			} else {
+				letMeEdit(false)
+			}
 		}
 	}, [user, pack])
 
@@ -157,7 +161,7 @@ function Pack() {
 		<div id="packRoot" className="mx-auto">
 			<Navigation baseURL={`${pack.author}/${pack.uuid}`} currentPage="view" />
 
-			<div className="border border-2 p-4 rounded-3">
+			<div className="pack border border-2 p-4 rounded-3">
 				<Metadata />
 
 				<FlashcardView category={categoryFilter} />
@@ -165,10 +169,10 @@ function Pack() {
 				<div className="d-flex justify-content-between align-items-center">
 					<div>
 						<Button
-							variant="light"
+							variant={theme.color}
 							size="sm"
 							className="me-3"
-							inline
+							inline="true"
 							onClick={() => {
 								setStarredFilter(0)
 								setCategoryFilter(0)

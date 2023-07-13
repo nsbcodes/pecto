@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
@@ -16,6 +16,7 @@ import { capitalizeFirstLetter } from '@/lib/utilities'
 
 import { useParams } from 'react-router-dom'
 import { useUser } from '@/stores/user'
+import { ThemeContext } from '@/lib/context'
 
 function InputWrapper({ value, save }) {
 	const ref = useRef(null)
@@ -47,6 +48,7 @@ function InputWrapper({ value, save }) {
 function ExtrapolateComponent() {
 	const [newPack] = useUser((state) => [state.newPack], shallow)
 	const [pack, addCategory] = usePack((state) => [state.pack, state.addCategory], shallow)
+	const theme = useContext(ThemeContext)
 
 	const { packId } = useParams()
 
@@ -202,7 +204,7 @@ function ExtrapolateComponent() {
 				</FloatingLabel>
 
 				<Button
-					variant="dark"
+					variant={theme.dark ? 'light' : 'dark'}
 					size="lg"
 					onClick={() => generateCards()}
 					className="mt-3 mb-3"
@@ -253,7 +255,7 @@ function ExtrapolateComponent() {
 					</Table>
 
 					<div className="text-center mb-5">
-						<Button variant="light" size="lg" onClick={saveCards}>
+						<Button variant={theme.color} size="lg" onClick={saveCards}>
 							➕ Add to pack
 						</Button>
 					</div>

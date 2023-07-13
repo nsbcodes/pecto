@@ -8,6 +8,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
+			_bs: fileURLToPath(new URL('./node_modules/bootstrap/scss', import.meta.url)),
 		},
 	},
 	server: {

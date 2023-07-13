@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { getUsersPacks } from '@/lib/pack'
 import UserPacks from './Home/UserPacks'
 import { useParams } from 'react-router-dom'
-import './Home.scss'
 
 export function UserView() {
 	const { displayName } = useParams()

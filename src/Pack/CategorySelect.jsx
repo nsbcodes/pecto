@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import Dropdown from 'react-bootstrap/Dropdown'
 import Modal from 'react-bootstrap/Modal'
@@ -8,6 +8,7 @@ import { hslToHex } from '@/lib/utilities'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
+import { ThemeContext } from '@/lib/context'
 
 /**
  * A dropdown menu that allows the user to select a category for a card and contains a modal to add or edit categories
@@ -41,6 +42,7 @@ function CategorySelect({ index }) {
 		],
 		shallow
 	)
+	const theme = useContext(ThemeContext)
 
 	// New Category modal
 	const [show, setShow] = useState(false)
@@ -87,16 +89,24 @@ function CategorySelect({ index }) {
 		<>
 			<div className="d-flex justify-content-between align-items-center">
 				{starred ? (
-					<Button size="sm" variant="dark" onClick={() => setCardStarred(index, false)}>
+					<Button
+						size="sm"
+						variant={theme.dark ? 'secondary' : 'dark'}
+						onClick={() => setCardStarred(index, false)}
+					>
 						⭐
 					</Button>
 				) : (
-					<Button size="sm" variant="light" onClick={() => setCardStarred(index, true)}>
+					<Button
+						size="sm"
+						variant={theme.color}
+						onClick={() => setCardStarred(index, true)}
+					>
 						⭐
 					</Button>
 				)}
 				<Dropdown>
-					<Dropdown.Toggle size="sm" className="ms-2" variant="light" tabIndex="-1">
+					<Dropdown.Toggle size="sm" className="ms-2" variant={theme.color} tabIndex="-1">
 						{categories[cards].name}
 					</Dropdown.Toggle>
 					<Dropdown.Menu>
@@ -134,7 +144,7 @@ function CategorySelect({ index }) {
 						<div className="text-center d-flex justify-content-between align-items-center ps-2 pe-2">
 							<Button
 								size="sm"
-								variant="light"
+								variant={theme.color}
 								onClick={() => editCategoryDropdown(!editingCategoryDropdown)}
 							>
 								⚒️

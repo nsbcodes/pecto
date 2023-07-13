@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { toTitleCase } from '@/lib/utilities'
 import leven from 'leven'
@@ -14,8 +14,11 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import { Markup } from '@/lib/Markup'
 
 import './Blitz.scss'
+import { ThemeContext } from '@/lib/context'
 
 function BlitzComponent() {
+	const theme = useContext(ThemeContext)
+
 	const [guided, setGuided] = useState(true)
 	const [index, setIndex] = useState(0)
 	const [answer, setAnswer] = useState('')
@@ -232,14 +235,14 @@ function BlitzComponent() {
 
 			{!guided ? (
 				<InputGroup className="w-25 mt-2">
-					<Button variant="light" onClick={prevCard}>
+					<Button variant={theme.color} onClick={prevCard}>
 						⬅️
 					</Button>
-					<Button disabled variant="light">
+					<Button disabled variant={theme.color}>
 						{index + 1}
 					</Button>
 					<Button
-						variant="light"
+						variant={theme.color}
 						onClick={() => {
 							if (index + 1 < length) setIndex(index + 1)
 						}}
@@ -248,7 +251,7 @@ function BlitzComponent() {
 					</Button>
 				</InputGroup>
 			) : (
-				<Button disabled variant="light" className="w-25">
+				<Button disabled variant={theme.color} className="w-25">
 					{index + 1}
 				</Button>
 			)}
