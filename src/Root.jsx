@@ -133,8 +133,6 @@ function Root() {
 	// 	navigate(`/search/${encodeURIComponent(search)}`)
 	// }
 
-	console.log(theme, Themes, Themes[theme])
-
 	if (!render) return
 
 	return (
