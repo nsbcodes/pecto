@@ -1,7 +1,10 @@
-import React, { useEffect, memo } from 'react'
+import React, { useEffect, memo, lazy, Suspense } from 'react'
 import { useState } from 'react'
 import StaticPair from './Pair/StaticPair'
-import EditingPair from './Pair/EditingPair'
+
+// Contains a solid 20% of the bundle, so lazy load it
+const EditingPair = lazy(() => import('./Pair/EditingPair'))
+
 import CategorySelect from './CategorySelect'
 import PictureSelect from './PictureSelect'
 
@@ -123,7 +126,13 @@ function Cards({ index, edit }) {
 				</div>
 			</div>
 
-			{canEdit && editing ? <EditingPair index={index} /> : <StaticPair index={index} />}
+			{canEdit && editing ? (
+				<Suspense fallback={<div>Loading...</div>}>
+					<EditingPair index={index} />
+				</Suspense>
+			) : (
+				<StaticPair index={index} />
+			)}
 
 			{/* Edit/Remove buttons underneath the cards */}
 			{canEdit && (

@@ -1,10 +1,12 @@
 import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import { VitePWA } from 'vite-plugin-pwa'
+import { uglify } from 'rollup-plugin-uglify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react()],
+	plugins: [react(), VitePWA()],
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -13,5 +15,13 @@ export default defineConfig({
 	},
 	server: {
 		host: true,
+	},
+	build: {
+		rollupOptions: {
+			// output: {
+			// 	manualChunks: {},
+			// },
+			plugins: [uglify()],
+		},
 	},
 })

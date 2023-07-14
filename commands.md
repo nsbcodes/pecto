@@ -1,0 +1,1 @@
+Visualize bundle size: `npx vite-bundle-visualizer`

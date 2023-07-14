@@ -1,27 +1,27 @@
 import React, { Suspense, lazy } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import ReactDOM from 'react-dom/client'
-import Pack from './Pack/Pack'
-import Root from './Root'
-import NewPack from './Pack/NewPack'
-import UserView from './UserView'
-import Home from './Home'
-import EditPack from './Pack/EditPack'
-import Blitz from './Pack/Experiences/Blitz/Blitz'
-import Comprehend from './Pack/Experiences/Comprehend/Comprehend'
-import Extrapolate from './Pack/Experiences/Extrapolate/Extrapolate'
-import Assess from './Pack/Experiences/Assess/Assess'
+// import Pack from './Pack/Pack'
+// import Root from './Root'
+// import NewPack from './Pack/NewPack'
+// import UserView from './UserView'
+// import Home from './Home'
+// import EditPack from './Pack/EditPack'
+// import Blitz from './Pack/Experiences/Blitz/Blitz'
+// import Comprehend from './Pack/Experiences/Comprehend/Comprehend'
+// import Extrapolate from './Pack/Experiences/Extrapolate/Extrapolate'
+// import Assess from './Pack/Experiences/Assess/Assess'
 
-// const Pack = lazy(() => import('./Pack/Pack'))
-// const Root = lazy(() => import('./Root'))
-// const NewPack = lazy(() => import('./Pack/NewPack'))
-// const UserView = lazy(() => import('./UserView'))
-// const Home = lazy(() => import('./Home'))
-// const EditPack = lazy(() => import('./Pack/EditPack'))
-// const Blitz = lazy(() => import('./Pack/Experiences/Blitz/Blitz'))
-// const Comprehend = lazy(() => import('./Pack/Experiences/Comprehend/Comprehend'))
-// const Extrapolate = lazy(() => import('./Pack/Experiences/Extrapolate/Extrapolate'))
-// const Assess = lazy(() => import('./Pack/Experiences/Assess/Assess'))
+const Pack = lazy(() => import('./Pack/Pack'))
+const Root = lazy(() => import('./Root'))
+const NewPack = lazy(() => import('./Pack/NewPack'))
+const UserView = lazy(() => import('./UserView'))
+const Home = lazy(() => import('./Home'))
+const EditPack = lazy(() => import('./Pack/EditPack'))
+const Blitz = lazy(() => import('./Pack/Experiences/Blitz/Blitz'))
+const Comprehend = lazy(() => import('./Pack/Experiences/Comprehend/Comprehend'))
+const Extrapolate = lazy(() => import('./Pack/Experiences/Extrapolate/Extrapolate'))
+const Assess = lazy(() => import('./Pack/Experiences/Assess/Assess'))
 
 const router = createBrowserRouter([
 	{
@@ -78,7 +78,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
-		<RouterProvider router={router} />
+		<Suspense fallback={<div>Loading...</div>}>
+			<RouterProvider router={router} />
+		</Suspense>
 	</React.StrictMode>
 )
 

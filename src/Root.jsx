@@ -19,7 +19,6 @@ import { Outlet } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import './Root.scss'
-import './themes/light.scss'
 
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
@@ -86,16 +85,24 @@ function Root() {
 	// 	})
 	// }, [])
 
+	// Save the theme for future visits
+	// useEffect(() => {
+	// 	if (Themes[theme] !== undefined) {
+	// 		localStorage.setItem('theme', theme)
+	// 		// if (confirm('Would you like to reload the page to apply the theme?'))
+	// 		// 	window.location.reload()
+	// 	}
+	// }, [theme])
+
+	// Apply the theme
+	// Only run this on initialization, these themes interfere with each-other
 	useEffect(() => {
-		const applyTheme = async () => {
-			if (Themes[theme].id !== 'light')
-				await import(`./themes/${Themes[theme].id}.theme.scss`)
+		async function applyTheme() {
 			document.documentElement.setAttribute('data-bs-theme', Themes[theme].color)
-			document.documentElement.setAttribute('theme', Themes[theme].id)
-			localStorage.setItem('theme', theme)
+			await import(`./themes/${Themes[theme].id}.scss`)
 		}
 		if (Themes[theme] !== undefined) applyTheme()
-	}, [theme])
+	}, [])
 
 	async function handleAuthClick() {
 		if (user) {
@@ -123,6 +130,8 @@ function Root() {
 	// function openSearchPage() {
 	// 	navigate(`/search/${encodeURIComponent(search)}`)
 	// }
+
+	console.log(theme, Themes, Themes[theme])
 
 	return (
 		<>
@@ -168,11 +177,13 @@ function Root() {
 				</Container>
 			</Navbar>
 
-			<ThemeContext.Provider value={Themes[theme]}>
-				<div id="detail">
-					<Outlet />
-				</div>
-			</ThemeContext.Provider>
+			{Themes[theme] && (
+				<ThemeContext.Provider value={Themes[theme]}>
+					<div id="detail">
+						<Outlet />
+					</div>
+				</ThemeContext.Provider>
+			)}
 
 			{/* Username sign-in modal */}
 			<Modal show={askForUsername}>
