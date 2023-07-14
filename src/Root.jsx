@@ -33,6 +33,7 @@ function Root() {
 	// const navigate = useNavigate()
 
 	// const [search, setSearch] = useState('')
+	const [render, setRender] = useState(false)
 	const [askForUsername, setAskForUsername] = useState(false)
 	const [username, setUsername] = useState('')
 	const [usernameAvailable, setUsernameAvailable] = useState('Great Username!')
@@ -100,6 +101,7 @@ function Root() {
 		async function applyTheme() {
 			document.documentElement.setAttribute('data-bs-theme', Themes[theme].color)
 			await import(`./themes/${Themes[theme].id}.scss`)
+			setRender(true)
 		}
 		if (Themes[theme] !== undefined) applyTheme()
 	}, [])
@@ -132,6 +134,8 @@ function Root() {
 	// }
 
 	console.log(theme, Themes, Themes[theme])
+
+	if (!render) return
 
 	return (
 		<>

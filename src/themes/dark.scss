@@ -1,4 +1,4 @@
-$dark: #2e3440;
+$dark-2: #2e3440;
 
 @import 'pre';
 
@@ -15,10 +15,12 @@ $dark: #2e3440;
 // 	background-color: #242933;
 // }
 
+// TODO: turn all of these into SASS variable overrides
+
 .card,
 .pack,
 .theme-fg-container {
-	background-color: $dark;
+	background-color: $dark-2;
 	@extend .shadow;
 	.card-body {
 		border-radius: $border-radius;
@@ -26,13 +28,13 @@ $dark: #2e3440;
 }
 
 .theme-fg {
-	background-color: $dark;
+	background-color: $dark-2;
 }
 
 .border {
-	border-color: #3b4252 !important;
+	border-color: #3b4252;
 }
 
 #navbar {
-	background-color: $dark;
+	background-color: $dark-2;
 }

@@ -11,8 +11,6 @@ import Form from 'react-bootstrap/Form'
 import { Navigation } from './Navigation'
 import { FlashcardView } from './Views/FlashcardView'
 
-import './Pack.scss'
-
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'

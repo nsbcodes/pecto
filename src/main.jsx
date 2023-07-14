@@ -12,6 +12,9 @@ import ReactDOM from 'react-dom/client'
 // import Extrapolate from './Pack/Experiences/Extrapolate/Extrapolate'
 // import Assess from './Pack/Experiences/Assess/Assess'
 
+import NotFound from './NotFound'
+import Loading from './Loading'
+
 const Pack = lazy(() => import('./Pack/Pack'))
 const Root = lazy(() => import('./Root'))
 const NewPack = lazy(() => import('./Pack/NewPack'))
@@ -27,6 +30,7 @@ const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <Root />,
+		errorElement: <NotFound />,
 		children: [
 			{
 				path: '/',
@@ -68,6 +72,10 @@ const router = createBrowserRouter([
 				path: 'new/pack',
 				element: <NewPack />,
 			},
+			{
+				path: 'new/pack',
+				element: <NewPack />,
+			},
 			// {
 			// 	path: 'search/:searchTerm',
 			// 	element: <SearchPacks />,
@@ -78,7 +86,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
-		<Suspense fallback={<div>Loading...</div>}>
+		<Suspense fallback={<Loading />}>
 			<RouterProvider router={router} />
 		</Suspense>
 	</React.StrictMode>

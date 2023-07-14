@@ -32,6 +32,9 @@ $font-family-sans-serif:
 @import '_bs/mixins';
 @import '_bs/utilities';
 
+// Depends on the mixins
+@import '../Pack/Pack.scss';
+
 // Layout & components
 @import '_bs/root';
 @import '_bs/reboot';
