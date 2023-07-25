@@ -89,7 +89,7 @@ function EditPack() {
 		return (
 			<div className="text-center">
 				<h1>403</h1>
-				<p>This pack exists, but hasn&apos;t been published.</p>
+				<p>This pack exists, but it hasn&apos;t been published.</p>
 				<code>{error.toString()}</code>
 			</div>
 		)

@@ -118,7 +118,7 @@ export const usePack = create((set, get) => ({
 		let p = get().pack.content
 
 		// Get the index of the card we want to use as a base
-		let i = p.findIndex((c) => c === card)
+		let i = p.findIndex((c) => c.uuid === card.uuid)
 
 		// Sort using the Levenshtein algorithm
 		p = levenSort(p, i)

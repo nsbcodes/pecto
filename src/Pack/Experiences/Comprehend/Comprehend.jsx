@@ -70,8 +70,7 @@ function ComprehendComponent() {
 			<div className="text-center">
 				<h1>Comprehend</h1>
 				<p className="mb-3">
-					Generate reports, mnemonics, and ___ using Artificial Intelligence and Natural
-					Language Processing
+					Generate summaries using Artificial Intelligence and Natural Language Processing
 				</p>
 				{/* <Button
 					variant="dark"

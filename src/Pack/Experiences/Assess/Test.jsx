@@ -5,6 +5,8 @@ import { usePack } from '@/stores/pack'
 import { Experience } from '../Experience'
 import { Filter } from '../Filter'
 
+import { shuffle } from '@/lib/utilities'
+
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -43,7 +45,7 @@ export function Test({ questions }) {
 	const [answers, dispatch] = useReducer(reducer, initialState)
 
 	// Only randomize the questions once
-	const randomContent = useMemo(() => content.sort(() => 0.5 - Math.random()), [questions])
+	const randomContent = useMemo(() => shuffle(content), [questions])
 	const questionList = useMemo(
 		() =>
 			randomContent.slice(0, questions.total).map((card, i) => {

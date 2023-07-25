@@ -152,7 +152,7 @@ function AssessComponent() {
 							<Col>
 								<FloatingLabel label="Hard Multiple Choice">
 									<Form.Control
-										tyxpe="number"
+										type="number"
 										value={hardMultipleChoiceQuestions}
 										onChange={(e) =>
 											setHardMultipleChoiceQuestions(

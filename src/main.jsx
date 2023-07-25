@@ -25,12 +25,13 @@ const Blitz = lazy(() => import('./Pack/Experiences/Blitz/Blitz'))
 const Comprehend = lazy(() => import('./Pack/Experiences/Comprehend/Comprehend'))
 const Extrapolate = lazy(() => import('./Pack/Experiences/Extrapolate/Extrapolate'))
 const Assess = lazy(() => import('./Pack/Experiences/Assess/Assess'))
+const Master = lazy(() => import('./Pack/Experiences/Master/Master'))
 
 const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <Root />,
-		errorElement: <NotFound />,
+		// errorElement: <NotFound />,
 		children: [
 			{
 				path: '/',
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
 				element: <Assess />,
 			},
 			{
+				path: 'master/:displayName/:packId',
+				element: <Master />,
+			},
+			{
 				path: 'new/pack',
 				element: <NewPack />,
 			},
@@ -80,6 +85,10 @@ const router = createBrowserRouter([
 			// 	path: 'search/:searchTerm',
 			// 	element: <SearchPacks />,
 			// },
+			{
+				path: '*',
+				element: <NotFound />,
+			},
 		],
 	},
 ])
