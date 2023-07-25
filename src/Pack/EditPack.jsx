@@ -9,8 +9,6 @@ import Button from 'react-bootstrap/Button'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Spinner from 'react-bootstrap/Spinner'
 
-import './Pack.scss'
-
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
