@@ -9,60 +9,33 @@ import Col from 'react-bootstrap/Col'
 import Question from './Question'
 
 export default function Questioner() {
-	const [index, setIndex] = useState(1)
-	const [subIndex, setSubIndex] = useState(0)
-	const [lastTerm, setLastTerm] = useState(false)
+	const [index, setIndex] = useState(0)
 	const [questionIndex, setQuestionIndex] = useState(0)
-	const [intervals, advanceCard] = useIntervals(
-		(state) => [state.intervals.intervals, state.advanceCard],
+	const [intervals, boxes, advanceCard] = useIntervals(
+		(state) => [state.intervals, state.boxes, state.advanceCard],
 		shallow
 	)
-
-	function next() {
-		setQuestionIndex(0)
-		if (index + 1 > Object.keys(intervals).length && subIndex == intervals[index].length - 2) {
-			setLastTerm(true)
-			setSubIndex(subIndex + 1)
-		} else if (subIndex < intervals[index].length - 1) {
-			setSubIndex(subIndex + 1)
-		} else {
-			setSubIndex(0)
-			setIndex(index + 1)
-		}
-	}
-
-	function nextQuestion() {
-		if (questionIndex + 1 >= intervals[index][subIndex].content[questionIndex].length) {
-			next()
-		} else {
-			setQuestionIndex(questionIndex + 1)
-		}
-	}
-
-	// Shorthand
-	const stage = intervals[index][subIndex]
+console.log(boxes)
+	const currentInterval = intervals[index]
+	const content = boxes[currentInterval.box]
+	const current = content[questionIndex]
 
 	return (
 		<>
 			<Row>
 				<Col>
-					<div>Stage {index}</div>
-					<div>Box {stage.box + 1}</div>
+					<div>Stage {currentInterval.day}</div>
+					<div>Box {currentInterval.box + 1}</div>
+					{/* <div>Box {stage.box + 1}</div> */}
 					{/* {!lastTerm && <Button onClick={next}>Next</Button>} */}
 				</Col>
 				<Col xs={11}>
 					<Question
-						key={stage.content[questionIndex].uuid}
-						card={stage.content[questionIndex]}
-						next={nextQuestion}
-						correct={() =>
-							advanceCard(
-								stage.content[questionIndex],
-								index,
-								subIndex,
-								stage.box + 1
-							)
-						}
+						key={current.uuid}
+						card={current}
+						// TODO: very importnant, add limit
+						next={() => setQuestionIndex(questionIndex + 1)}
+						correct={() => advanceCard(currentInterval.box, questionIndex)}
 					/>
 				</Col>
 			</Row>
