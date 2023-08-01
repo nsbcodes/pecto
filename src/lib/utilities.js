@@ -69,3 +69,7 @@ export function shuffle(array) {
 	}
 	return arr
 }
+
+export function stripHTML(str) {
+	return str.replace(/<[^>]*>?/gm, '')
+}

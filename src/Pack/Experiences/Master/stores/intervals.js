@@ -87,8 +87,8 @@ export const useIntervals = create((set, get) => ({
 		// Add the card to the next box
 		boxes[nextBox] = [boxes[box][contentIndex], ...boxes[nextBox]]
 
-		// saveBoxes(boxes)
-		// set({ boxes: boxes })
+		saveBoxes(boxes)
+		set({ boxes: boxes })
 	},
 	// advanceCard: (card, index, subindex, advanceTo) => {
 	// 	let intervals = get().intervals

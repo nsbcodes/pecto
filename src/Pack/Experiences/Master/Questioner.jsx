@@ -9,16 +9,30 @@ import Col from 'react-bootstrap/Col'
 import Question from './Question'
 
 export default function Questioner() {
-	const [index, setIndex] = useState(0)
-	const [questionIndex, setQuestionIndex] = useState(0)
 	const [intervals, boxes, advanceCard] = useIntervals(
 		(state) => [state.intervals, state.boxes, state.advanceCard],
 		shallow
 	)
-console.log(boxes)
+
+	const [index, setIndex] = useState(0)
+	const [questionIndex, setQuestionIndex] = useState(0)
+	const [done, setDone] = useState(false)
+
 	const currentInterval = intervals[index]
 	const content = boxes[currentInterval.box]
 	const current = content[questionIndex]
+
+	function next() {
+		if (index + 1 >= intervals.length) {
+			setDone(true)
+		}
+		if (questionIndex + 1 >= content.length) {
+			setQuestionIndex(0)
+			setIndex(index + 1)
+		} else {
+			setQuestionIndex(questionIndex + 1)
+		}
+	}
 
 	return (
 		<>
@@ -33,8 +47,7 @@ console.log(boxes)
 					<Question
 						key={current.uuid}
 						card={current}
-						// TODO: very importnant, add limit
-						next={() => setQuestionIndex(questionIndex + 1)}
+						next={next}
 						correct={() => advanceCard(currentInterval.box, questionIndex)}
 					/>
 				</Col>

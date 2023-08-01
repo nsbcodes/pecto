@@ -121,7 +121,7 @@ function EditPack() {
 	}
 
 	return (
-		<div id="packRoot" className="mx-auto mb-5 border border-2 p-4 rounded-3">
+		<div id="packRoot" className="mx-auto mb-5 border border-2 p-4 rounded-3 pack">
 			<Metadata editing />
 
 			<div id="packContentContainer" className="mt-3 border border-2 rounded-3">

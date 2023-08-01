@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 
-import { toTitleCase } from '@/lib/utilities'
+import { stripHTML, toTitleCase } from '@/lib/utilities'
 import leven from 'leven'
 
 import { usePack } from '@/stores/pack'
@@ -99,7 +99,7 @@ function BlitzComponent() {
 	function validateAnswer(e) {
 		if (e.key === 'Enter') {
 			// Strip HTML and convert to Title Case
-			let correctAnswer = toTitleCase(cards.term.replace(/<[^>]*>?/gm, ''))
+			let correctAnswer = toTitleCase(stripHTML(cards.term))
 			let correctness = leven(answer, correctAnswer)
 			if (correctness == 0) {
 				answerCorrect()

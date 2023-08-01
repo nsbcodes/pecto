@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 
 import { ThemeContext } from '@/lib/context'
-import { shuffle } from '@/lib/utilities'
+import { shuffle, stripHTML } from '@/lib/utilities'
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
 
@@ -47,7 +47,7 @@ export default function Question({ card, next, correct }) {
 						onClick={() => setClicked(icard.uuid)}
 						size="lg"
 					>
-						{icard.term}
+						{stripHTML(icard.term)}
 					</Button>
 				)
 			})
@@ -55,15 +55,15 @@ export default function Question({ card, next, correct }) {
 	}, [similarCards, clicked])
 
 	return (
-		<div className="mb-3 mx-auto card p-3 w-100" style={{ height: '60vh' }}>
-			<div className="h-100 d-flex align-items-center justify-content-center me-5">
+		<div className="mb-3 card p-3 w-100" style={{ height: '60vh' }}>
+			<div className="h-100 d-flex align-items-center justify-content-around me-5">
 				<div>
 					{/* TODO: add image support */}
-					<h1 className="fw-light mb-0 p-5 me-2">
+					<h1 className="fw-light mb-0 p-5">
 						<Markup content={card.definition} />
 					</h1>
 				</div>
-				<div className="d-grid gap-2">{content}</div>
+				<div className="d-grid gap-2 w-25">{content}</div>
 			</div>
 		</div>
 	)
