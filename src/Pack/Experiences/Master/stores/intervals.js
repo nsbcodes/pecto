@@ -6,25 +6,29 @@ export const cycleModifier = function (x, b = 1, a = 0.75, base = 60) {
 	return ((base / x) ^ a) * b
 }
 
-const saveIntervals = function (val) {
-	localStorage.setItem('intervals', JSON.stringify(val))
+const saveIntervals = function (val, uuid) {
+	localStorage.setItem(`intervals_${uuid}`, JSON.stringify(val))
 }
 
-const getIntervals = function () {
-	return JSON.parse(localStorage.getItem('intervals'))
+const getIntervals = function (uuid) {
+	return JSON.parse(localStorage.getItem(`intervals_${uuid}`))
 }
 
-const saveBoxes = function (val) {
-	localStorage.setItem('boxes', JSON.stringify(val))
+const saveBoxes = function (val, uuid) {
+	localStorage.setItem(`boxes_${uuid}`, JSON.stringify(val))
 }
 
-const getBoxes = function () {
-	return JSON.parse(localStorage.getItem('boxes'))
+const getBoxes = function (uuid) {
+	return JSON.parse(localStorage.getItem(`boxes_${uuid}`))
 }
 
 export const useIntervals = create((set, get) => ({
-	intervals: getIntervals(),
-	boxes: getBoxes(),
+	intervals: {},
+	boxes: {},
+	uuid: '',
+	initialize: (uuid) => {
+		set({ intervals: getIntervals(uuid), boxes: getBoxes(uuid), uuid: uuid })
+	},
 	// Utility functions
 	generateIntervals: (cycles, content) => {
 		cycles = cycles * cycleModifier(content.length)
@@ -54,10 +58,8 @@ export const useIntervals = create((set, get) => ({
 		// Sort the intervals by day ascending
 		intervals.sort((a, b) => a.day - b.day)
 
-		saveIntervals(intervals)
+		saveIntervals(intervals, get().uuid)
 		set({ intervals: intervals })
-
-		console.log(intervals)
 
 		// Generate boxes
 		let uniqueBoxes = [...new Set(intervals.map((v) => v.box))]
@@ -69,16 +71,13 @@ export const useIntervals = create((set, get) => ({
 		// Fill in the first box
 		boxes[0] = content
 
-		saveBoxes(boxes)
+		saveBoxes(boxes, get().uuid)
 		set({ boxes: boxes })
-
-		console.log(boxes)
 	},
 	advanceCard: (box, contentIndex) => {
 		let boxes = get().boxes
 
 		// Delete the card from the current box (object not array)
-		console.log(boxes[box], contentIndex)
 		boxes[box].splice(contentIndex, 1)
 
 		// Get the next box
@@ -87,7 +86,7 @@ export const useIntervals = create((set, get) => ({
 		// Add the card to the next box
 		boxes[nextBox] = [boxes[box][contentIndex], ...boxes[nextBox]]
 
-		saveBoxes(boxes)
+		saveBoxes(boxes, get().uuid)
 		set({ boxes: boxes })
 	},
 	// advanceCard: (card, index, subindex, advanceTo) => {

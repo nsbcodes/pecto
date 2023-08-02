@@ -93,6 +93,7 @@ function CategorySelect({ index }) {
 						size="sm"
 						variant={theme.dark ? 'secondary' : 'dark'}
 						onClick={() => setCardStarred(index, false)}
+						tabIndex="-1"
 					>
 						⭐
 					</Button>
@@ -101,6 +102,7 @@ function CategorySelect({ index }) {
 						size="sm"
 						variant={theme.color}
 						onClick={() => setCardStarred(index, true)}
+						tabIndex="-1"
 					>
 						⭐
 					</Button>

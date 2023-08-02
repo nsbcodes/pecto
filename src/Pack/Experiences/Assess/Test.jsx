@@ -36,6 +36,7 @@ function reducer(state, action) {
 		right: right,
 		wrong: wrong,
 		fraction: `${sum}/${arr.length}`,
+		percentage: Math.round((sum / arr.length) * 100 * 100) / 100,
 	}
 }
 
@@ -110,7 +111,14 @@ export function Test({ questions }) {
 			{submit && (
 				<div className="text-center">
 					<hr />
-					<h3>🎉</h3>
+					{answers.percentage < 75 ? (
+						<p>Use the Blitz or Master mode to guarantee memorization!</p>
+					) : (
+						<>
+							<h1>🎉</h1>
+							<h2>You got {answers.percentage} percent!</h2>
+						</>
+					)}
 					<hr className="mb-3" />
 					<h3>{answers.fraction}</h3>
 					<ProgressBar className="mb-3">

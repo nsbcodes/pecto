@@ -59,7 +59,7 @@ function AssessComponent() {
 					Determine your proficiency{' '}
 					{pack.name && (
 						<>
-							for <span className="text-muted">${pack.name} </span>
+							of <span className="text-muted">{pack.name} </span>
 						</>
 					)}
 					through a personalized test

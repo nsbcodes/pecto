@@ -101,15 +101,14 @@ function Cards({ index, edit }) {
 	}
 
 	return (
-		<MotionWrapper
-			yes={!edit}
-			index={index}
+		<div
 			style={{
 				backgroundImage: `linear-gradient(to right, ${
 					categories[cards.category]['colors'][0]
 				},${categories[cards.category]['colors'][1]})`,
 				...cardCSS,
 			}}
+			className="p-3"
 		>
 			<>{extra}</>
 			<div className="d-flex justify-content-between align-items-center mt-5">
@@ -121,7 +120,7 @@ function Cards({ index, edit }) {
 					</div>
 				)}
 				<div className="d-flex align-items-center">
-					<PictureSelect index={index} />
+					{canEdit ? <PictureSelect index={index} /> : <></>}
 					<span className="text-muted ms-3 me-4">{index + 1}</span>
 				</div>
 			</div>
@@ -161,7 +160,7 @@ function Cards({ index, edit }) {
 					)}
 				</div>
 			)}
-		</MotionWrapper>
+		</div>
 	)
 }
 

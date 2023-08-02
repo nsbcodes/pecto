@@ -184,9 +184,7 @@ function ExtrapolateComponent() {
 		<>
 			<div className="text-center">
 				<h1>Extrapolate</h1>
-				<p className="mb-3">
-					Enter text or attach an image to automatically generate cards through AI
-				</p>
+				<p className="mb-3">Enter text to automatically generate cards through AI</p>
 
 				<FloatingLabel label="Category">
 					<Form.Control

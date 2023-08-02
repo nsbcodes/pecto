@@ -191,7 +191,7 @@ function Pack() {
 								filterPackStarred(e.target.checked)
 								// TODO: very very very complicated
 								// allow editing in filtered packs
-								// will require us to a	dd uuids for each card
+								// will require us to add uuids for each card
 								setStarredFilter(e.target.checked)
 							}}
 							value={starredFilter}

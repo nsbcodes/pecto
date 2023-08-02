@@ -24,12 +24,12 @@ export function FlashcardView() {
 	// Arrow Keys Navigation
 	function handleKey(e) {
 		if (e.key === 'ArrowRight' && currentCard + 1 < pack.content.length) {
-			setShowDefinition(false)
+			setShowDefinition(mcqMode)
 			setCurrentCard(currentCard + 1)
 		} else if (e.key === 'ArrowLeft' && currentCard - 1 >= 0) {
-			setShowDefinition(false)
+			setShowDefinition(mcqMode)
 			setCurrentCard(currentCard - 1)
-		} else if (e.key === ' ') {
+		} else if (e.key === ' ' && !mcqMode) {
 			e.preventDefault()
 			setShowDefinition(!showDefinition)
 		}
@@ -41,7 +41,7 @@ export function FlashcardView() {
 
 	// All state referenced must be in the dependency array
 	useEffect(() => {
-		if (!mcqMode && !editing) {
+		if (!editing) {
 			document.addEventListener('keydown', handleKey)
 		}
 		return () => {

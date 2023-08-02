@@ -21,8 +21,8 @@ import Questioner from './Questioner'
 
 function MasterComponent() {
 	const [pack] = usePack((state) => [state.pack], shallow)
-	const [intervals, generateIntervals] = useIntervals(
-		(state) => [state.intervals, state.generateIntervals],
+	const [intervals, initialize, generateIntervals] = useIntervals(
+		(state) => [state.intervals, state.initialize, state.generateIntervals],
 		shallow
 	)
 	const theme = useContext(ThemeContext)
@@ -31,6 +31,11 @@ function MasterComponent() {
 	const [difficulty, setDifficulty] = useState(3)
 	const [valid, setValid] = useState(false)
 	const [message, setMessage] = useState('')
+
+	// Initialize local storage
+	useEffect(() => {
+		initialize(pack.uuid)
+	}, [])
 
 	// Validate the form
 	useEffect(() => {
@@ -46,24 +51,6 @@ function MasterComponent() {
 		}
 	}, [days, difficulty])
 
-	// useEffect(() => {
-	// 	if (intervals) {
-	// 		Object.entries(intervals.intervals).forEach(([key, value]) => {
-	// 			setNext(false)
-	// 			value.forEach((v) => {
-	// 				setNext(false)
-	// 				setQuestion(
-	// 					<>
-	// 						<div>Stage {key}</div>
-	// 						<div>Box {v}</div>
-	// 						<Button onClick={() => setNext(true)}>Next</Button>
-	// 					</>
-	// 				)
-	// 			})
-	// 		})
-	// 	}
-	// }, [intervals, next])
-
 	if (pack.content.length < 30) {
 		return (
 			<>
@@ -78,7 +65,7 @@ function MasterComponent() {
 		)
 	}
 
-	if (!intervals) {
+	if (!intervals || Object.keys(intervals) == 0) {
 		return (
 			<>
 				<div className="text-center">

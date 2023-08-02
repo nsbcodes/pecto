@@ -66,9 +66,9 @@ function UserPacks(props) {
 				{props.canEdit && (
 					<div className="col">
 						<LinkContainer to={`/new/pack`}>
-							<div className="card text-center h-100">
+							<div className="card text-center h-100 d-block">
 								<div className="card-body">
-									<div className="mx-auto">
+									<div className="my-auto">
 										<h2>➕</h2>
 										<h5>New Pack</h5>
 									</div>

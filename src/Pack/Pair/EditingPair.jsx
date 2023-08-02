@@ -35,27 +35,16 @@ function EditingPair({ index }) {
 	})
 
 	function createNewCard(e) {
-		if (
-			e.keyCode === 9 &&
-			// Make sure this is the last card
-			index === packLength - 1 &&
-			// No modifier keys
-			!e.shiftKey &&
-			!e.ctrlKey &&
-			!e.altKey &&
-			!e.metaKey
-		) {
-			// Tab
-			//e.preventDefault()
-			// Add a new card
-			addCards({
-				term: '',
-				definition: '',
-				category: 'default',
-				starred: false,
-				uuid: uuidv4(),
-			})
-		}
+		// Tab
+		//e.preventDefault()
+		// Add a new card
+		addCards({
+			term: '',
+			definition: '',
+			category: 'default',
+			starred: false,
+			uuid: uuidv4(),
+		})
 	}
 
 	return (
@@ -74,7 +63,7 @@ function EditingPair({ index }) {
 						<Editor
 							content={cards.definition}
 							save={(val) => setCard(index, { definition: val })}
-							onKeyDown={createNewCard}
+							{...(index === packLength - 1 && { tabAction: createNewCard })}
 						/>
 					</div>
 				</div>

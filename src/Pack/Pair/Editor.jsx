@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
-import { Remirror, useRemirror } from '@remirror/react'
+import { Remirror, useRemirror, useKeymap } from '@remirror/react'
 import { ExtensionPriority } from 'remirror'
 import {
 	BlockquoteExtension,
@@ -40,7 +40,7 @@ import {
 import 'remirror/styles/all.css'
 import './Editor.scss'
 
-export const Editor = ({ content, save }) => {
+export const Editor = ({ content, save, tabAction }) => {
 	const { manager } = useRemirror({
 		// All of these extensions must be translatable to a default html element
 		extensions: () => [
@@ -98,6 +98,13 @@ export const Editor = ({ content, save }) => {
 				onChange={({ helpers, state }) => {
 					save(helpers.getHTML(state))
 				}}
+				{...(tabAction && {
+					hooks: [
+						() => {
+							useKeymap('Tab', tabAction)
+						},
+					],
+				})}
 			/>
 		</div>
 	)

@@ -38,6 +38,39 @@ function Home() {
 				<h3>Your Packs</h3>
 				<UserPacks canEdit packs={usersPacks} />
 
+				<div className="row row-cols-1 row-cols-sm-3 gy-4 mt-0">
+					<div className="col">
+						<div className="card text-center h-100">
+							<div className="card-body">
+								<div className="mx-auto">
+									<h2>📂</h2>
+									<h5>New Folder</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className="col">
+						<div className="card text-center h-100">
+							<div className="card-body">
+								<h5>New Folder</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="row row-cols-1 row-cols-sm-3 gy-4 mt-0">
+					<div className="col">
+						<div className="card text-center h-100">
+							<div className="card-body">
+								<div className="mx-auto">
+									<h2>📖</h2>
+									<h5>New Class</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				{localPacks.length > 0 && user?.uid !== undefined && (
 					<>
 						<h3 className="mt-3">Manage Local Packs</h3>
@@ -95,14 +128,15 @@ function Home() {
 					</>
 				)}
 
-				<div className="d-flex justify-content-center text-muted font-monospace fw-bold text-uppercase mt-2 mb-2">
+				{/* TODO: implement */}
+				{/* <div className="d-flex justify-content-center text-muted font-monospace fw-bold text-uppercase mt-2 mb-2">
 					Import
 				</div>
 
 				<div className="row row-cols-1 row-cols-sm-3 gy-4 mb-2">
 					{[
 						{ icon: '📲', description: 'Import Quizlet' },
-						{ icon: '📋', description: 'Import from Text (Pecto)' },
+						{ icon: '⭐', description: 'Import from Anki' },
 						{ icon: '📁', description: 'Import from File' },
 					].map((action) => (
 						<div className="col" key={action.description}>
@@ -114,27 +148,7 @@ function Home() {
 							</div>
 						</div>
 					))}
-				</div>
-
-				<div className="d-flex justify-content-center text-muted font-monospace fw-bold text-uppercase mb-2">
-					Organization
-				</div>
-
-				<div className="row row-cols-1 row-cols-sm-3 gy-4">
-					{[
-						{ icon: '📂', description: 'Create Folder' },
-						{ icon: '📖', description: 'Create Class' },
-					].map((action) => (
-						<div className="col" key={action.description}>
-							<div className="card text-center" key={action.description}>
-								<div className="card-body">
-									<h2>{action.icon}</h2>
-									<h5>{action.description}</h5>
-								</div>
-							</div>
-						</div>
-					))}
-				</div>
+				</div> */}
 			</div>
 		</div>
 	)

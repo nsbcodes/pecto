@@ -38,6 +38,7 @@ function Root() {
 	const [username, setUsername] = useState('')
 	const [usernameAvailable, setUsernameAvailable] = useState('Great Username!')
 	const [theme, setTheme] = useState(localStorage.getItem('theme') || 0)
+	const [showAbout, setShowAbout] = useState(false)
 
 	useEffect(() => {
 		if (user?.displayName == undefined) {
@@ -163,6 +164,8 @@ function Root() {
 									<NavDropdown.Item>Pack</NavDropdown.Item>
 								</LinkContainer>
 							</NavDropdown>
+
+							<Nav.Link onClick={() => setShowAbout(true)}>About</Nav.Link>
 						</Nav>
 
 						<div className="d-flex justify-content-between">
@@ -186,6 +189,62 @@ function Root() {
 					</div>
 				</ThemeContext.Provider>
 			)}
+
+			{/* Credits */}
+			<Modal show={showAbout} onHide={() => setShowAbout(false)}>
+				<Modal.Header closeButton>
+					<Modal.Title>About</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<h4>Modes</h4>
+					<p>
+						Once you&apos;ve created a pack or imported a quizlet, you can summarize,
+						improve, and learn the material.
+					</p>
+
+					<h5>Blitz</h5>
+					<p>
+						Write the correct definition in a fast-paced gamemode and get the last ten
+						questions correct to move on.
+					</p>
+
+					<h5>Master</h5>
+					<p>
+						Use Pecto&apos;s premier spaced-repetition algorithm to generate a study
+						plan. Master guarantees that you retain the information if you follow the
+						schedule.
+					</p>
+
+					<h5>Comprehend</h5>
+					<p>
+						Produce summaries using Artificial Intelligence and Natural Language
+						Processing.
+					</p>
+
+					<h5>Assess</h5>
+					<p>
+						Generate a personalized printable test to assess your knowledge. Choose from
+						Multiple Choice, Written, True or False, and Extended Multiple Choice
+						questions.
+					</p>
+
+					<h5>Extrapolate</h5>
+					<p>Enter text to automatically generate cards through AI.</p>
+
+					<h4>Features</h4>
+
+					<p />
+
+					<h5>Google Sign-In</h5>
+					<p>Sign in with Google to synchronize your packs</p>
+
+					<h5>Themes</h5>
+					<p>
+						Use the Dark/Darker theme for pleasant viewing and Neopolitan for a playful
+						colors.
+					</p>
+				</Modal.Body>
+			</Modal>
 
 			{/* Username sign-in modal */}
 			<Modal show={askForUsername}>
