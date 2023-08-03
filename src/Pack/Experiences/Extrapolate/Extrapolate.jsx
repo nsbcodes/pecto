@@ -78,6 +78,9 @@ function ExtrapolateComponent() {
 				// Get the verb phrase in json form
 				let vp = nlp(sentence.sentence.verb).verbs().json()[0]
 
+				// Exit if there is no verb phrase
+				if (vp?.verb?.auxiliary === undefined) return
+
 				// Get the linking verb
 				let lv = vp.verb.auxiliary
 
