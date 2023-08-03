@@ -72,8 +72,6 @@ function ExtrapolateComponent() {
 		// we use the spread operator the second time
 		let t = []
 
-		// Solutions identified by ChatGPT are considerably longer,
-		// and aren't robust enough.
 		doc.sentences()
 			.json()
 			.forEach((sentence) => {
