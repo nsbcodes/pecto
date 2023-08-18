@@ -8,15 +8,14 @@ import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
-
-import nlp from 'compromise'
-
-import { v4 as uuidv4 } from 'uuid'
-import { capitalizeFirstLetter } from '@/lib/utilities'
+import Accordion from 'react-bootstrap/Accordion'
 
 import { useParams } from 'react-router-dom'
 import { useUser } from '@/stores/user'
 import { ThemeContext } from '@/lib/context'
+
+import { generateCards } from './NLP'
+import LLMPipeline from './LLMPipeline'
 
 function InputWrapper({ value, save }) {
 	const ref = useRef(null)
@@ -56,119 +55,9 @@ function ExtrapolateComponent() {
 	const [text, setText] = useState('')
 	const [cards, setCards] = useState([])
 
-	function generateCards() {
-		// Create a new category if it doesn't exist
-		var uuid = 'default'
-		if (category.toLowerCase() !== 'default') {
-			uuid = uuidv4()
-			addCategory(category, ['transparent', 'transparent'], uuid)
-		}
-
-		// Parse the sentence using Compromise.js
-		const doc = nlp(text)
-
-		// We can't call setTerms() directly,
-		// because the state is updated after
-		// we use the spread operator the second time
-		let t = []
-
-		doc.sentences()
-			.json()
-			.forEach((sentence) => {
-				// Get the verb phrase in json form
-				let vp = nlp(sentence.sentence.verb).verbs().json()[0]
-
-				// Exit if there is no verb phrase
-				if (vp?.verb?.auxiliary === undefined) return
-
-				// Get the linking verb
-				let lv = vp.verb.auxiliary
-
-				// If there is only one verb,
-				// confirm it is a linking verb (copula) and remove it
-				if (vp.terms.length <= 1) {
-					let isLv = vp.terms[0].tags.includes('Copula')
-					if (isLv) vp = ''
-				} else {
-					// Remove the linking verb from the verb phrase
-					vp = sentence.sentence.verb.replaceAll(lv, '').trim() + ' '
-				}
-
-				// By now, if the verb phrase isn't a string,
-				// it probably contains no linking verbs,
-				// so we can just use the original verb phrase
-				if (typeof vp !== 'string') vp = sentence.sentence.verb + ' '
-
-				// Get the subject in json form
-				let np = nlp(sentence.sentence.subject).json()[0]
-
-				// If the subject is a determiner
-				// (e.g. this, that, these, those),
-				// replace it with a textbox that autocompletes all previous terms
-				let isDeterminer = np.terms[0].tags.includes('Determiner')
-				if (isDeterminer) {
-					np = 'Could not determine'
-				} else {
-					np = sentence.sentence.subject
-				}
-
-				// Minus whitespace and case,
-				// if there is already a term with the same name,
-				// append the text to it
-				let existingTerm = t.findIndex(
-					(term) =>
-						term.term.toLowerCase().replace(' ', '') ==
-						np.toLowerCase().replace(' ', '')
-				)
-
-				if (existingTerm !== -1) {
-					t[existingTerm].definition +=
-						'. ' + capitalizeFirstLetter(vp + sentence.sentence.predicate)
-				} else {
-					t.push({
-						term: capitalizeFirstLetter(np),
-						definition: capitalizeFirstLetter(vp + sentence.sentence.predicate),
-						category: uuid,
-						starred: false,
-						uuid: uuidv4(),
-					})
-				}
-			})
-
-		// Update the state
-		setCards(t)
-
-		// // Identify term candidates (nouns or noun phrases)
-		// const termCandidates = doc.nouns().out('array')
-
-		// // Identify definition candidates
-		// const definitionCandidates = doc.match('#Noun * #Noun').not('#Noun').out('array')
-
-		// console.log(definitionCandidates)
-
-		// // Pair term and definition candidates
-		// const termDefinitionPairs = []
-		// termCandidates.forEach((term) => {
-		// 	const matchingDefinition = definitionCandidates.find((definition) =>
-		// 		definition.terms().some((termCandidate) => termCandidate.normal === term.normal)
-		// 	)
-		// 	if (matchingDefinition) {
-		// 		if (category.toLowerCase() !== 'default') {
-		// 			let uuid = uuidv4()
-		// 			addCategory(category, ['transparent', 'transparent'], uuid)
-		// 		}
-		// 		termDefinitionPairs.push({
-		// 			term: term.text(),
-		// 			definition: matchingDefinition.text(),
-		// 			category: category,
-		// 			uuid: uuidv4(),
-		// 		})
-		// 	}
-		// })
-
-		// // Output the term and definition pairs
-		// console.log(termDefinitionPairs)
-		// setTerms(termDefinitionPairs)
+	async function generateTerm() {
+		const condenser = await LLMPipeline.getInstance()
+		console.log(await condenser(text))
 	}
 
 	async function saveCards() {
@@ -183,7 +72,7 @@ function ExtrapolateComponent() {
 
 	return (
 		<>
-			<div className="text-center">
+			<div className="text-center mt-5">
 				<h1>Extrapolate</h1>
 				<p className="mb-3">Enter text to automatically generate cards through AI</p>
 
@@ -202,14 +91,34 @@ function ExtrapolateComponent() {
 					<InputWrapper value={text} save={(e) => setText(e.target.value)} />
 				</FloatingLabel>
 
-				<Button
-					variant={theme.dark ? 'light' : 'dark'}
-					size="lg"
-					onClick={() => generateCards()}
-					className="mt-3 mb-3"
-				>
-					🏭 Generate
-				</Button>
+				<Accordion defaultActiveKey="0" flush className="mt-3">
+					<Accordion.Item eventKey="0">
+						<Accordion.Header>Lightweight NLP</Accordion.Header>
+						<Accordion.Body>
+							<Button
+								variant={theme.dark ? 'light' : 'dark'}
+								size="lg"
+								onClick={() => generateCards(text, category, addCategory, setCards)}
+								className="mt-3 mb-3"
+							>
+								🏭 Generate
+							</Button>
+						</Accordion.Body>
+					</Accordion.Item>
+					<Accordion.Item eventKey="1">
+						<Accordion.Header>Optimized LLM</Accordion.Header>
+						<Accordion.Body>
+							<Button
+								variant={theme.dark ? 'light' : 'dark'}
+								size="lg"
+								onClick={generateTerm}
+								className="mt-3 mb-3"
+							>
+								⚒️ Generate
+							</Button>
+						</Accordion.Body>
+					</Accordion.Item>
+				</Accordion>
 			</div>
 
 			{cards.length > 0 && (
