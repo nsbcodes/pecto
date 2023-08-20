@@ -6,7 +6,7 @@ import terser from '@rollup/plugin-terser'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [react(), VitePWA({ injectRegister: 'auto' })],
+	plugins: [react(), VitePWA({ injectRegister: 'auto', registerType: 'autoUpdate' })],
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
