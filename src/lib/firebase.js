@@ -84,6 +84,11 @@ export const addNewPack = async (id, newPack, username) => {
 	await setDoc(docRef, newPack)
 }
 
+export const syncLocalStorage = async (uid) => {
+	const docRef = doc(db, 'users', uid)
+	await setDoc(docRef, { local: JSON.parse(JSON.stringify(localStorage)) }, { merge: true })
+}
+
 export const deletePack = async (id, username) => {
 	const docRef = doc(db, 'packs', username, 'packs', id)
 	await deleteDoc(docRef)

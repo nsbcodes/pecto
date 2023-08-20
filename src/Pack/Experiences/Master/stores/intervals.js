@@ -6,16 +6,18 @@ export const cycleModifier = function (x, b = 1, a = 0.75, base = 60) {
 	return ((base / x) ^ a) * b
 }
 
-const saveIntervals = function (val, uuid) {
+const saveIntervals = function (val, uuid, postSave) {
 	localStorage.setItem(`intervals_${uuid}`, JSON.stringify(val))
+	postSave()
 }
 
 const getIntervals = function (uuid) {
 	return JSON.parse(localStorage.getItem(`intervals_${uuid}`))
 }
 
-const saveBoxes = function (val, uuid) {
+const saveBoxes = function (val, uuid, postSave) {
 	localStorage.setItem(`boxes_${uuid}`, JSON.stringify(val))
+	postSave()
 }
 
 const getBoxes = function (uuid) {
@@ -26,6 +28,10 @@ export const useIntervals = create((set, get) => ({
 	intervals: {},
 	boxes: {},
 	uuid: '',
+	postSave: () => {},
+	setPostSave: (func) => {
+		set({ postSave: func })
+	},
 	initialize: (uuid) => {
 		set({ intervals: getIntervals(uuid), boxes: getBoxes(uuid), uuid: uuid })
 	},
@@ -58,7 +64,7 @@ export const useIntervals = create((set, get) => ({
 		// Sort the intervals by day ascending
 		intervals.sort((a, b) => a.day - b.day)
 
-		saveIntervals(intervals, get().uuid)
+		saveIntervals(intervals, get().uuid, get().postSave)
 		set({ intervals: intervals })
 
 		// Generate boxes
@@ -71,7 +77,7 @@ export const useIntervals = create((set, get) => ({
 		// Fill in the first box
 		boxes[0] = content
 
-		saveBoxes(boxes, get().uuid)
+		saveBoxes(boxes, get().uuid, get().postSave)
 		set({ boxes: boxes })
 	},
 	advanceCard: (box, contentIndex) => {
@@ -86,7 +92,7 @@ export const useIntervals = create((set, get) => ({
 		// Add the card to the next box
 		boxes[nextBox] = [boxes[box][contentIndex], ...boxes[nextBox]]
 
-		saveBoxes(boxes, get().uuid)
+		saveBoxes(boxes, get().uuid, get().postSave)
 		set({ boxes: boxes })
 	},
 	// advanceCard: (card, index, subindex, advanceTo) => {

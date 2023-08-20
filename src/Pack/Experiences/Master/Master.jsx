@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
+import { useUser } from '@/stores/user'
 import { ThemeContext } from '@/lib/context'
 import { useIntervals, cycleModifier } from './stores/intervals'
 
@@ -18,11 +19,13 @@ import Alert from 'react-bootstrap/Alert'
 
 import './Master.scss'
 import Questioner from './Questioner'
+import { syncLocalStorage } from '@/lib/firebase'
 
 function MasterComponent() {
+	const [user] = useUser((state) => [state.user], shallow)
 	const [pack] = usePack((state) => [state.pack], shallow)
-	const [intervals, initialize, generateIntervals] = useIntervals(
-		(state) => [state.intervals, state.initialize, state.generateIntervals],
+	const [intervals, setPostSave, initialize, generateIntervals] = useIntervals(
+		(state) => [state.intervals, state.setPostSave, state.initialize, state.generateIntervals],
 		shallow
 	)
 	const theme = useContext(ThemeContext)
@@ -36,6 +39,11 @@ function MasterComponent() {
 	useEffect(() => {
 		initialize(pack.uuid)
 	}, [])
+
+	// Sync to firebase if logged in
+	useEffect(() => {
+		setPostSave(user?.uid ? () => syncLocalStorage(user.uid) : () => {})
+	}, [user])
 
 	// Validate the form
 	useEffect(() => {

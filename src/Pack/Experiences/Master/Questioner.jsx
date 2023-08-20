@@ -7,14 +7,14 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 import Question from './Question'
-import { ThemeContext } from '@/lib/context'
+// import { ThemeContext } from '@/lib/context'
 
 export default function Questioner() {
 	const [intervals, boxes, advanceCard] = useIntervals(
 		(state) => [state.intervals, state.boxes, state.advanceCard],
 		shallow
 	)
-	const theme = useContext(ThemeContext)
+	// const theme = useContext(ThemeContext)
 
 	const [index, setIndex] = useState(0)
 	const [questionIndex, setQuestionIndex] = useState(0)
@@ -58,11 +58,8 @@ export default function Questioner() {
 		} else {
 			lastDay = interval.day
 			return (
-				<>
-					<div
-						className="d-flex justify-content-center align-items-center w-100 mb-1"
-						key={JSON.stringify(interval)}
-					>
+				<div key={JSON.stringify(interval)}>
+					<div className="d-flex justify-content-center align-items-center w-100 mb-1">
 						<div
 							className="rounded-2 border border-1 text-center text-muted p-1 px-2"
 							// style={{ width: '25px', height: '25px' }}
@@ -71,10 +68,7 @@ export default function Questioner() {
 						</div>
 					</div>
 
-					<div
-						className="d-flex justify-content-center align-items-center w-100 mb-1"
-						key={JSON.stringify(interval)}
-					>
+					<div className="d-flex justify-content-center align-items-center w-100 mb-1">
 						<div
 							className="text-center text-muted p-1 px-2"
 							// style={{ width: '25px', height: '25px' }}
@@ -86,7 +80,7 @@ export default function Questioner() {
 							)}
 						</div>
 					</div>
-				</>
+				</div>
 			)
 		}
 	})

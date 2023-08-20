@@ -20,14 +20,15 @@ export default function Question({ card, next, correct }) {
 	}, [card])
 
 	useEffect(() => {
-		if (clicked) {
-			if (clicked === card.uuid) {
-				correct()
+		setTimeout(() => {
+			if (clicked) {
+				if (clicked === card.uuid) {
+					correct()
+				} else {
+					next()
+				}
 			}
-			setTimeout(() => {
-				next()
-			}, 1000)
-		}
+		}, 1000)
 	}, [clicked])
 
 	useEffect(() => {
