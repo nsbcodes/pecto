@@ -86,7 +86,7 @@ function ComprehendComponent() {
 				</Button> */}
 			</div>
 
-			<Table striped bordered>
+			<Table striped bordered className="mx-auto">
 				<thead>
 					<tr>
 						<th>#</th>

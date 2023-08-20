@@ -88,7 +88,7 @@ export default function Questioner() {
 	return (
 		<>
 			<Row>
-				<Col>
+				<Col className="mb-2">
 					<div>Stage {currentInterval.day}</div>
 					<div>Box {currentInterval.box + 1}</div>
 					{/* <div>Box {stage.box + 1}</div> */}

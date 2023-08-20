@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav'
 
 export function Navigation({ baseURL, currentPage }) {
 	return (
-		<Nav className="mb-3" variant="pills" defaultActiveKey={currentPage}>
+		<Nav className="mb-3 navigation" variant="pills" defaultActiveKey={currentPage}>
 			{[
 				{ link: 'view', text: 'View' },
 				{ link: false, text: 'Experiences' },

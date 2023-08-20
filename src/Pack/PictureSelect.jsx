@@ -78,8 +78,8 @@ function PictureSelect({ index }) {
 			</Dropdown>
 
 			{/* New Category Modal */}
-			<Modal show={show}>
-				<Modal.Header>
+			<Modal show={show} onHide={() => setShow(false)}>
+				<Modal.Header closeButton>
 					<Modal.Title>New Picture</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>

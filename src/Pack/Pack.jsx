@@ -201,11 +201,13 @@ function Pack() {
 					<Form.Select
 						className="w-25 mt-3"
 						onChange={(e) => {
-							filterPackCategory(e.target.value)
+							let val = e.target.value
+							if (val === '0') val = 0
+							filterPackCategory(val)
 							// TODO: very very very complicated
 							// allow editing in filtered packs
 							// will require us to add uuids for each card
-							setCategoryFilter(e.target.value)
+							setCategoryFilter(val)
 						}}
 						value={categoryFilter}
 					>

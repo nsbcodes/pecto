@@ -38,7 +38,8 @@ function Home() {
 				<h3>Your Packs</h3>
 				<UserPacks canEdit packs={usersPacks} />
 
-				<div className="row row-cols-1 row-cols-sm-3 gy-4 mt-0">
+				{/* TODO: implement! */}
+				{/* <div className="row row-cols-1 row-cols-sm-3 gy-4 mt-0">
 					<div className="col">
 						<div className="card text-center h-100">
 							<div className="card-body">
@@ -69,7 +70,7 @@ function Home() {
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> */}
 
 				{localPacks.length > 0 && user?.uid !== undefined && (
 					<>

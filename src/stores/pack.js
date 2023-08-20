@@ -3,7 +3,7 @@ import produce from 'immer'
 
 import { v4 as uuidv4 } from 'uuid'
 
-import { levenSort } from '@/lib/utilities'
+import { levenSort, shuffle } from '@/lib/utilities'
 
 import { db } from '@/lib/firebase'
 import { doc, getDoc } from 'firebase/firestore'
@@ -47,6 +47,7 @@ export const usePack = create((set, get) => ({
 		set({ loading: false })
 	},
 	filterPackCategory: (category) => {
+		console.log(get().defaultPack)
 		if (category === 0) {
 			set({ pack: get().defaultPack })
 		} else {
@@ -127,7 +128,7 @@ export const usePack = create((set, get) => ({
 		p = p.slice(0, n)
 
 		// Randomize it!
-		p.sort(() => 0.5 - Math.random())
+		p = shuffle(p)
 
 		return p
 	},

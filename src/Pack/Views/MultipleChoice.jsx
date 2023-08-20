@@ -7,27 +7,28 @@ import Button from 'react-bootstrap/Button'
 
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
+import { stripHTML } from '@/lib/utilities'
 
 import './FlashcardView.scss'
 
 function Answer(props) {
 	var content = (
 		<>
-			<div className="badge bg-dark">{props.i + 1}</div> {props.answerText}
+			<div className="badge bg-dark my-auto">{props.i + 1}</div> {stripHTML(props.answerText)}
 		</>
 	)
 
 	if (props.correctChoice && props.wrongAnswerClicked) {
 		content = (
 			<>
-				<div className="badge bg-success">✓</div> {props.answerText}
+				<div className="badge bg-success my-auto">✓</div> {stripHTML(props.answerText)}
 			</>
 		)
 	}
 
 	return (
 		<div className="col py-3" key={props.answerText}>
-			<div className="d-grid gap-2 col-10">
+			<div className="d-grid">
 				<Button
 					variant="light"
 					onClick={() => {
@@ -67,7 +68,7 @@ function MultipleChoice(props) {
 		props.setCurrentCard(props.currentCard + 1)
 	}
 
-	async function handleAnswerClick(correctChoice) {
+	async function handleAnswerClick() {
 		// if (!correctChoice) {
 		// 	clickedWrongAnswer(true)
 		// }
@@ -112,10 +113,8 @@ function MultipleChoice(props) {
 	})
 
 	return (
-		<div className="rounded-3 mx-auto text-center mt-4">
-			<div className="container text-center">
-				<div className="row row-cols-2 gx-3">{choices}</div>
-			</div>
+		<div className="mt-4 d-flex justify-content-center">
+			<div className="row row-cols-1 row-cols-sm-2 gx-3">{choices}</div>
 		</div>
 	)
 }

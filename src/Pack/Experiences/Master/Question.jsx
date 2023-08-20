@@ -56,8 +56,8 @@ export default function Question({ card, next, correct }) {
 	}, [similarCards, clicked])
 
 	return (
-		<div className="mb-3 card p-3 w-100" style={{ height: '60vh' }}>
-			<div className="h-100 d-flex align-items-center justify-content-around me-5">
+		<div className="mb-3 card p-3 mx-auto" style={{ minHeight: '60vh' }}>
+			<div className="my-auto d-flex align-items-center justify-content-around flex-column flex-md-row me-5">
 				<div>
 					{/* TODO: add image support */}
 					<h1 className="fw-light mb-0 p-5">

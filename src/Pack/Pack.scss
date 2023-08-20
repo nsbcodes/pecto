@@ -9,9 +9,7 @@
 // This file is imported by src\themes\_bootstrap.scss!
 
 #packRoot {
-	margin-left: 5rem;
-	width: 90%;
-	width: 70vw;
+	width: 100vw;
 }
 
 #packContentContainer {
@@ -22,6 +20,11 @@
 #parentToolbar {
 	pointer-events: none;
 	transform: translateY(-25%);
+}
+
+.navigation {
+	flex-wrap: nowrap !important;
+	overflow-x: auto;
 }
 
 @include media-breakpoint-up(sm) { 
@@ -41,6 +44,9 @@
 	}
 	#parentToolbar {
 		transform: translateY(-75%);
+	}
+	.flashCard {
+		width: 75%;
 	}
 }
 @include media-breakpoint-up(lg) {

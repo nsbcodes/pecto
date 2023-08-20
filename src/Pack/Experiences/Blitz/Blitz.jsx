@@ -109,7 +109,11 @@ function BlitzComponent() {
 				answerIncorrect()
 			}
 
-			nextAnswerDeferred()
+			e.stopPropagation()
+
+			document.addEventListener('keyup', (e) => {
+				if (e.key === 'Enter') next()
+			})
 		}
 	}
 
@@ -123,7 +127,7 @@ function BlitzComponent() {
 					{index <= 5 && (
 						<>
 							<hr className="w-100" />
-							Type <kbd>Enter</kbd> to proceed
+							Type <kbd>Enter</kbd> or touch this to proceed
 						</>
 					)}
 				</span>
@@ -146,7 +150,7 @@ function BlitzComponent() {
 					{index <= 5 && (
 						<>
 							<hr className="w-100" />
-							Type <kbd>Enter</kbd> to proceed
+							Type <kbd>Enter</kbd> or touch this to proceed
 						</>
 					)}
 				</span>
@@ -169,7 +173,7 @@ function BlitzComponent() {
 					{index <= 5 && (
 						<>
 							<hr className="w-100" />
-							Type <kbd>Enter</kbd> to proceed
+							Type <kbd>Enter</kbd> or touch this to proceed
 						</>
 					)}
 				</span>
@@ -187,27 +191,31 @@ function BlitzComponent() {
 		}
 	}
 
-	var enterPressed = 0
-	function nextAnswerDeferred() {
-		// setTimeout(() => {
-		// 	setFeedback({ variant: '', message: 'none' })
-		// 	setAnswer('')
-		// 	if (index + 1 < length) setIndex(index + 1)
-		// }, '2500')
-		// Reset the number of times Enter has been pressed
-		enterPressed = 0
-		document.addEventListener('keyup', (e) => {
-			// The first Enter keypress is used to submit the answer
-			if (e.key === 'Enter') {
-				enterPressed++
-				if (enterPressed == 2) {
-					setFeedback({ variant: '', message: 'none' })
-					setAnswer('')
-					if (index + 1 < length) setIndex(index + 1)
-				}
-			}
-		})
+	function next() {
+		setFeedback({ variant: '', message: 'none' })
+		setAnswer('')
+		if (index + 1 < length) setIndex(index + 1)
 	}
+
+	// var enterPressed = 0
+	// function nextAnswerDeferred() {
+	// 	// setTimeout(() => {
+	// 	// 	setFeedback({ variant: '', message: 'none' })
+	// 	// 	setAnswer('')
+	// 	// 	if (index + 1 < length) setIndex(index + 1)
+	// 	// }, '2500')
+	// 	// Reset the number of times Enter has been pressed
+	// 	enterPressed = 0
+	// 	document.addEventListener('keyup', (e) => {
+	// 		// The first Enter keypress is used to submit the answer
+	// 		if (e.key === 'Enter') {
+	// 			enterPressed++
+	// 			if (enterPressed == 2) {
+	// 				next()
+	// 			}
+	// 		}
+	// 	})
+	// }
 
 	return (
 		<>
@@ -251,25 +259,31 @@ function BlitzComponent() {
 					</Button>
 				</InputGroup>
 			) : (
-				<Button disabled variant={theme.color} className="w-25">
+				<Button disabled variant={theme.color} className="w-25 mt-2">
 					{index + 1}
 				</Button>
 			)}
 
-			<div className="d-flex justify-content-center mt-5">
+			<div className="d-flex justify-content-center mt-5 mb-5">
 				<div>
 					<h3 className="w-75 mt-5 mx-auto">
 						<Markup content={cards.definition} />
 					</h3>
 
 					{feedback.message != 'none' && (
-						<Alert className="w-50 mx-auto" variant={feedback.variant}>
+						<Alert
+							className="w-75 mx-auto"
+							variant={feedback.variant}
+							onClick={() => {
+								next()
+							}}
+						>
 							{feedback.message}
 						</Alert>
 					)}
 
 					<input
-						className="w-50 mx-auto mt-3 form-control form-control-lg"
+						className="w-75 mx-auto mt-3 form-control form-control-lg"
 						type="text"
 						placeholder="Answer"
 						value={answer}
@@ -279,7 +293,7 @@ function BlitzComponent() {
 						}}
 						// autoFocus only focuses on the initial render
 						ref={(input) => input && input.focus()}
-						onKeyDown={validateAnswer}
+						onKeyUp={validateAnswer}
 					/>
 				</div>
 			</div>
