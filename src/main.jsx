@@ -15,6 +15,10 @@ import ReactDOM from 'react-dom/client'
 import NotFound from './NotFound'
 import Loading from './Loading'
 
+import { registerSW } from 'virtual:pwa-register'
+
+registerSW({ immediate: true })
+
 const Pack = lazy(() => import('./Pack/Pack'))
 const Root = lazy(() => import('./Root'))
 const NewPack = lazy(() => import('./Pack/NewPack'))
