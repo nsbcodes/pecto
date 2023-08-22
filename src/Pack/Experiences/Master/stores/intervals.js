@@ -3,7 +3,8 @@ import { create } from 'zustand'
 // see: https://www.desmos.com/calculator/qp5yg2cest
 // exponentially decreases before linearly converging to 0
 export const cycleModifier = function (x, b = 1, a = 0.75, base = 60) {
-	return ((base / x) ^ a) * b
+	// (( 60 / x ) ^ 0.75) * 1
+	return (base / x) ** a * b
 }
 
 const saveIntervals = function (val, uuid, postSave) {

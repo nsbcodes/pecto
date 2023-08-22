@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
+import { stripHTML } from '@/lib/utilities'
 
 export default function MultipleChoice({ i, hard, submit, save }) {
 	const [cards, getSimilarCards] = usePack(
@@ -45,7 +46,7 @@ export default function MultipleChoice({ i, hard, submit, save }) {
 													className="form-check-label stretched-link text-success"
 													htmlFor={card.uuid + cards.uuid}
 												>
-													Correct Answer - {card.term}
+													Correct Answer - {stripHTML(card.term)}
 												</label>
 											</>
 										)
@@ -65,7 +66,7 @@ export default function MultipleChoice({ i, hard, submit, save }) {
 													className="form-check-label stretched-link text-danger"
 													htmlFor={card.uuid + cards.uuid}
 												>
-													Correct Answer - {card.term}
+													Correct Answer - {stripHTML(card.term)}
 												</label>
 											</>
 										)
@@ -87,7 +88,7 @@ export default function MultipleChoice({ i, hard, submit, save }) {
 												className="form-check-label stretched-link text-danger"
 												htmlFor={card.uuid + cards.uuid}
 											>
-												❌ {card.term}
+												❌ {stripHTML(card.term)}
 											</label>
 										</>
 									)
@@ -108,7 +109,7 @@ export default function MultipleChoice({ i, hard, submit, save }) {
 												className="form-check-label stretched-link"
 												htmlFor={card.uuid + cards.uuid}
 											>
-												{card.term}
+												{stripHTML(card.term)}
 											</label>
 										</>
 									)
@@ -129,7 +130,7 @@ export default function MultipleChoice({ i, hard, submit, save }) {
 											className="form-check-label stretched-link"
 											htmlFor={card.uuid + cards.uuid}
 										>
-											{card.term}
+											{stripHTML(card.term)}
 										</label>
 									</>
 								)
@@ -145,7 +146,7 @@ export default function MultipleChoice({ i, hard, submit, save }) {
 		<div className="mb-3 w-75 mx-auto card p-3">
 			<div className="row g-0">
 				<div className="col-md-6 my-auto">
-					<h3 className="fw-light mb-0 p-5">{cards?.definition}</h3>
+					<h3 className="fw-light mb-0 p-5">{stripHTML(cards?.definition)}</h3>
 				</div>
 				<div className="col-md-6 my-auto">
 					<ul className="list-group list-group-flush">{qs}</ul>

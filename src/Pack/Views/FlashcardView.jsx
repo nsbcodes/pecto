@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -10,10 +10,17 @@ import { Markup } from '@/lib/Markup'
 import './FlashcardView.scss'
 
 import MultipleChoice from './MultipleChoice'
+import { shuffle as shuffleFunction } from '@/lib/utilities'
 
 export function FlashcardView() {
 	const [pack, editing] = usePack((state) => [state.pack, state.editing], shallow)
 	const [currentCard, setCurrentCard] = useState(0)
+	const [switchedTerm, setSwitchedTerm] = useState(false)
+	const [shuffle, setShuffle] = useState(false)
+	const content = useMemo(
+		() => (shuffle ? shuffleFunction(pack.content) : pack.content),
+		[pack, shuffle]
+	)
 
 	// Term/Definition switch click
 	const [showDefinition, setShowDefinition] = useState(false)
@@ -23,7 +30,7 @@ export function FlashcardView() {
 
 	// Arrow Keys Navigation
 	function handleKey(e) {
-		if (e.key === 'ArrowRight' && currentCard + 1 < pack.content.length) {
+		if (e.key === 'ArrowRight' && currentCard + 1 < content.length) {
 			setShowDefinition(mcqMode)
 			setCurrentCard(currentCard + 1)
 		} else if (e.key === 'ArrowLeft' && currentCard - 1 >= 0) {
@@ -49,7 +56,7 @@ export function FlashcardView() {
 		}
 	}, [mcqMode, editing, currentCard, showDefinition])
 
-	if (pack.content.length == 0) {
+	if (content.length == 0) {
 		return (
 			<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">
 				<div className="container">
@@ -63,55 +70,70 @@ export function FlashcardView() {
 		<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">
 			<div className="container">
 				{/* Mode Options */}
-				<Form.Check
-					className="mb-4"
-					type="switch"
-					label="Multiple Choice Mode"
-					checked={mcqMode}
-					onChange={(e) => {
-						if (pack.content.length >= 4) {
-							setShowDefinition(false)
-							setMcqMode(e.target.checked)
-						} else {
-							alert('Add at least 4 cards to enable Multiple Choice mode')
-						}
-						if (e.target.checked == true) setShowDefinition(true)
-					}}
-				/>
+				<div className="d-flex justify-content-start mb-4">
+					<Form.Check
+						className="me-3"
+						type="switch"
+						label="Multiple Choice Mode"
+						checked={mcqMode}
+						onChange={(e) => {
+							if (content.length >= 4) {
+								setShowDefinition(false)
+								setMcqMode(e.target.checked)
+							} else {
+								alert('Add at least 4 cards to enable Multiple Choice mode')
+							}
+							if (e.target.checked == true) setShowDefinition(true)
+						}}
+					/>
+					<Form.Check
+						className="me-3"
+						type="switch"
+						label="Switch Term and Definition"
+						checked={switchedTerm}
+						onChange={(e) => setSwitchedTerm(e.target.checked)}
+					/>
+					<Form.Check
+						type="switch"
+						label="Shuffle"
+						checked={shuffle}
+						onChange={(e) => setShuffle(e.target.checked)}
+					/>
+				</div>
 
 				{/* Flashcard */}
 				<div
-					key={pack.content[currentCard][showDefinition ? 'definition' : 'term']}
+					key={content[currentCard][showDefinition ? 'definition' : 'term']}
 					className="shadow rounded-3 bg-secondary mx-auto text-center d-flex justify-content-center px-5 align-items-center flashCard"
 					onClick={() => {
 						if (!mcqMode) setShowDefinition(!showDefinition)
 					}}
 				>
-					{showDefinition ? (
+					{(showDefinition && !switchedTerm) || (!showDefinition && switchedTerm) ? (
 						<div
 							className={
-								smallText(pack.content[currentCard]['definition'])
+								smallText(content[currentCard]['definition'])
 									? 'fcTextSmall'
 									: 'fcTextBig'
 							}
 						>
-							<Markup dark content={pack.content[currentCard]['definition']} />
+							<Markup dark content={content[currentCard]['definition']} />
 						</div>
 					) : (
 						<div
 							className={
-								smallText(pack.content[currentCard]['term'])
+								smallText(content[currentCard]['term'])
 									? 'fcTextSmall'
 									: 'fcTextBig'
 							}
 						>
-							{pack.content[currentCard]?.picture !== undefined && (
+							{content[currentCard]?.picture !== undefined && (
 								<img
 									className="w-100 mb-5 rounded-3 shadow"
-									src={pack.content[currentCard]['picture']}
+									src={content[currentCard]['picture']}
 								></img>
 							)}
-							<Markup dark content={pack.content[currentCard]['term']} />
+							<Markup dark content={content[currentCard]['term']} />
 						</div>
 					)}
 				</div>
@@ -141,10 +163,10 @@ export function FlashcardView() {
 
 					{/* Current Card */}
 					<span className="align-middle">
-						{currentCard + 1}/{pack.content.length}
+						{currentCard + 1}/{content.length}
 					</span>
 
-					{currentCard + 1 >= pack.content.length ? (
+					{currentCard + 1 >= content.length ? (
 						<Button variant="light" disabled>
 							Next
 						</Button>

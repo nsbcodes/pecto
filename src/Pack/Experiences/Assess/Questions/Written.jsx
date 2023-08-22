@@ -6,6 +6,7 @@ import { usePack } from '@/stores/pack'
 import Form from 'react-bootstrap/Form'
 
 import leven from 'leven'
+import { stripHTML } from '@/lib/utilities'
 
 export default function Written({ i, submit, save }) {
 	const [cards] = usePack((state) => [state.pack.content[i]], shallow)
@@ -14,7 +15,7 @@ export default function Written({ i, submit, save }) {
 
 	useEffect(() => {
 		if (submit) {
-			let correctness = leven(answer, cards.term)
+			let correctness = leven(answer, stripHTML(cards.term))
 			if (correctness === 0) {
 				save(true)
 				setQs(
@@ -35,7 +36,8 @@ export default function Written({ i, submit, save }) {
 				setQs(
 					<>
 						<span className="text-info">
-							Correct Answer! {answer} was guessed to be equal to {cards.term}.
+							Correct Answer! {answer} was guessed to be equal to{' '}
+							{stripHTML(cards.term)}.
 						</span>
 						<Form.Control
 							size="lg"
@@ -52,7 +54,8 @@ export default function Written({ i, submit, save }) {
 				setQs(
 					<>
 						<span className="text-danger">
-							Incorrect Answer - <span className="text-success">{cards.term}</span>
+							Incorrect Answer -{' '}
+							<span className="text-success">{stripHTML(cards.term)}</span>
 						</span>
 						<Form.Control
 							size="lg"
@@ -82,7 +85,7 @@ export default function Written({ i, submit, save }) {
 		<div className={`mb-3 w-75 mx-auto card p-1`}>
 			<div className="row g-0">
 				<div className="col-md-6 my-auto">
-					<h3 className="fw-light mb-0 p-5">{cards?.definition}</h3>
+					<h3 className="fw-light mb-0 p-5">{stripHTML(cards?.definition)}</h3>
 				</div>
 				<div className="col-md-6 my-auto">
 					<div className="card-body">{qs}</div>

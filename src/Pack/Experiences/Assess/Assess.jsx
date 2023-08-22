@@ -92,6 +92,7 @@ function AssessComponent() {
 										}
 										className="mb-3"
 										min={0}
+										max={pack.content.length}
 										disabled={startedTest}
 									/>
 									<Form.Control.Feedback type="invalid">

@@ -4,6 +4,7 @@ import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
 
 import Form from 'react-bootstrap/Form'
+import { stripHTML } from '@/lib/utilities'
 
 export default function TrueOrFalse({ i, submit, save }) {
 	const [cards, getSimilarCards] = usePack(
@@ -87,11 +88,13 @@ export default function TrueOrFalse({ i, submit, save }) {
 		<div className={`mb-3 w-75 mx-auto card p-3`}>
 			<div className="row g-0">
 				<div className="col-md-6 my-auto">
-					<h3 className="fw-light mb-0 p-5">{similarTerms[tf ? 1 : 0]?.definition}</h3>
+					<h3 className="fw-light mb-0 p-5">
+						{stripHTML(similarTerms[tf ? 1 : 0]?.definition)}
+					</h3>
 				</div>
 				<div className="col-md-6 my-auto">
 					<div className="card-body">
-						<h3 className="card-title">{cards?.term}</h3>
+						<h3 className="card-title">{stripHTML(cards?.term)}</h3>
 						{qs}
 					</div>
 				</div>

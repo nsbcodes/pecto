@@ -47,6 +47,7 @@ function MasterComponent() {
 
 	// Validate the form
 	useEffect(() => {
+		console.log(cycleModifier(pack.content.length))
 		if (days == 0) {
 			setValid(false)
 			setMessage('Days must be larger than 0')

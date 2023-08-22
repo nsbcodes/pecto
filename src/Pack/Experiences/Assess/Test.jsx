@@ -27,7 +27,6 @@ const initialState = { answers: {} }
 function reducer(state, action) {
 	let answers = { ...state.answers, [action.payload.i]: action.payload.val }
 	let arr = Object.values(answers)
-	console.log(arr)
 	let sum = arr.reduce((a, b) => a + b)
 	let right = (sum / arr.length) * 100
 	let wrong = ((arr.length - sum) / arr.length) * 100
