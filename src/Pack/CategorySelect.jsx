@@ -9,6 +9,8 @@ import { hslToHex } from '@/lib/utilities'
 import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 import { ThemeContext } from '@/lib/context'
+import { syncLocalStorage } from '@/lib/firebase'
+import { useUser } from '@/stores/user'
 
 /**
  * A dropdown menu that allows the user to select a category for a card and contains a modal to add or edit categories
@@ -19,26 +21,29 @@ import { ThemeContext } from '@/lib/context'
  * @param {number} index - The index of the card in the pack
  */
 function CategorySelect({ index }) {
+	const [user] = useUser((state) => [state.user], shallow)
 	const [
-		cards,
-		starred,
+		cards, // TODO: fix misleading name
+		uuid,
+		packUUID,
 		categories,
 		addCategory,
 		editCategory,
 		setCardCategory,
-		setCardStarred,
 		removeCardCategory,
+		canEdit,
 	] = usePack(
 		(state) => [
 			// Data
 			state.pack.content[index].category,
-			state.pack.content[index].starred,
+			state.pack.content[index].uuid,
+			state.pack.uuid,
 			state.pack.categories,
 			state.addCategory,
 			state.editCategory,
 			state.setCardCategory,
-			state.setCardStarred,
 			state.removeCardCategory,
+			state.canEdit,
 		],
 		shallow
 	)
@@ -51,6 +56,10 @@ function CategorySelect({ index }) {
 	const [replaceCategory, setReplaceCategory] = useState('')
 
 	const [editingCategoryDropdown, editCategoryDropdown] = useState(false)
+
+	const [starred, setStarred] = useState(
+		localStorage.getItem(`starred-${packUUID}-${uuid}`) === 'true'
+	)
 
 	function submitNewCategory() {
 		if (replaceCategory == '') {
@@ -85,6 +94,19 @@ function CategorySelect({ index }) {
 		setShow(true)
 	}
 
+	async function toggleStarred(val) {
+		if (val) {
+			localStorage.setItem(`starred-${packUUID}-${uuid}`, true)
+			setStarred(true)
+		} else {
+			localStorage.removeItem(`starred-${packUUID}-${uuid}`)
+			setStarred(false)
+		}
+		if (user?.uid !== undefined) {
+			await syncLocalStorage(user.uid)
+		}
+	}
+
 	return (
 		<>
 			<div className="d-flex justify-content-between align-items-center">
@@ -92,7 +114,7 @@ function CategorySelect({ index }) {
 					<Button
 						size="sm"
 						variant={theme.dark ? 'secondary' : 'dark'}
-						onClick={() => setCardStarred(index, false)}
+						onClick={() => toggleStarred(false)}
 						tabIndex="-1"
 					>
 						⭐
@@ -101,71 +123,82 @@ function CategorySelect({ index }) {
 					<Button
 						size="sm"
 						variant={theme.color}
-						onClick={() => setCardStarred(index, true)}
+						onClick={() => toggleStarred(true)}
 						tabIndex="-1"
 					>
 						⭐
 					</Button>
 				)}
-				<Dropdown>
-					<Dropdown.Toggle size="sm" className="ms-2" variant={theme.color} tabIndex="-1">
-						{categories[cards].name}
-					</Dropdown.Toggle>
-					<Dropdown.Menu>
-						{Object.entries(categories).map(([id, category]) => (
-							<div key={id}>
-								<Dropdown.Item
-									onClick={() => changeCardCategory(id)}
-									key={category.name}
-								>
-									{category.name}
-								</Dropdown.Item>
-								{editingCategoryDropdown && category.name !== 'Default' && (
-									<div className="d-flex justify-content-between align-items-center ps-2 pe-2 pt-1 pb-1">
-										<Button
-											size="sm"
-											variant="outline-light"
-											onClick={() => showEditModal(id, category)}
-										>
-											✏️
-										</Button>
-										<Button
-											size="sm"
-											variant="outline-light"
-											onClick={() => removeCardCategory(id)}
-										>
-											🗑️
-										</Button>
-									</div>
-								)}
-							</div>
-						))}
-						<li>
-							<hr className="dropdown-divider" />
-						</li>
-						<div className="text-center d-flex justify-content-between align-items-center ps-2 pe-2">
-							<Button
-								size="sm"
-								variant={theme.color}
-								onClick={() => editCategoryDropdown(!editingCategoryDropdown)}
-							>
-								⚒️
-							</Button>
-						</div>
-						<li>
-							<hr className="dropdown-divider" />
-						</li>
-						<Dropdown.Item
-							className="text-center"
-							onClick={() => {
-								generateNewColor()
-								setShow(true)
-							}}
+				{canEdit ? (
+					<Dropdown>
+						<Dropdown.Toggle
+							size="sm"
+							className="ms-2"
+							variant={theme.color}
+							tabIndex="-1"
 						>
-							New
-						</Dropdown.Item>
-					</Dropdown.Menu>
-				</Dropdown>
+							{categories[cards].name}
+						</Dropdown.Toggle>
+						<Dropdown.Menu>
+							{Object.entries(categories).map(([id, category]) => (
+								<div key={id}>
+									<Dropdown.Item
+										onClick={() => changeCardCategory(id)}
+										key={category.name}
+									>
+										{category.name}
+									</Dropdown.Item>
+									{editingCategoryDropdown && category.name !== 'Default' && (
+										<div className="d-flex justify-content-between align-items-center ps-2 pe-2 pt-1 pb-1">
+											<Button
+												size="sm"
+												variant="outline-light"
+												onClick={() => showEditModal(id, category)}
+											>
+												✏️
+											</Button>
+											<Button
+												size="sm"
+												variant="outline-light"
+												onClick={() => removeCardCategory(id)}
+											>
+												🗑️
+											</Button>
+										</div>
+									)}
+								</div>
+							))}
+							<li>
+								<hr className="dropdown-divider" />
+							</li>
+							<div className="text-center d-flex justify-content-between align-items-center ps-2 pe-2">
+								<Button
+									size="sm"
+									variant={theme.color}
+									onClick={() => editCategoryDropdown(!editingCategoryDropdown)}
+								>
+									⚒️
+								</Button>
+							</div>
+							<li>
+								<hr className="dropdown-divider" />
+							</li>
+							<Dropdown.Item
+								className="text-center"
+								onClick={() => {
+									generateNewColor()
+									setShow(true)
+								}}
+							>
+								New
+							</Dropdown.Item>
+						</Dropdown.Menu>
+					</Dropdown>
+				) : (
+					<Button size="sm" className="ms-2" variant={theme.color} tabIndex="-1" disabled>
+						{categories[cards].name}
+					</Button>
+				)}
 			</div>
 
 			{/* New Category Modal */}

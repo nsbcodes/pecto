@@ -130,7 +130,6 @@ function Pack() {
 			term: '',
 			definition: '',
 			category: 'default',
-			starred: false,
 			uuid: uuidv4(),
 		})
 	}
@@ -154,7 +153,7 @@ function Pack() {
 			window.location.reload()
 		}
 	}
-
+console.log(starredFilter)
 	return (
 		<div id="packRoot" className="mx-auto">
 			<Navigation baseURL={`${pack.author}/${pack.uuid}`} currentPage="view" />
@@ -194,7 +193,7 @@ function Pack() {
 								// will require us to add uuids for each card
 								setStarredFilter(e.target.checked)
 							}}
-							value={starredFilter}
+							checked={starredFilter}
 						/>
 					</div>
 

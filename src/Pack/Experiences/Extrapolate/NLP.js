@@ -80,7 +80,6 @@ export function generateCards(text, category, addCategory, setCards) {
 						term: capitalizeFirstLetter(np),
 						definition: capitalizeFirstLetter(vp + sentence.sentence.predicate),
 						category: uuid,
-						starred: false,
 						uuid: uuidv4(),
 					})
 				}

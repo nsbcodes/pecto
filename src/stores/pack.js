@@ -66,7 +66,19 @@ export const usePack = create((set, get) => ({
 			set({
 				pack: {
 					...get().defaultPack,
-					content: get().defaultPack.content.filter((c) => c.starred == starred),
+					content: get().defaultPack.content.filter((c) => {
+						if (starred) {
+							return localStorage.getItem(
+								`starred-${get().defaultPack.uuid}-${c.uuid}`
+							)
+						} else {
+							return (
+								localStorage.getItem(
+									`starred-${get().defaultPack.uuid}-${c.uuid}`
+								) == false
+							)
+						}
+					}),
 				},
 			})
 		}
@@ -103,7 +115,6 @@ export const usePack = create((set, get) => ({
 						term: a[0],
 						definition: a[1],
 						category: category,
-						starred: false,
 						uuid: uuidv4(),
 					})
 				})
@@ -186,13 +197,6 @@ export const usePack = create((set, get) => ({
 		set(
 			produce((state) => {
 				state.pack.content[i]['picture'] = pictureURL
-			})
-		)
-	},
-	setCardStarred: (i, value) => {
-		set(
-			produce((state) => {
-				state.pack.content[i]['starred'] = value
 			})
 		)
 	},

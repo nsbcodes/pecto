@@ -20,7 +20,6 @@ const BasePack = () => {
 				term: '',
 				definition: '',
 				category: 'default',
-				starred: false,
 				uuid: uuidv4(),
 			},
 		],

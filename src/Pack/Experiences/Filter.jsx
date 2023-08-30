@@ -53,7 +53,7 @@ export function Filter({ disabled = false }) {
 						// will require us to a	dd uuids for each card
 						setStarredFilter(e.target.checked)
 					}}
-					value={starredFilter}
+					checked={starredFilter}
 					disabled={disabled}
 				/>
 			</div>

@@ -112,13 +112,8 @@ function Cards({ index, edit }) {
 		>
 			<>{extra}</>
 			<div className="d-flex justify-content-between align-items-center mt-5">
-				{canEdit ? (
-					<CategorySelect index={index} />
-				) : (
-					<div className="badge bg-primary ms-2">
-						{categories[cards.category]['name']}
-					</div>
-				)}
+				<CategorySelect index={index} />
+
 				<div className="d-flex align-items-center">
 					{canEdit ? <PictureSelect index={index} /> : <></>}
 					<span className="text-muted ms-3 me-4">{index + 1}</span>
