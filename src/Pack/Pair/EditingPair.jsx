@@ -43,7 +43,7 @@ function EditingPair({ index }) {
 			definition: '',
 			category: 'default',
 			uuid: uuidv4(),
-		})
+		}, true)
 	}
 
 	return (

@@ -83,10 +83,19 @@ export const usePack = create((set, get) => ({
 			})
 		}
 	},
-	addCards: (cards) =>
+	addCards: (cards, usePreviousCategory = false) =>
 		set(
 			produce((state) => {
-				state.pack.content = state.pack.content.concat(cards)
+				state.pack.content = state.pack.content.concat({
+					...cards,
+					...{
+						category: usePreviousCategory
+							? // There's alwways a first card but just make sure
+							  state.pack.content[state.pack.content.length - 1].category ||
+							  'default'
+							: cards.category,
+					},
+				})
 			})
 		),
 	setCard: (i, newCard) =>
