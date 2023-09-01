@@ -11,6 +11,7 @@ import './FlashcardView.scss'
 
 import MultipleChoice from './MultipleChoice'
 import { shuffle as shuffleFunction } from '@/lib/utilities'
+import { motion } from 'framer-motion'
 
 export function FlashcardView() {
 	const [pack, editing] = usePack((state) => [state.pack, state.editing], shallow)
@@ -102,12 +103,19 @@ export function FlashcardView() {
 				</div>
 
 				{/* Flashcard */}
-				<div
+				<motion.div
 					key={content[currentCard][showDefinition ? 'definition' : 'term']}
 					className="shadow rounded-3 bg-secondary mx-auto text-center d-flex justify-content-center px-5 align-items-center flashCard"
 					onClick={() => {
 						if (!mcqMode) setShowDefinition(!showDefinition)
 					}}
+					initial={{
+						x: showDefinition ? -50 : 0,
+						y: showDefinition ? 0 : 50,
+						opacity: showDefinition ? 1 : 0.75,
+					}}
+					animate={{ x: 0, y: 0, opacity: 1 }}
+					transition={{ duration: 1, type: 'spring', bounce: 0.5 }}
 				>
 					{(showDefinition && !switchedTerm) || (!showDefinition && switchedTerm) ? (
 						<div
@@ -136,7 +144,7 @@ export function FlashcardView() {
 							<Markup dark content={content[currentCard]['term']} />
 						</div>
 					)}
-				</div>
+				</motion.div>
 
 				{/* Multiple Choice */}
 				{mcqMode && (
