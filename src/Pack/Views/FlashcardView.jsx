@@ -116,6 +116,8 @@ export function FlashcardView() {
 					}}
 					animate={{ x: 0, y: 0, opacity: 1 }}
 					transition={{ duration: 1, type: 'spring', bounce: 0.5 }}
+					whileHover={{ scale: 1.1 }}
+					whileTap={{ scale: 0.9 }}
 				>
 					{(showDefinition && !switchedTerm) || (!showDefinition && switchedTerm) ? (
 						<div
