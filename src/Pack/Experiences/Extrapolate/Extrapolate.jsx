@@ -10,6 +10,8 @@ import Form from 'react-bootstrap/Form'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import Accordion from 'react-bootstrap/Accordion'
 import Alert from 'react-bootstrap/Alert'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 
 import { useParams } from 'react-router-dom'
 import { useUser } from '@/stores/user'
@@ -19,6 +21,7 @@ import { createCategory, generateCards } from './NLP'
 import LLMPipeline from './LLMPipeline'
 import { capitalizeFirstLetter } from '@/lib/utilities'
 import { v4 as uuidv4 } from 'uuid'
+import Tesseract from 'tesseract.js'
 
 function InputWrapper({ value, save }) {
 	const ref = useRef(null)
@@ -66,6 +69,8 @@ function reducer(state, action) {
 	return { cards: cards }
 }
 
+const worker = await Tesseract.createWorker()
+
 function ExtrapolateComponent() {
 	const [newPack] = useUser((state) => [state.newPack], shallow)
 	const [pack, addCategory] = usePack((state) => [state.pack, state.addCategory], shallow)
@@ -75,6 +80,7 @@ function ExtrapolateComponent() {
 
 	const [category, setCategory] = useState('Default')
 	const [text, setText] = useState('')
+	const [imagePreview, setImagePreview] = useState('')
 	const [cards, dispatch] = useReducer(reducer, { cards: [] })
 	const [removeSubject, setRemoveSubject] = useState(true)
 
@@ -87,7 +93,7 @@ function ExtrapolateComponent() {
 
 		// Make a new flashcard for each newline
 		let split = text.split('\n')
-		split.forEach(async (paragraph, i) => {
+		split.forEach(async (paragraph) => {
 			let term = capitalizeFirstLetter(await condenser(paragraph))
 			let definition = capitalizeFirstLetter(paragraph)
 
@@ -101,9 +107,6 @@ function ExtrapolateComponent() {
 				category: uuid,
 				uuid: uuidv4(),
 			})
-
-			// Update progress
-			setProgress((i / split.length) * 100)
 		})
 	}
 
@@ -116,6 +119,49 @@ function ExtrapolateComponent() {
 		p.content = p.content.concat(cards.cards)
 		await newPack(packId, p)
 	}
+
+	async function handleBlob(blob) {
+		setImagePreview(URL.createObjectURL(blob))
+		await worker.loadLanguage('eng')
+		await worker.initialize('eng')
+		const {
+			data: { text },
+		} = await worker.recognize(blob)
+		setText(text)
+		await worker.terminate()
+	}
+
+	useEffect(() => {
+		document.addEventListener('paste', async (e) => {
+			e.preventDefault()
+			const clipboardItems =
+				typeof navigator?.clipboard?.read === 'function'
+					? await navigator.clipboard.read()
+					: e.clipboardData.files
+
+			for (const clipboardItem of clipboardItems) {
+				let blob
+				if (clipboardItem.type?.startsWith('image/')) {
+					// For files from `e.clipboardData.files`.
+					blob = clipboardItem
+					handleBlob(blob)
+				} else {
+					// For files from `navigator.clipboard.read()`.
+					const imageTypes = clipboardItem.types?.filter((type) =>
+						type.startsWith('image/')
+					)
+					for (const imageType of imageTypes) {
+						blob = await clipboardItem.getType(imageType)
+						handleBlob(blob)
+					}
+				}
+			}
+		})
+
+		return () => {
+			document.removeEventListener('paste', () => {})
+		}
+	}, [setImagePreview])
 
 	return (
 		<>
@@ -134,11 +180,23 @@ function ExtrapolateComponent() {
 					/>
 				</FloatingLabel>
 
-				<FloatingLabel label="Excerpt">
-					<InputWrapper value={text} save={(e) => setText(e.target.value)} />
-				</FloatingLabel>
+				<Row className="mb-3">
+					<Col sm={9}>
+						<FloatingLabel label="Excerpt" className="h-100">
+							<InputWrapper value={text} save={(e) => setText(e.target.value)} />
+						</FloatingLabel>
+					</Col>
+					<Col sm={3} className="d-grid">
+						<Form.Group controlId="formFile" className="mb-3">
+							<Form.Label>Drag, paste, or upload an image file</Form.Label>
+							<Form.Control type="file" accept=".bmp,.jpg,.png,.pbm,.webp" />
+						</Form.Group>
+					</Col>
+				</Row>
 
-				<Alert variant="info" className="mt-3 text-start">
+				<img src={imagePreview} className="img-fluid mb-3" />
+
+				<Alert variant="info" className="text-start">
 					<h5>★ Lightweight NLP</h5>
 					<p>
 						Uses a complex algorithm to generate cards based on sentence structure, but
