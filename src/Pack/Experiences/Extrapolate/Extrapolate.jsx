@@ -198,7 +198,11 @@ function ExtrapolateComponent() {
 					<Col sm={3} className="d-grid">
 						<Form.Group controlId="formFile" className="mb-3">
 							<Form.Label>Drag, paste, or upload an image file</Form.Label>
-							<Form.Control type="file" accept=".bmp,.jpg,.png,.pbm,.webp" />
+							<Form.Control
+								type="file"
+								accept=".bmp,.jpg,.png,.pbm,.webp"
+								onChange={(e) => handleBlob(e.target.files[0])}
+							/>
 						</Form.Group>
 					</Col>
 				</Row>
