@@ -69,7 +69,15 @@ function reducer(state, action) {
 	return { cards: cards }
 }
 
-const worker = await Tesseract.createWorker()
+class OCR {
+	static instance = null
+
+	static async getInstance() {
+		if (this.instance === null) this.instance = await Tesseract.createWorker()
+
+		return this.instance
+	}
+}
 
 function ExtrapolateComponent() {
 	const [newPack] = useUser((state) => [state.newPack], shallow)
@@ -122,6 +130,7 @@ function ExtrapolateComponent() {
 
 	async function handleBlob(blob) {
 		setImagePreview(URL.createObjectURL(blob))
+		const worker = await OCR.getInstance()
 		await worker.loadLanguage('eng')
 		await worker.initialize('eng')
 		const {
