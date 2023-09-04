@@ -16,4 +16,4 @@ python convert.py --model_id flan-t5-termdef --task text2text-generation --quant
 
 # Move the model to public for serving
 Remove-Item -Recurse ../public/models
-Copy-Item models ../public/models
+Copy-Item -Recurse models ../public/

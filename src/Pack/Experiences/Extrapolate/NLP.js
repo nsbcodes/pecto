@@ -3,13 +3,19 @@ import nlp from 'compromise'
 import { v4 as uuidv4 } from 'uuid'
 import { capitalizeFirstLetter } from '@/lib/utilities'
 
-export function generateCards(text, category, addCategory, setCards) {
+export function createCategory(category, addCategory) {
 	// Create a new category if it doesn't exist
 	var uuid = 'default'
 	if (category.toLowerCase() !== 'default') {
 		uuid = uuidv4()
 		addCategory(category, ['transparent', 'transparent'], uuid)
 	}
+	return uuid
+}
+
+export function generateCards(text, category, addCategory, setCards) {
+	// Create a new category if one doesn't exist
+	const uuid = createCategory(category, addCategory)
 
 	// Parse the sentence using Compromise.js
 	const doc = nlp(text)

@@ -1,18 +1,9 @@
-import { env, AutoTokenizer, AutoModelForSeq2SeqLM } from '@xenova/transformers'
-
-env.allowRemoteModels = false
+import { AutoTokenizer, AutoModelForSeq2SeqLM } from '@xenova/transformers'
 
 class LLMPipeline {
-	static model = 'flan-t5-termdef'
+	static model = '/Xenova/flan-t5-base'
 	static params = {
-		max_length: 20,
-		no_repeat_ngram_size: 1,
-		do_sample: true,
-		top_k: 50,
-		top_p: 0.95,
-		temperature: 0.9,
-		num_return_sequences: 1,
-		repetition_penalty: 1.3,
+		skip_special_tokens: true,
 	}
 	static instance = null
 
@@ -21,13 +12,16 @@ class LLMPipeline {
 			let tokenizer = await AutoTokenizer.from_pretrained(this.model)
 			let model = await AutoModelForSeq2SeqLM.from_pretrained(this.model)
 
-			this.instance = async (definition) => {
+			this.instance = async (sentence) => {
 				let { input_ids } = await tokenizer(
-					`What is the subject line for this email?\n\n${definition}`
+					`What is the subject line for this email?\n\n${sentence}`
 				)
 				let outputs = await model.generate(input_ids)
-				console.log(outputs)
-				return tokenizer.decode(outputs[0], this.params)
+				let out = ''
+				outputs.forEach((_output, i) => {
+					out += tokenizer.decode(outputs[i], this.params)
+				})
+				return out
 			}
 		}
 

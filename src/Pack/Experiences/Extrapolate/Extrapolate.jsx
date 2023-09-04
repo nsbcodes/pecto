@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef, useContext, useReducer } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
@@ -9,13 +9,16 @@ import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import Accordion from 'react-bootstrap/Accordion'
+import Alert from 'react-bootstrap/Alert'
 
 import { useParams } from 'react-router-dom'
 import { useUser } from '@/stores/user'
 import { ThemeContext } from '@/lib/context'
 
-import { generateCards } from './NLP'
+import { createCategory, generateCards } from './NLP'
 import LLMPipeline from './LLMPipeline'
+import { capitalizeFirstLetter } from '@/lib/utilities'
+import { v4 as uuidv4 } from 'uuid'
 
 function InputWrapper({ value, save }) {
 	const ref = useRef(null)
@@ -44,6 +47,25 @@ function InputWrapper({ value, save }) {
 	)
 }
 
+function reducer(state, action) {
+	let cards
+	if (Array.isArray(action)) {
+		cards = action
+	} else if (typeof action === 'object') {
+		cards = [...state.cards]
+		let found = false
+		cards.forEach((card, i) => {
+			if (card.term == action.term) {
+				cards[i].definition = `${cards[i].definition}. ${action.definition}`
+				found = true
+			}
+		})
+		if (found) return { cards: cards }
+		cards = [...state.cards, action]
+	}
+	return { cards: cards }
+}
+
 function ExtrapolateComponent() {
 	const [newPack] = useUser((state) => [state.newPack], shallow)
 	const [pack, addCategory] = usePack((state) => [state.pack, state.addCategory], shallow)
@@ -53,20 +75,45 @@ function ExtrapolateComponent() {
 
 	const [category, setCategory] = useState('Default')
 	const [text, setText] = useState('')
-	const [cards, setCards] = useState([])
+	const [cards, dispatch] = useReducer(reducer, { cards: [] })
+	const [removeSubject, setRemoveSubject] = useState(true)
 
 	async function generateTerm() {
+		// Create a new category if one doesn't exist
+		const uuid = createCategory(category, addCategory)
+
+		// Load the LLM
 		const condenser = await LLMPipeline.getInstance()
-		console.log(await condenser(text))
+
+		// Make a new flashcard for each newline
+		let split = text.split('\n')
+		split.forEach(async (paragraph, i) => {
+			let term = capitalizeFirstLetter(await condenser(paragraph))
+			let definition = capitalizeFirstLetter(paragraph)
+
+			// Remove the subject from the definition
+			term.split(' ').forEach((w) => (definition = definition.replaceAll(w, '')))
+
+			// Push changes
+			dispatch({
+				term: term,
+				definition: definition,
+				category: uuid,
+				uuid: uuidv4(),
+			})
+
+			// Update progress
+			setProgress((i / split.length) * 100)
+		})
 	}
 
 	async function saveCards() {
-		setCards([])
+		dispatch([])
 		setText('')
 		let p = { ...pack }
 		// For whatever reason p.content.push(..cards)
 		// gives us an "Object is not extensible" error
-		p.content = p.content.concat(cards)
+		p.content = p.content.concat(cards.cards)
 		await newPack(packId, p)
 	}
 
@@ -91,14 +138,27 @@ function ExtrapolateComponent() {
 					<InputWrapper value={text} save={(e) => setText(e.target.value)} />
 				</FloatingLabel>
 
-				<Accordion defaultActiveKey="0" flush className="mt-3">
+				<Alert variant="info" className="mt-3 text-start">
+					<h5>★ Lightweight NLP</h5>
+					<p>
+						Uses a complex algorithm to generate cards based on sentence structure, but
+						fails to use context for finding the sentence&apos;s subject.
+					</p>
+					<h5>Optimized LLM</h5>
+					<p className="mb-0">
+						Infers the subject of a sentence through the FLAN-T5 LLM, making it useful
+						for extracting information from complicated paragraphs.
+					</p>
+				</Alert>
+
+				<Accordion defaultActiveKey="0" flush className="mt-3 mb-5">
 					<Accordion.Item eventKey="0">
 						<Accordion.Header>Lightweight NLP</Accordion.Header>
 						<Accordion.Body>
 							<Button
 								variant={theme.dark ? 'light' : 'dark'}
 								size="lg"
-								onClick={() => generateCards(text, category, addCategory, setCards)}
+								onClick={() => generateCards(text, category, addCategory, dispatch)}
 								className="mt-3 mb-3"
 							>
 								🏭 Generate
@@ -108,6 +168,14 @@ function ExtrapolateComponent() {
 					<Accordion.Item eventKey="1">
 						<Accordion.Header>Optimized LLM</Accordion.Header>
 						<Accordion.Body>
+							<div className="d-flex justify-content-center">
+								<Form.Check
+									type="switch"
+									label="Remove Subject from Definition"
+									checked={removeSubject}
+									onChange={(e) => setRemoveSubject(e.target.checked)}
+								/>
+							</div>
 							<Button
 								variant={theme.dark ? 'light' : 'dark'}
 								size="lg"
@@ -121,7 +189,7 @@ function ExtrapolateComponent() {
 				</Accordion>
 			</div>
 
-			{cards.length > 0 && (
+			{cards.cards.length > 0 && (
 				<>
 					<Table striped bordered>
 						<thead>
@@ -132,7 +200,7 @@ function ExtrapolateComponent() {
 							</tr>
 						</thead>
 						<tbody>
-							{cards.map((card, index) => {
+							{cards.cards.map((card, index) => {
 								return (
 									<tr key={index}>
 										<td>{index + 1}</td>
@@ -140,9 +208,10 @@ function ExtrapolateComponent() {
 											<InputWrapper
 												value={card.term}
 												save={(e) => {
-													let t = [...cards]
+													// We can use the spread syntax because this is synchronous
+													let t = [...cards.cards]
 													t[index].term = e.target.value
-													setCards(t)
+													dispatch(t)
 												}}
 											/>
 										</td>
@@ -150,9 +219,9 @@ function ExtrapolateComponent() {
 											<InputWrapper
 												value={card.definition}
 												save={(e) => {
-													let t = [...cards]
+													let t = [...cards.cards]
 													t[index].definition = e.target.value
-													setCards(t)
+													dispatch(t)
 												}}
 											/>
 										</td>

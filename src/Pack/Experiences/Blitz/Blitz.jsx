@@ -20,6 +20,7 @@ function BlitzComponent() {
 	const theme = useContext(ThemeContext)
 
 	const [guided, setGuided] = useState(true)
+	const [ignoreSpelling, setIgnoreSpelling] = useState(true)
 	const [index, setIndex] = useState(0)
 	const [answer, setAnswer] = useState('')
 	const [feedback, setFeedback] = useState({ variant: '', message: 'none' })
@@ -103,7 +104,7 @@ function BlitzComponent() {
 			let correctness = leven(answer, correctAnswer)
 			if (correctness == 0) {
 				answerCorrect()
-			} else if (correctness <= 3) {
+			} else if (correctness <= 3 && ignoreSpelling) {
 				answerCloseEnough(correctAnswer)
 			} else {
 				answerIncorrect()
@@ -219,6 +220,14 @@ function BlitzComponent() {
 
 	return (
 		<>
+			<Form.Check
+				type="switch"
+				label="Ignore Spelling Mistakes"
+				className="mt-2"
+				checked={ignoreSpelling}
+				onChange={(e) => setIgnoreSpelling(e.target.checked)}
+			/>
+
 			<Form.Check
 				type="switch"
 				label="Guided Mode"
