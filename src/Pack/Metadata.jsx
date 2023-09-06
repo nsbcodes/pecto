@@ -17,6 +17,7 @@ import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
 
 import { v4 as uuidv4 } from 'uuid'
+import { stripHTML } from '@/lib/utilities'
 
 // Lots of logic is shared with EditingPair
 
@@ -92,6 +93,17 @@ export function Metadata(props) {
 		}
 		addQuizletCards(quizletContents, uuid)
 		importFromQuizlet(false)
+	}
+
+	function exportPack() {
+		let text = ''
+		pack.content.forEach((card) => {
+			text += `${stripHTML(card.term)}🟢${stripHTML(card.definition)}⭕\n`
+		})
+		navigator.clipboard.writeText(text)
+		alert(
+			'Copied to clipboard! To import into Quizlet, paste it in and enter 🟢 for custom on the left and ⭕ for the custom of the right,'
+		)
 	}
 
 	if (editing) {
@@ -278,15 +290,28 @@ export function Metadata(props) {
 				</div>
 
 				<div className="d-flex justify-content-between">
-					<Button
-						size="sm"
-						onClick={() => {
-							navigator.clipboard.writeText(window.location.href)
-						}}
-						disabled={pack.author == 'me'}
-					>
-						{pack.author == 'me' ? 'Create an account to share your pack' : '📋 Copy'}
-					</Button>
+					<div>
+						<Button
+							size="sm"
+							className="me-2"
+							onClick={() => {
+								navigator.clipboard.writeText(window.location.href)
+							}}
+							disabled={pack.author == 'me'}
+						>
+							{pack.author == 'me'
+								? 'Create an account to share your pack'
+								: '📋 Copy'}
+						</Button>
+						<Button
+							size="sm"
+							variant="secondary"
+							onClick={exportPack}
+							disabled={pack.author == 'me'}
+						>
+							📃 Export
+						</Button>
+					</div>
 
 					{canEdit ? (
 						<Button size="sm" variant="dark" onClick={() => setEditing(!editing)}>
