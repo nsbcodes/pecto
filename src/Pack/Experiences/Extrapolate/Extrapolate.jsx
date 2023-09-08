@@ -142,6 +142,7 @@ function ExtrapolateComponent() {
 
 	useEffect(() => {
 		document.addEventListener('paste', async (e) => {
+			
 			const clipboardItems =
 				typeof navigator?.clipboard?.read === 'function'
 					? await navigator.clipboard.read()
