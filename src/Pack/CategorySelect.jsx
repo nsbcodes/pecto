@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button'
 
 import { hslToHex } from '@/lib/utilities'
 
-import { usePack } from '@/stores/pack'
+import { saveStarred, usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 import { ThemeContext } from '@/lib/context'
 import { syncLocalStorage } from '@/lib/firebase'
@@ -95,16 +95,8 @@ function CategorySelect({ index }) {
 	}
 
 	async function toggleStarred(val) {
-		if (val) {
-			localStorage.setItem(`starred-${packUUID}-${uuid}`, true)
-			setStarred(true)
-		} else {
-			localStorage.removeItem(`starred-${packUUID}-${uuid}`)
-			setStarred(false)
-		}
-		if (user?.uid !== undefined) {
-			await syncLocalStorage(user.uid)
-		}
+		setStarred(val)
+		saveStarred(val, packUUID, uuid, user?.uid)
 	}
 
 	return (

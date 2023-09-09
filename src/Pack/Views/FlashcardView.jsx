@@ -3,7 +3,8 @@ import React, { useEffect, useState, useMemo } from 'react'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
-import { usePack } from '@/stores/pack'
+import { useUser } from '@/stores/user'
+import { saveStarred, usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 import { Markup } from '@/lib/Markup'
 
@@ -14,10 +15,12 @@ import { shuffle as shuffleFunction } from '@/lib/utilities'
 import { motion } from 'framer-motion'
 
 export function FlashcardView() {
+	const [user] = useUser((state) => [state.user], shallow)
 	const [pack, editing] = usePack((state) => [state.pack, state.editing], shallow)
 	const [currentCard, setCurrentCard] = useState(0)
 	const [switchedTerm, setSwitchedTerm] = useState(false)
 	const [shuffle, setShuffle] = useState(false)
+	const [starred, setStarred] = useState(false)
 	const content = useMemo(
 		() => (shuffle ? shuffleFunction(pack.content) : pack.content),
 		[pack, shuffle]
@@ -57,6 +60,13 @@ export function FlashcardView() {
 		}
 	}, [mcqMode, editing, currentCard, showDefinition])
 
+	// Reset stars indicator
+	useEffect(() => {
+		setStarred(
+			localStorage.getItem(`starred-${pack.uuid}-${content[currentCard].uuid}`) === 'true'
+		)
+	}, [pack, currentCard])
+
 	if (content.length == 0) {
 		return (
 			<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">
@@ -71,35 +81,49 @@ export function FlashcardView() {
 		<div className="container bg-dark text-light rounded-3 py-4 shadow-lg mt-3">
 			<div className="container">
 				{/* Mode Options */}
-				<div className="d-flex justify-content-start mb-4">
-					<Form.Check
-						className="me-3"
-						type="switch"
-						label="Multiple Choice Mode"
-						checked={mcqMode}
-						onChange={(e) => {
-							if (content.length >= 4) {
-								setShowDefinition(false)
-								setMcqMode(e.target.checked)
-							} else {
-								alert('Add at least 4 cards to enable Multiple Choice mode')
-							}
-							if (e.target.checked == true) setShowDefinition(true)
+				<div className="d-flex justify-content-between mb-4 flex-wrap">
+					<div>
+						<Form.Check
+							className="me-3"
+							type="switch"
+							inline
+							label="Multiple Choice Mode"
+							checked={mcqMode}
+							onChange={(e) => {
+								if (content.length >= 4) {
+									setShowDefinition(false)
+									setMcqMode(e.target.checked)
+								} else {
+									alert('Add at least 4 cards to enable Multiple Choice mode')
+								}
+								if (e.target.checked == true) setShowDefinition(true)
+							}}
+						/>
+						<Form.Check
+							className="me-3"
+							type="switch"
+							inline
+							label="Switch Term and Definition"
+							checked={switchedTerm}
+							onChange={(e) => setSwitchedTerm(e.target.checked)}
+						/>
+						<Form.Check
+							type="switch"
+							inline
+							label="Shuffle"
+							checked={shuffle}
+							onChange={(e) => setShuffle(e.target.checked)}
+						/>
+					</div>
+					<Button
+						variant={starred ? 'secondary' : 'dark'}
+						onClick={() => {
+							setStarred(!starred)
+							saveStarred(!starred, pack.uuid, content[currentCard].uuid, user?.uid)
 						}}
-					/>
-					<Form.Check
-						className="me-3"
-						type="switch"
-						label="Switch Term and Definition"
-						checked={switchedTerm}
-						onChange={(e) => setSwitchedTerm(e.target.checked)}
-					/>
-					<Form.Check
-						type="switch"
-						label="Shuffle"
-						checked={shuffle}
-						onChange={(e) => setShuffle(e.target.checked)}
-					/>
+					>
+						⭐
+					</Button>
 				</div>
 
 				{/* Flashcard */}

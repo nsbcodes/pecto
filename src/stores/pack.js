@@ -5,12 +5,23 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { levenSort, shuffle } from '@/lib/utilities'
 
-import { db } from '@/lib/firebase'
+import { db, syncLocalStorage } from '@/lib/firebase'
 import { doc, getDoc } from 'firebase/firestore'
 
 import { db as localDb } from '@/lib/localstore'
 
 // import { mountStoreDevtool } from 'simple-zustand-devtools'
+
+export async function saveStarred(val, packUUID, cardUUID, uid, save = true) {
+	if (val) {
+		localStorage.setItem(`starred-${packUUID}-${cardUUID}`, true)
+	} else {
+		localStorage.removeItem(`starred-${packUUID}-${cardUUID}`)
+	}
+	if (uid !== undefined && save) {
+		await syncLocalStorage(uid)
+	}
+}
 
 export const usePack = create((set, get) => ({
 	// Unfiltered Pack
@@ -171,6 +182,17 @@ export const usePack = create((set, get) => ({
 				state.pack.published = val
 			})
 		),
+	setFolder: (folder) => {
+		set(
+			produce((state) => {
+				if (folder) {
+					state.pack.folder = folder
+				} else {
+					delete state.pack.folder
+				}
+			})
+		)
+	},
 	// Categories
 	addCategory: (newCategory, newColor, uuid = uuidv4()) =>
 		set(

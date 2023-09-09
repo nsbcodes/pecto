@@ -46,8 +46,9 @@ service cloud.firestore {
       // escape backslashes by using them twice
       let isValid = username.matches('^[\\w-]+$');
       let isValidUserDoc = getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.username == username;
-      
-      return isOwner && isValid && isValidLength && isValidUserDoc;
+      let isNotRestricted = username != 'tomes';
+
+      return isOwner && isValid && isValidLength && isValidUserDoc && isNotRestricted;
     }
     
   }

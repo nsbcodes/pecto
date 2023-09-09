@@ -10,7 +10,6 @@ const UserView = function () {
 	useEffect(() => {
 		async function fetchData() {
 			setUsersPacks(await getUsersPacks(displayName))
-			console.log(await getUsersPacks(displayName))
 		}
 		fetchData()
 	}, [])
@@ -28,7 +27,7 @@ const UserView = function () {
 	return (
 		<div className="container">
 			<div className="m-3">
-				<h3>{`${displayName}'s Packs`}</h3>
+				<h3>{displayName === 'tomes' ? `Tomes` : `${displayName}'s Packs`}</h3>
 				<UserPacks packs={usersPacks} />
 			</div>
 		</div>

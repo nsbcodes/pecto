@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react'
+import { React, useState, useEffect, useContext } from 'react'
 
 import { useNavigate } from 'react-router-dom'
 
@@ -15,6 +15,7 @@ import './Metadata.scss'
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
 import { shallow } from 'zustand/shallow'
+import { ThemeContext } from '@/lib/context'
 
 import { v4 as uuidv4 } from 'uuid'
 import { stripHTML } from '@/lib/utilities'
@@ -31,6 +32,7 @@ export function Metadata(props) {
 		editName,
 		addQuizletCards,
 		addCategory,
+		setFolder,
 		canEdit,
 		setEditingPack,
 	] = usePack(
@@ -42,6 +44,7 @@ export function Metadata(props) {
 			state.editName,
 			state.addQuizletCards,
 			state.addCategory,
+			state.setFolder,
 			// Editing
 			state.canEdit,
 			state.setEditing,
@@ -49,7 +52,10 @@ export function Metadata(props) {
 		shallow
 	)
 
+	const theme = useContext(ThemeContext)
+
 	const [willDelete, startDelete] = useState(false)
+	const [settingFolder, startSettingFolder] = useState(false)
 	const [importing, importFromQuizlet] = useState(false)
 	const [quizletContents, setQuizletContens] = useState('')
 	const [category, setCategory] = useState('Default')
@@ -144,6 +150,35 @@ export function Metadata(props) {
 
 				<div className="d-flex justify-content-between">
 					<div>
+						{willDelete ? (
+							<>
+								<Button
+									size="sm"
+									className="me-2"
+									variant="warning"
+									onClick={() => startDelete(false)}
+								>
+									Cancel
+								</Button>
+								<Button
+									size="sm"
+									className="me-2"
+									variant="danger"
+									onClick={deleteP}
+								>
+									Are you sure?
+								</Button>
+							</>
+						) : (
+							<Button
+								size="sm"
+								className="me-2"
+								variant="warning"
+								onClick={() => startDelete(true)}
+							>
+								Delete
+							</Button>
+						)}
 						<OverlayTrigger
 							placement="top"
 							overlay={
@@ -174,31 +209,48 @@ export function Metadata(props) {
 						>
 							Import from Quizlet
 						</Button>
-						{!props?.editing && (
-							<Button className="me-2" size="sm" onClick={exitEditingMode}>
-								Finish Editing
-							</Button>
-						)}
 					</div>
 
 					<div>
-						{willDelete ? (
-							<>
-								<Button
-									size="sm"
-									className="me-2"
-									variant="warning"
-									onClick={() => startDelete(false)}
-								>
-									Cancel
-								</Button>
-								<Button size="sm" variant="danger" onClick={deleteP}>
-									Are you sure?
-								</Button>
-							</>
-						) : (
-							<Button size="sm" variant="warning" onClick={() => startDelete(true)}>
-								Delete
+						<Button
+							size="sm"
+							className="me-2"
+							variant={theme.dark ? 'light' : 'dark'}
+							onClick={() => startSettingFolder(true)}
+						>
+							Set Folder {pack?.folder && `(Currently ${pack.folder})`}
+						</Button>
+						{settingFolder && (
+							<Modal show={settingFolder} onHide={() => startSettingFolder(false)}>
+								<Modal.Header closeButton>
+									<Modal.Title>Set Folder</Modal.Title>
+								</Modal.Header>
+								<Modal.Body>
+									<p>Including a forward slash will create a subfolder</p>
+									<input
+										type="text"
+										// For autocomplete
+										id="pectoFolderName"
+										className="form-control"
+										value={pack.folder ? pack.folder : ''}
+										onChange={(e) => {
+											setFolder(e.target.value)
+										}}
+									/>
+								</Modal.Body>
+								<Modal.Footer>
+									<Button
+										variant="primary"
+										onClick={() => startSettingFolder(false)}
+									>
+										Done
+									</Button>
+								</Modal.Footer>
+							</Modal>
+						)}
+						{!props?.editing && (
+							<Button size="sm" onClick={exitEditingMode}>
+								Finish Editing
 							</Button>
 						)}
 					</div>
@@ -314,7 +366,11 @@ export function Metadata(props) {
 					</div>
 
 					{canEdit ? (
-						<Button size="sm" variant="dark" onClick={() => setEditing(!editing)}>
+						<Button
+							size="sm"
+							variant={theme.dark ? 'light' : 'dark'}
+							onClick={() => setEditing(!editing)}
+						>
 							Edit Metadata
 						</Button>
 					) : null}

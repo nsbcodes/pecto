@@ -29,3 +29,7 @@ playground/**
 playground/convert.py
 !playground/*.ps1
 !playground/000.jsonl
+
+# Movers
+movers/anki/**
+!movers/anki/*.py
