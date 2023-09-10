@@ -31,5 +31,8 @@ playground/convert.py
 !playground/000.jsonl
 
 # Movers
-movers/anki/**
-!movers/anki/*.py
+movers/*/*
+!movers/*/*.py
+
+# Utilities
+cloc*.exe
