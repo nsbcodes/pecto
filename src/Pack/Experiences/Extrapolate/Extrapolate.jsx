@@ -18,7 +18,7 @@ import { useUser } from '@/stores/user'
 import { ThemeContext } from '@/lib/context'
 
 import { createCategory, generateCards } from './NLP'
-import LLMPipeline from './LLMPipeline'
+import LLMPipeline from '../LLMPipeline'
 import { capitalizeFirstLetter } from '@/lib/utilities'
 import { v4 as uuidv4 } from 'uuid'
 import Tesseract from 'tesseract.js'

@@ -12,9 +12,11 @@ class LLMPipeline {
 			let tokenizer = await AutoTokenizer.from_pretrained(this.model)
 			let model = await AutoModelForSeq2SeqLM.from_pretrained(this.model)
 
-			this.instance = async (sentence) => {
+			this.instance = async (context, term = false) => {
 				let { input_ids } = await tokenizer(
-					`What is the subject line for this email?\n\n${sentence}`
+					term
+						? `${context}\n\n${term}\n\nAsk a question about this article.`
+						: `What is the subject line for this email?\n\n${context}`
 				)
 				let outputs = await model.generate(input_ids)
 				let out = ''

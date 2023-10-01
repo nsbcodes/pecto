@@ -28,7 +28,7 @@ playground/**
 !playground/*.py
 playground/convert.py
 !playground/*.ps1
-!playground/000.jsonl
+playground/000.jsonl
 
 # Movers
 movers/*/*
