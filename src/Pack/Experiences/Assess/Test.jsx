@@ -1,18 +1,12 @@
-import React, { useState, useMemo, useReducer } from 'react'
+import React, { useState, useMemo, useReducer, useRef } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
-import { Experience } from '../Experience'
-import { Filter } from '../Filter'
+import { useReactToPrint } from 'react-to-print'
 
 import { shuffle } from '@/lib/utilities'
 
-import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import FloatingLabel from 'react-bootstrap/FloatingLabel'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 
 import MultipleChoice from './Questions/MultipleChoice'
@@ -39,105 +33,199 @@ function reducer(state, action) {
 	}
 }
 
-export function Test({ questions }) {
+export function Test({ questions, paper }) {
 	const [content] = usePack((state) => [state.pack.content], shallow)
 	const [submit, setSubmit] = useState(false)
 	const [answers, dispatch] = useReducer(reducer, initialState)
 
 	// Only randomize the questions once
 	const randomContent = useMemo(() => shuffle(content), [questions])
-	const questionList = useMemo(
-		() =>
-			randomContent.slice(0, questions.total).map((card, i) => {
-				// TODO: Fix repetition
-				if (i < questions.mcq) {
-					return (
+	const questionList = useMemo(() => questionGenerator(), [submit, randomContent])
+
+	const printRef = useRef()
+	const print = useReactToPrint({
+		content: () => printRef.current,
+	})
+
+	function questionGenerator(submitQ = submit, interactive = false) {
+		return randomContent.slice(0, questions.total).map((card, i) => {
+			// TODO: Fix repetition
+			if (i < questions.mcq) {
+				return (
+					<div key={i}>
 						<MultipleChoice
-							key={i}
 							i={i}
-							submit={submit}
-							save={(val) => dispatch({ payload: { i: i, val: val } })}
+							submit={submitQ}
+							save={
+								interactive
+									? (val) => dispatch({ payload: { i: i, val: val } })
+									: () => {}
+							}
 						/>
-					)
-				} else if (i < questions.mcq + questions.written) {
-					return (
+					</div>
+				)
+			} else if (i < questions.mcq + questions.written) {
+				return (
+					<div key={i}>
 						<Written
 							key={i}
 							i={i}
-							submit={submit}
-							save={(val) => dispatch({ payload: { i: i, val: val } })}
+							submit={submitQ}
+							save={
+								interactive
+									? (val) => dispatch({ payload: { i: i, val: val } })
+									: () => {}
+							}
 						/>
-					)
-				} else if (i < questions.mcq + questions.written + questions.tfq) {
-					return (
+						{!interactive && <div className="page-break" />}
+					</div>
+				)
+			} else if (i < questions.mcq + questions.written + questions.tfq) {
+				return (
+					<div key={i}>
 						<TrueOrFalse
 							key={i}
 							i={i}
-							submit={submit}
-							save={(val) => dispatch({ payload: { i: i, val: val } })}
+							submit={submitQ}
+							save={
+								interactive
+									? (val) => dispatch({ payload: { i: i, val: val } })
+									: () => {}
+							}
 						/>
-					)
-				} else if (i < questions.mcq + questions.written + questions.tfq + questions.hmcq) {
-					return (
+						{!interactive && <div className="page-break" />}
+					</div>
+				)
+			} else if (i < questions.mcq + questions.written + questions.tfq + questions.hmcq) {
+				return (
+					<div key={i}>
 						<MultipleChoice
 							key={i}
 							i={i}
-							submit={submit}
+							submit={submitQ}
 							hard
-							save={(val) => dispatch({ payload: { i: i, val: val } })}
+							save={
+								interactive
+									? (val) => dispatch({ payload: { i: i, val: val } })
+									: () => {}
+							}
 						/>
-					)
-				}
-			}),
-		[submit, randomContent]
-	)
+						{!interactive && <div className="page-break" />}
+					</div>
+				)
+			}
+		})
+	}
 
-	return (
-		<>
-			{questionList}
-			{/* <div className="mx-auto w-75">
-				<Button className="mb-3" variant="primary" size="lg">Submit</Button>
-			</div> */}
-			<Button
-				className="mb-3 mx-auto d-block"
-				variant="primary"
-				size="lg"
-				onClick={() => setSubmit(true)}
-				disabled={submit}
-			>
-				Submit
-			</Button>
-			{submit && (
-				<div className="text-center">
-					<hr />
-					{answers.percentage < 75 ? (
-						<p>Use the Blitz or Master mode to guarantee memorization!</p>
-					) : (
-						<>
-							<h1>🎉</h1>
-							<h2>You got {answers.percentage} percent!</h2>
-						</>
-					)}
-					<hr className="mb-3" />
-					<h3>{answers.fraction}</h3>
-					<ProgressBar className="mb-3">
-						<ProgressBar
-							striped
-							animated
-							variant="success"
-							now={answers.right}
-							key={1}
-						/>
-						<ProgressBar
-							striped
-							animated
-							variant="danger"
-							now={answers.wrong}
-							key={2}
-						/>
-					</ProgressBar>
+	if (paper) {
+		return (
+			<>
+				<style type="text/css" media="print">
+					{`
+					@media all {
+						.page-break {
+							display: none;
+						}
+					}
+					
+					@media print {
+						html,
+						body {
+							height: initial !important;
+							overflow: initial !important;
+							print-color-adjust: exact;
+						}
+						@page {
+							size: 210mm 1250mm;
+						}
+					}
+					
+					@media print {
+						.page-break {
+							margin-top: 1rem;
+							display: block;
+							page-break-before: auto;
+						}
+					}
+					
+					@page {
+						size: auto;
+						margin: 20mm;
+					}
+					`}
+				</style>
+				<div className="d-flex mb-4">
+					<Button size="lg" className="mx-auto" onClick={() => print()}>
+						Print Test
+					</Button>
 				</div>
-			)}
-		</>
-	)
+				<div ref={printRef}>
+					{questionGenerator(false)}
+					<hr />
+					{[...Array(25)].map((_, i) => (
+						<div key={i}>
+							<h5
+								className="text-center"
+								style={{
+									color: `rgb(${255 - Math.random() * 100}, ${
+										255 - Math.random() * 100
+									}, ${255 - Math.random() * 100})`,
+								}}
+							>
+								TEST FINISHED
+							</h5>
+							<hr />
+						</div>
+					))}
+					{questionGenerator(true)}
+				</div>
+			</>
+		)
+	} else {
+		return (
+			<>
+				{questionList}
+				<Button
+					className="mb-3 mx-auto d-block"
+					variant="primary"
+					size="lg"
+					onClick={() => setSubmit(true)}
+					disabled={submit}
+				>
+					Submit
+				</Button>
+				{submit && (
+					<div className="text-center">
+						<hr />
+						{answers.percentage < 75 ? (
+							<p>Use the Blitz or Master mode to guarantee memorization!</p>
+						) : (
+							<>
+								<h1>🎉</h1>
+								<h2>You got {answers.percentage} percent!</h2>
+							</>
+						)}
+						<hr className="mb-3" />
+						<h3>{answers.fraction}</h3>
+						<ProgressBar className="mb-3">
+							<ProgressBar
+								striped
+								animated
+								variant="success"
+								now={answers.right}
+								key={1}
+							/>
+							<ProgressBar
+								striped
+								animated
+								variant="danger"
+								now={answers.wrong}
+								key={2}
+							/>
+						</ProgressBar>
+					</div>
+				)}
+			</>
+		)
+	}
 }

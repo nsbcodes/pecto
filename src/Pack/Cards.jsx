@@ -1,4 +1,4 @@
-import React, { useEffect, memo, lazy, Suspense } from 'react'
+import React, { useEffect, memo, lazy, Suspense, useContext } from 'react'
 import { useState } from 'react'
 import StaticPair from './Pair/StaticPair'
 
@@ -14,6 +14,7 @@ import { usePack } from '@/stores/pack'
 import { shallow } from 'zustand/shallow'
 
 import { motion } from 'framer-motion'
+import { ThemeContext } from '@/lib/context'
 
 function MotionWrapper({ yes, index, style, children }) {
 	if (yes) {
@@ -60,6 +61,8 @@ function Cards({ index, edit }) {
 		shallow
 	)
 
+	const theme = useContext(ThemeContext)
+
 	const [editing, setEditing] = useState(edit)
 
 	useEffect(() => {
@@ -104,8 +107,8 @@ function Cards({ index, edit }) {
 		<div
 			style={{
 				backgroundImage: `linear-gradient(to right, ${
-					categories[cards.category]['colors'][0]
-				},${categories[cards.category]['colors'][1]})`,
+					categories[cards.category]['colors'][0] + (theme.dark && '33')
+				},${categories[cards.category]['colors'][1] + (theme.dark && '33')})`,
 				...cardCSS,
 			}}
 			className="p-3"

@@ -8,17 +8,20 @@ import Button from 'react-bootstrap/Button'
 import { ThemeContext } from '@/lib/context'
 
 export function Filter({ disabled = false }) {
-	const [pack, filterPackCategory, filterPackStarred] = usePack(
-		(state) => [state.defaultPack, state.filterPackCategory, state.filterPackStarred],
+	const [pack, filterPackCategory, filterPackStarred, shufflePack] = usePack(
+		(state) => [
+			state.defaultPack,
+			state.filterPackCategory,
+			state.filterPackStarred,
+			state.shufflePack,
+		],
 		shallow
 	)
 	const theme = useContext(ThemeContext)
 
-	// Category filter
 	const [categoryFilter, setCategoryFilter] = useState(0)
-
-	// Starred filter
 	const [starredFilter, setStarredFilter] = useState(0)
+	const [shuffling, setShuffling] = useState(false)
 
 	return (
 		<div
@@ -50,10 +53,22 @@ export function Filter({ disabled = false }) {
 						filterPackStarred(e.target.checked)
 						// TODO: very very very complicated
 						// allow editing in filtered packs
-						// will require us to a	dd uuids for each card
+						// will require us to add uuids for each card
 						setStarredFilter(e.target.checked)
 					}}
 					checked={starredFilter}
+					disabled={disabled}
+				/>
+				<Form.Check
+					className="mt-3"
+					label="Shuffle"
+					type="checkbox"
+					inline="true"
+					onChange={(e) => {
+						setShuffling(e.target.checked)
+						shufflePack(e.target.checked)
+					}}
+					checked={shuffling}
 					disabled={disabled}
 				/>
 			</div>

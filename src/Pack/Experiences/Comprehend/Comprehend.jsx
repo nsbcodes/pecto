@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useReducer } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
@@ -6,14 +6,30 @@ import { Experience } from '../Experience'
 
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
+import Spinner from 'react-bootstrap/Spinner'
+import Form from 'react-bootstrap/Form'
 import { Markup } from '@/lib/Markup'
 
 import nlp from 'compromise'
 
 import { v4 as uuidv4 } from 'uuid'
+import LLMPipeline from '../LLMPipeline'
+
+const reducer = (state, action) => {
+	return { ...state, [action.i]: action.q }
+}
 
 function ComprehendComponent() {
 	const [pack] = usePack((state) => [state.pack], shallow)
+	const [questions, setQuestions] = useReducer(reducer, {})
+	const [generating, setGenerating] = useState(false)
+
+	const [showNumber, setShowNumber] = useState(true)
+	const [showTerm, setShowTerm] = useState(true)
+	const [showDefinition, setShowDefinition] = useState(true)
+	const [showSummary, setShowSummary] = useState(true)
+	const [showQuestions, setShowQuestions] = useState(true)
+	const [showAnswerBox, setShowAnswerBox] = useState(false)
 
 	// Must be a single sentence
 	// TODO: implement https://github.com/spencermountain/compromise/issues/388#issuecomment-1602804777
@@ -65,50 +81,125 @@ function ComprehendComponent() {
 	// 	}
 	// }
 
+	async function generateQuestions() {
+		const questionizer = await LLMPipeline.getInstance()
+		for (const [index, card] of pack.content.entries()) {
+			console.log(`Started ${index}`)
+			setQuestions({ i: index, q: await questionizer(card.definition, card.term) })
+			console.log(`Finished ${index}`)
+		}
+	}
+
 	return (
 		<>
 			<div className="text-center">
 				<h1>Comprehend</h1>
 				<p className="mb-3">
-					Generate summaries using Artificial Intelligence and Natural Language Processing
+					Generate cheat sheets, summaries, or worksheets using Artificial Intelligence
+					and Natural Language Processing
 				</p>
-				{/* <Button
+				<Button
 					variant="dark"
 					size="lg"
-					className="mb-4"
-					onClick={() =>
-						alert(
-							'Not implemented yet!\n\nAll AI results should already be shown in the rightmost columns below.'
-						)
-					}
+					className="mb-3"
+					onClick={async () => {
+						setGenerating(true)
+						setTimeout(async () => {
+							await generateQuestions()
+							setGenerating(false)
+						}, 500)
+					}}
 				>
-					🏭 Generate
-				</Button> */}
+					{generating ? (
+						<>
+							<Spinner size="sm" /> Generating (can take up to a minute)
+						</>
+					) : (
+						'🏭 Generate Questions'
+					)}
+				</Button>
+			</div>
+
+			<div className="mb-2">
+				<Form.Check
+					type="checkbox"
+					label="Number"
+					inline
+					checked={showNumber}
+					onChange={(e) => setShowNumber(e.target.checked)}
+				/>
+				<Form.Check
+					type="checkbox"
+					label="Term"
+					inline
+					checked={showTerm}
+					onChange={(e) => setShowTerm(e.target.checked)}
+				/>
+				<Form.Check
+					type="checkbox"
+					label="Definition"
+					inline
+					checked={showDefinition}
+					onChange={(e) => setShowDefinition(e.target.checked)}
+				/>
+				<Form.Check
+					type="checkbox"
+					label="Summary"
+					inline
+					checked={showSummary}
+					onChange={(e) => setShowSummary(e.target.checked)}
+				/>
+				<Form.Check
+					type="checkbox"
+					label="Questions"
+					inline
+					checked={showQuestions}
+					onChange={(e) => setShowQuestions(e.target.checked)}
+				/>
+				<Form.Check
+					type="checkbox"
+					label="Answer Box"
+					inline
+					checked={showAnswerBox}
+					onChange={(e) => setShowAnswerBox(e.target.checked)}
+				/>
 			</div>
 
 			<Table striped bordered className="mx-auto">
 				<thead>
 					<tr>
-						<th>#</th>
-						<th>Term</th>
-						<th>Definition</th>
-						{/* <th>Present Tense</th> */}
-						<th>Summary</th>
+						{showNumber && <th>#</th>}
+						{showTerm && <th>Term</th>}
+						{showDefinition && <th>Definition</th>}
+						{showSummary && <th>Summary</th>}
+						{showQuestions && <th>Questions</th>}
+						{showAnswerBox && <th>Answer Box</th>}
 					</tr>
 				</thead>
 				<tbody>
 					{pack.content.map((card, index) => {
 						return (
 							<tr key={index}>
-								<td>{index + 1}</td>
-								<td>
-									<Markup content={card.term} />
-								</td>
-								<td>
-									<Markup content={card.definition} />
-								</td>
-								{/* <td>{toPresentTense(card.definition)}</td> */}
-								<td>{minifyDefinition(card.definition)}</td>
+								{showNumber && <td>{index + 1}</td>}
+								{showTerm && (
+									<td>
+										<Markup content={card.term} />
+									</td>
+								)}
+								{showDefinition && (
+									<td>
+										<Markup content={card.definition} />
+									</td>
+								)}
+								{showSummary && <td>{minifyDefinition(card.definition)}</td>}
+								{showQuestions && <td>{questions[index]}</td>}
+								{showAnswerBox && (
+									<td className="w-25">
+										{[...Array(10)].map((_, i) => (
+											<br key={i} />
+										))}
+									</td>
+								)}
 							</tr>
 						)
 					})}

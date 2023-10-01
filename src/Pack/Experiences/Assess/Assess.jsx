@@ -5,8 +5,8 @@ import { usePack } from '@/stores/pack'
 import { Experience } from '../Experience'
 import { Filter } from '../Filter'
 
-import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Form from 'react-bootstrap/Form'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import Col from 'react-bootstrap/Col'
@@ -19,6 +19,7 @@ function AssessComponent() {
 	const theme = useContext(ThemeContext)
 
 	const [startedTest, setStartedTest] = useState(false)
+	const [paper, setPaper] = useState(false)
 
 	// The divisor is how many question types are there
 	const defaultQuestions = Math.floor(pack.content.length / 4)
@@ -35,7 +36,7 @@ function AssessComponent() {
 	const [trueOrFalseQuestions, setTrueOrFalseQuestions] = useState(defaultQuestions)
 	const [hardMultipleChoiceQuestions, setHardMultipleChoiceQuestions] = useState(defaultQuestions)
 
-	function handleSubmit() {
+	function handleSubmit(paper = false) {
 		if (totalQuestions < 1 || totalQuestions > pack.content.length) {
 			alert(`Total questions must be above 0 or below/equal to ${pack.content.length}`)
 		} else if (
@@ -47,6 +48,7 @@ function AssessComponent() {
 		) {
 			alert(`All questions must add up to ${totalQuestions}!`)
 		} else {
+			setPaper(paper)
 			setStartedTest(true)
 		}
 	}
@@ -167,13 +169,24 @@ function AssessComponent() {
 							</Col>
 							<Col>
 								<div className="d-grid h-100">
-									<Button
-										onClick={handleSubmit}
-										variant={theme.dark ? 'light' : 'dark'}
-										disabled={startedTest}
-									>
-										Generate Test
-									</Button>
+									<ButtonGroup>
+										<Button
+											onClick={() => handleSubmit(true)}
+											variant={theme.dark ? 'light' : 'dark'}
+											disabled={startedTest}
+											size="sm"
+										>
+											Paper
+										</Button>
+										<Button
+											onClick={() => handleSubmit()}
+											variant={theme.dark ? 'light' : 'dark'}
+											disabled={startedTest}
+											size="sm"
+										>
+											Test
+										</Button>
+									</ButtonGroup>
 								</div>
 							</Col>
 						</Row>
@@ -194,6 +207,7 @@ function AssessComponent() {
 							tfq: trueOrFalseQuestions,
 							hmcq: hardMultipleChoiceQuestions,
 						}}
+						paper={paper}
 					/>
 				</>
 			)}

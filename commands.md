@@ -1,2 +1,2 @@
 Visualize bundle size: `npx vite-bundle-visualizer`
-Count LOCs: `.\cloc-1.98.exe src/ movers/ public/`
+Count LOCs: `wsl.exe /bin/bash -c "git ls-files . | grep -Ev 'jsonl|package-lock.json' | xargs wc -mwl"`

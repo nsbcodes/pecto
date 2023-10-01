@@ -94,6 +94,20 @@ export const usePack = create((set, get) => ({
 			})
 		}
 	},
+	shufflePack: (doShuffle = true) => {
+		if (doShuffle) {
+			set({
+				pack: {
+					...get().defaultPack,
+					content: shuffle(get().defaultPack.content),
+				},
+			})
+		} else {
+			set({
+				pack: get().defaultPack,
+			})
+		}
+	},
 	addCards: (cards, usePreviousCategory = false) =>
 		set(
 			produce((state) => {

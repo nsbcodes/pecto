@@ -26,7 +26,6 @@ dist-ssr
 # AI Cleanup
 playground/**
 !playground/*.py
-playground/convert.py
 !playground/*.ps1
 
 # Movers
