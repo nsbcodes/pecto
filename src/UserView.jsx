@@ -37,7 +37,7 @@ const UserView = function () {
 				{displayName === 'tomes' && (
 					<Form.Check
 						className="mt-1"
-						label="Include GHS packs"
+						label="Include local packs"
 						type="checkbox"
 						inline
 						onChange={(e) => setIncludeLocal(e.target.checked)}
