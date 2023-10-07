@@ -4,8 +4,9 @@ import UserPacks from './Home/UserPacks'
 import { useParams } from 'react-router-dom'
 import Form from 'react-bootstrap/Form'
 
-const UserView = function () {
-	const { displayName } = useParams()
+const UserView = function ({ username, minimal = false }) {
+	const displayName = useParams()?.displayName || username
+	console.log(username, displayName)
 	const [usersPacks, setUsersPacks] = useState([])
 
 	const [includeLocal, setIncludeLocal] = useState(false)
@@ -31,18 +32,23 @@ const UserView = function () {
 	}
 
 	return (
-		<div className="container">
-			<div className="m-3">
-				<h3>{displayName === 'tomes' ? `Tomes` : `${displayName}'s Packs`}</h3>
-				{displayName === 'tomes' && (
-					<Form.Check
-						className="mt-1"
-						label="Include local packs"
-						type="checkbox"
-						inline
-						onChange={(e) => setIncludeLocal(e.target.checked)}
-						checked={includeLocal}
-					/>
+		<div className={!minimal && 'container'}>
+			<div className={!minimal && 'm-3'}>
+				{!minimal && (
+					<>
+						<h3>{displayName === 'tomes' ? `Tomes` : `${displayName}'s Packs`}</h3>
+
+						{displayName === 'tomes' && (
+							<Form.Check
+								className="mt-1"
+								label="Include local packs"
+								type="checkbox"
+								inline
+								onChange={(e) => setIncludeLocal(e.target.checked)}
+								checked={includeLocal}
+							/>
+						)}
+					</>
 				)}
 				<UserPacks
 					packs={

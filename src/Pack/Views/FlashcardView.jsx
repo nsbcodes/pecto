@@ -260,7 +260,12 @@ export function FlashcardView() {
 
 					{/* Multiple Choice */}
 					{mcqMode && (
-						<MultipleChoice currentCard={currentCard} setCurrentCard={setCurrentCard} />
+						<MultipleChoice
+							content={content[currentCard]}
+							currentCard={currentCard}
+							setCurrentCard={setCurrentCard}
+							flipped={switchedTerm}
+						/>
 					)}
 
 					{/* Messy controls */}

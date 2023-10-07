@@ -30,6 +30,8 @@ const Comprehend = lazy(() => import('./Pack/Experiences/Comprehend/Comprehend')
 const Extrapolate = lazy(() => import('./Pack/Experiences/Extrapolate/Extrapolate'))
 const Assess = lazy(() => import('./Pack/Experiences/Assess/Assess'))
 const Master = lazy(() => import('./Pack/Experiences/Master/Master'))
+const Class = lazy(() => import('./Class/Class'))
+
 
 const router = createBrowserRouter([
 	{
@@ -84,6 +86,10 @@ const router = createBrowserRouter([
 			{
 				path: 'new/pack',
 				element: <NewPack />,
+			},
+			{
+				path: 'class/:teacher/:classId',
+				element: <Class />,
 			},
 			// {
 			// 	path: 'search/:searchTerm',

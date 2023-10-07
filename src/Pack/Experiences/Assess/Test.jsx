@@ -155,7 +155,7 @@ export function Test({ questions, paper }) {
 					`}
 				</style>
 				<div className="d-flex mb-4">
-					<Button size="lg" className="mx-auto" onClick={() => print()}>
+					<Button size="lg" className="mx-auto" onClick={print}>
 						Print Test
 					</Button>
 				</div>

@@ -17,6 +17,7 @@ import { shallow } from 'zustand/shallow'
 
 import { v4 as uuidv4 } from 'uuid'
 import { ThemeContext } from '@/lib/context'
+import { fetchLocalStorage } from '@/lib/firebase'
 
 function Pack() {
 	const { displayName, packId } = useParams()
@@ -70,6 +71,9 @@ function Pack() {
 
 	useEffect(() => {
 		if (pack !== undefined) {
+			// Fetch localStorage
+			user?.uid && fetchLocalStorage(user?.uid)
+			// Calculate editing access
 			if (
 				(user?.uid === pack.uid || (pack?.uid == 'me' && !user?.uid)) &&
 				categoryFilter === 0 &&
@@ -153,7 +157,7 @@ function Pack() {
 			window.location.reload()
 		}
 	}
-console.log(starredFilter)
+
 	return (
 		<div id="packRoot" className="mx-auto">
 			<Navigation baseURL={`${pack.author}/${pack.uuid}`} currentPage="view" />

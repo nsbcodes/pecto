@@ -51,5 +51,9 @@ service cloud.firestore {
       return isOwner && isValid && isValidLength && isValidUserDoc && isNotRestricted;
     }
     
+    // TODO: add public/private functionality? or keep drafts locally?
+    match /classes/{teacher}/classes/{class} {
+      allow read;
+    }
   }
 }

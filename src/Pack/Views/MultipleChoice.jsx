@@ -43,29 +43,26 @@ function Answer(props) {
 	)
 }
 
-function MultipleChoice(props) {
+function MultipleChoice({ content, currentCard, setCurrentCard, flipped = false }) {
 	const [similarTerms, setSimilarTerms] = useState([])
-	const [cards, getSimilarCards] = usePack(
-		(state) => [state.pack.content[props.currentCard], state.getSimilarCards],
-		shallow
-	)
+	const [getSimilarCards] = usePack((state) => [state.getSimilarCards], shallow)
 
 	const [wrongAnswerClicked, clickedWrongAnswer] = useState(false)
 
 	// TODO: why do we have a seperate function for this?
 	function regenerateSimilarTerms() {
-		setSimilarTerms(getSimilarCards(cards))
+		setSimilarTerms(getSimilarCards(content))
 	}
 
 	useEffect(() => {
 		// Go to the term on the next card if not in multiple choice mode
 		regenerateSimilarTerms()
 		clickedWrongAnswer(false)
-	}, [props.currentCard])
+	}, [currentCard])
 
 	async function nextTermDelayed() {
 		await new Promise((r) => setTimeout(r, 1500))
-		props.setCurrentCard(props.currentCard + 1)
+		setCurrentCard(currentCard + 1)
 	}
 
 	async function handleAnswerClick() {
@@ -77,7 +74,7 @@ function MultipleChoice(props) {
 	}
 
 	const choices = similarTerms.map((card, i) => {
-		const correctChoice = card == cards
+		const correctChoice = card == content
 
 		return (
 			// <div className="col py-3" key={card.term}>
@@ -105,7 +102,7 @@ function MultipleChoice(props) {
 				key={card.term}
 				i={i}
 				correctChoice={correctChoice}
-				answerText={card.term}
+				answerText={flipped ? card.definition : card.term}
 				wrongAnswerClicked={wrongAnswerClicked}
 				handleAnswerClick={handleAnswerClick}
 			/>

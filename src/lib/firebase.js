@@ -89,6 +89,20 @@ export const syncLocalStorage = async (uid) => {
 	await setDoc(docRef, { local: JSON.parse(JSON.stringify(localStorage)) }, { merge: true })
 }
 
+export const fetchLocalStorage = async (uid) => {
+	let res = await getDoc(doc(db, 'users', uid)).then((doc) => {
+		if (doc.exists()) {
+			return doc.data()
+		} else {
+			return {}
+		}
+	})
+	console.log(res)
+	for (const [key, value] of Object.entries(res?.local) || []) {
+		localStorage.setItem(key, value)
+	}
+}
+
 export const deletePack = async (id, username) => {
 	const docRef = doc(db, 'packs', username, 'packs', id)
 	await deleteDoc(docRef)

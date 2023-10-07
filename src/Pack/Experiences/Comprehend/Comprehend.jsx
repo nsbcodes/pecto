@@ -1,8 +1,9 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useContext, useRef } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { usePack } from '@/stores/pack'
 import { Experience } from '../Experience'
+import { useReactToPrint } from 'react-to-print'
 
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
@@ -14,6 +15,7 @@ import nlp from 'compromise'
 
 import { v4 as uuidv4 } from 'uuid'
 import LLMPipeline from '../LLMPipeline'
+import { ThemeContext } from '@/lib/context'
 
 const reducer = (state, action) => {
 	return { ...state, [action.i]: action.q }
@@ -30,6 +32,13 @@ function ComprehendComponent() {
 	const [showSummary, setShowSummary] = useState(true)
 	const [showQuestions, setShowQuestions] = useState(true)
 	const [showAnswerBox, setShowAnswerBox] = useState(false)
+
+	const printRef = useRef()
+	const print = useReactToPrint({
+		content: () => printRef.current,
+	})
+
+	const theme = useContext(ThemeContext)
 
 	// Must be a single sentence
 	// TODO: implement https://github.com/spencermountain/compromise/issues/388#issuecomment-1602804777
@@ -98,26 +107,36 @@ function ComprehendComponent() {
 					Generate cheat sheets, summaries, or worksheets using Artificial Intelligence
 					and Natural Language Processing
 				</p>
-				<Button
-					variant="dark"
-					size="lg"
-					className="mb-3"
-					onClick={async () => {
-						setGenerating(true)
-						setTimeout(async () => {
-							await generateQuestions()
-							setGenerating(false)
-						}, 500)
-					}}
-				>
-					{generating ? (
-						<>
-							<Spinner size="sm" /> Generating (can take up to a minute)
-						</>
-					) : (
-						'🏭 Generate Questions'
-					)}
-				</Button>
+				<div className="d-flex justify-content-center">
+					<Button
+						variant={theme.dark ? 'light' : 'dark'}
+						size="lg"
+						className="mb-3 me-2"
+						onClick={async () => {
+							setGenerating(true)
+							setTimeout(async () => {
+								await generateQuestions()
+								setGenerating(false)
+							}, 500)
+						}}
+					>
+						{generating ? (
+							<>
+								<Spinner size="sm" /> Generating (can take up to a minute)
+							</>
+						) : (
+							'🏭 Generate Questions'
+						)}
+					</Button>
+					<Button
+						size="lg"
+						className="mb-3"
+						variant={theme.dark ? 'light' : 'dark'}
+						onClick={print}
+					>
+						🖨️ Print
+					</Button>
+				</div>
 			</div>
 
 			<div className="mb-2">
@@ -165,7 +184,7 @@ function ComprehendComponent() {
 				/>
 			</div>
 
-			<Table striped bordered className="mx-auto">
+			<Table striped bordered className="mx-auto" ref={printRef}>
 				<thead>
 					<tr>
 						{showNumber && <th>#</th>}
