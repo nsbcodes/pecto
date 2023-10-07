@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 
 import { shallow } from 'zustand/shallow'
 import { useIntervals } from './stores/intervals'
@@ -19,6 +19,7 @@ export default function Questioner() {
 	const [index, setIndex] = useState(0)
 	const [questionIndex, setQuestionIndex] = useState(0)
 	const [right, setRight] = useState(0)
+	// TODO: add a finish screen
 	const [done, setDone] = useState(false)
 
 	const currentInterval = intervals[index]

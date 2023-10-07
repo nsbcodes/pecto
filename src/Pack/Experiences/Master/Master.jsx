@@ -145,7 +145,22 @@ function MasterComponent() {
 		)
 	}
 
-	return <Questioner />
+	return (
+		<>
+			<Questioner />
+			<Button
+				variant="danger"
+				onClick={async () => {
+					localStorage.removeItem(`boxes_${pack.uuid}`)
+					localStorage.removeItem(`intervals_${pack.uuid}`)
+					await syncLocalStorage(user?.uid)
+					window.location.reload()
+				}}
+			>
+				Reset
+			</Button>
+		</>
+	)
 }
 
 const Master = function () {

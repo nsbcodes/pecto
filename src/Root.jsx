@@ -8,7 +8,13 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 
 // Auth
-import { auth, authenticateWithGoogle, getUser, signOutOfGoogle } from '@/lib/firebase'
+import {
+	auth,
+	authenticateWithGoogle,
+	fetchLocalStorage,
+	getUser,
+	signOutOfGoogle,
+} from '@/lib/firebase'
 import { getUsername, initUser } from '@/lib/firebase'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { ThemeContext } from '@/lib/context'
@@ -45,6 +51,7 @@ function Root() {
 			setUser({})
 		} else {
 			setUser(user)
+			fetchLocalStorage(user?.uid)
 		}
 	}, [user, loading])
 
