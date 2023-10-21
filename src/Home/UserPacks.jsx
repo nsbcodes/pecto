@@ -37,7 +37,7 @@ function UserPacks(props) {
 					pack.class.toLowerCase().includes(s) ||
 					pack?.folder?.toLowerCase()?.includes(s) ||
 					(
-						(pack?.folder.toLowerCase() ? `${pack?.folder.toLowerCase()}/` : '') +
+						(pack?.folder?.toLowerCase() ? `${pack?.folder?.toLowerCase()}/` : '') +
 						pack.name
 					).includes(s)
 				)

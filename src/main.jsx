@@ -31,7 +31,7 @@ const Extrapolate = lazy(() => import('./Pack/Experiences/Extrapolate/Extrapolat
 const Assess = lazy(() => import('./Pack/Experiences/Assess/Assess'))
 const Master = lazy(() => import('./Pack/Experiences/Master/Master'))
 const Class = lazy(() => import('./Class/Class'))
-
+const Foundation = lazy(() => import('./Foundation'))
 
 const router = createBrowserRouter([
 	{
@@ -90,6 +90,10 @@ const router = createBrowserRouter([
 			{
 				path: 'class/:teacher/:classId',
 				element: <Class />,
+			},
+			{
+				path: 'foundation',
+				element: <Foundation />,
 			},
 			// {
 			// 	path: 'search/:searchTerm',

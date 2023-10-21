@@ -22,6 +22,8 @@ scraper = cloudscraper.create_scraper()
 # Create an MD5 hash object
 m = hashlib.md5()
 
+# Today's UUID
+today = str(uuid4())
 
 def url_to_id(url):
     return url.split("/")[3]
@@ -85,6 +87,9 @@ def process_quizlet(id, title, author, packClass, skip=False):
                 "name": "Default",
             },
         },
+        # Not consumed by the client side
+        # In case something goes wrong we can mass delete
+        "internalCategory": today,
     }
 
     for item in quizlet["responses"][0]["models"]["studiableItem"]:
@@ -119,7 +124,22 @@ def process_quizlet(id, title, author, packClass, skip=False):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         profile_to_tome(sys.argv[1])
+    elif len(sys.argv) == 4:
+        with open(sys.argv[1]) as file:
+            global className
+            className = ""
+            for line in file:
+                if line.find("CLASS=") != -1:
+                    className = line.split("CLASS=")[1].replace("\n", "")
+                else:
+                    process_quizlet(
+                        url_to_id(line),
+                        f"{className} {line.split(',')[1].strip()}",
+                        "Archived in the Tomes",
+                        className,
+                        skip=True if sys.argv[3] == "auto" else False,
+                    )
     elif len(sys.argv) >= 5:
         process_quizlet(url_to_id(sys.argv[1]), sys.argv[2], sys.argv[3], sys.argv[4])

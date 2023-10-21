@@ -153,7 +153,7 @@ function Root() {
 			>
 				<Container fluid>
 					<LinkContainer to={'/'}>
-						<Navbar.Brand className="fw-bold">📎 Pecto</Navbar.Brand>
+						<Navbar.Brand>📎 Pecto</Navbar.Brand>
 					</LinkContainer>
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
 					<Navbar.Collapse id="basic-navbar-nav">
@@ -175,7 +175,12 @@ function Root() {
 							<Nav.Link onClick={() => setShowAbout(true)}>About</Nav.Link>
 						</Nav>
 
-						<div className="d-flex justify-content-between">
+						<div className="d-flex justify-content-end align-items-center">
+							{/* <LinkContainer className="me-2" to={'/foundation'}>
+								<Nav.Link>
+									<img src="/foundation/foundation.png" className="w-25" />
+								</Nav.Link>
+							</LinkContainer> */}
 							<Theme theme={theme} setTheme={setTheme} />
 							<Button
 								variant={user ? 'danger' : 'success'}
