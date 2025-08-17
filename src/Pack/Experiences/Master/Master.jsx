@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
 import { ThemeContext } from '@/lib/context'
@@ -22,11 +22,15 @@ import Questioner from './Questioner'
 import { syncLocalStorage } from '@/lib/firebase'
 
 function MasterComponent() {
-	const [user] = useUser((state) => [state.user], shallow)
-	const [pack] = usePack((state) => [state.pack], shallow)
+	const [user] = useUser(useShallow((state) => [state.user]))
+	const [pack] = usePack(useShallow((state) => [state.pack]))
 	const [intervals, setPostSave, initialize, generateIntervals] = useIntervals(
-		(state) => [state.intervals, state.setPostSave, state.initialize, state.generateIntervals],
-		shallow
+		useShallow((state) => [
+			state.intervals,
+			state.setPostSave,
+			state.initialize,
+			state.generateIntervals,
+		])
 	)
 	const theme = useContext(ThemeContext)
 
@@ -47,7 +51,6 @@ function MasterComponent() {
 
 	// Validate the form
 	useEffect(() => {
-		console.log(cycleModifier(pack.content.length))
 		if (days == 0) {
 			setValid(false)
 			setMessage('Days must be larger than 0')

@@ -4,7 +4,7 @@ import { stripHTML, toTitleCase } from '@/lib/utilities'
 import leven from 'leven'
 
 import { usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { Experience } from '../Experience'
 
 import Form from 'react-bootstrap/Form'
@@ -27,8 +27,7 @@ function BlitzComponent() {
 	const [responses, setResponses] = useState({})
 
 	const [pack, cards, length] = usePack(
-		(state) => [state.pack, state.pack.content[index], state.pack.content.length],
-		shallow
+		useShallow((state) => [state.pack, state.pack.content[index], state.pack.content.length])
 	)
 
 	var blacklist = ['?', 'how', 'what', 'where', 'why']

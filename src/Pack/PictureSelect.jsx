@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
 import { usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 import { truncateString } from '@/lib/utilities'
 import { ThemeContext } from '@/lib/context'
@@ -20,15 +20,14 @@ import { ThemeContext } from '@/lib/context'
  */
 function PictureSelect({ index }) {
 	const [cards, pictures, addPicture, setCardPicture, removeCardPicture] = usePack(
-		(state) => [
+		useShallow((state) => [
 			// Data
 			state.pack.content[index]?.picture,
 			state.pack.pictures,
 			state.addPicture,
 			state.setCardPicture,
 			state.removeCardPicture,
-		],
-		shallow
+		])
 	)
 	const theme = useContext(ThemeContext)
 

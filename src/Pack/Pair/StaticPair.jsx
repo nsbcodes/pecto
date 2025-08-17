@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { Markup } from '@/lib/Markup'
 import { ThemeContext } from '@/lib/context'
 
@@ -15,7 +15,7 @@ import { ThemeContext } from '@/lib/context'
  * @param {number} index - The index of the card in the pack
  */
 function StaticPair({ index }) {
-	const [cards] = usePack((state) => [state.pack.content[index]], shallow)
+	const [cards] = usePack(useShallow((state) => [state.pack.content[index]]))
 	const theme = useContext(ThemeContext)
 
 	// Muy padding

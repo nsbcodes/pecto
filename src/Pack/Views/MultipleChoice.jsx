@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button'
 // import { motion } from 'framer-motion'
 
 import { usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { stripHTML } from '@/lib/utilities'
 
 import './FlashcardView.scss'
@@ -45,7 +45,7 @@ function Answer(props) {
 
 function MultipleChoice({ content, currentCard, setCurrentCard, flipped = false }) {
 	const [similarTerms, setSimilarTerms] = useState([])
-	const [getSimilarCards] = usePack((state) => [state.getSimilarCards], shallow)
+	const [getSimilarCards] = usePack(useShallow((state) => [state.getSimilarCards]))
 
 	const [wrongAnswerClicked, clickedWrongAnswer] = useState(false)
 

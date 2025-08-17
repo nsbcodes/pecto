@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { useIntervals } from './stores/intervals'
 
 import Row from 'react-bootstrap/Row'
@@ -11,8 +11,7 @@ import Question from './Question'
 
 export default function Questioner() {
 	const [intervals, boxes, advanceCard] = useIntervals(
-		(state) => [state.intervals, state.boxes, state.advanceCard],
-		shallow
+		useShallow((state) => [state.intervals, state.boxes, state.advanceCard])
 	)
 	// const theme = useContext(ThemeContext)
 

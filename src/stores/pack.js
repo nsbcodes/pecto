@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import produce from 'immer'
+import { produce } from 'immer'
 
 import { v4 as uuidv4 } from 'uuid'
 
@@ -58,7 +58,6 @@ export const usePack = create((set, get) => ({
 		set({ loading: false })
 	},
 	filterPackCategory: (category) => {
-		console.log(get().defaultPack)
 		if (category === 0) {
 			set({ pack: get().defaultPack })
 		} else {
@@ -116,8 +115,8 @@ export const usePack = create((set, get) => ({
 					...{
 						category: usePreviousCategory
 							? // There's alwways a first card but just make sure
-							  state.pack.content[state.pack.content.length - 1].category ||
-							  'default'
+								state.pack.content[state.pack.content.length - 1].category ||
+								'default'
 							: cards.category,
 					},
 				})

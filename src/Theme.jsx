@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Form from 'react-bootstrap/Form'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { useUser } from '@/stores/user'
 
 import { Themes } from './Themes'
 import { syncLocalStorage } from './lib/firebase'
 
 export default function Theme({ theme, setTheme }) {
-	const [user] = useUser((state) => [state.user], shallow)
+	const [user] = useUser(useShallow((state) => [state.user]))
 
 	return (
 		<Form.Select

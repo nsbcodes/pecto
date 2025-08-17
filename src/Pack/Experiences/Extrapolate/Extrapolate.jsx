@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext, useReducer } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 import { Experience } from '../Experience'
 
@@ -80,8 +80,8 @@ class OCR {
 }
 
 function ExtrapolateComponent() {
-	const [newPack] = useUser((state) => [state.newPack], shallow)
-	const [pack, addCategory] = usePack((state) => [state.pack, state.addCategory], shallow)
+	const [newPack] = useUser(useShallow((state) => [state.newPack]))
+	const [pack, addCategory] = usePack(useShallow((state) => [state.pack, state.addCategory]))
 	const theme = useContext(ThemeContext)
 
 	const { packId } = useParams()

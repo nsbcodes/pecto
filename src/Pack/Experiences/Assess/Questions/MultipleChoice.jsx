@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 import { stripHTML } from '@/lib/utilities'
 
 export default function MultipleChoice({ i, hard, submit, save }) {
 	const [cards, getSimilarCards] = usePack(
-		(state) => [state.pack.content[i], state.getSimilarCards],
-		shallow
+		useShallow((state) => [state.pack.content[i], state.getSimilarCards])
 	)
 	const [similarTerms, setSimilarTerms] = useState([])
 	const [answer, setAnswer] = useState('')

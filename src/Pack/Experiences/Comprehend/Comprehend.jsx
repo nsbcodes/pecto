@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useContext, useRef } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 import { Experience } from '../Experience'
 import { useReactToPrint } from 'react-to-print'
@@ -22,7 +22,7 @@ const reducer = (state, action) => {
 }
 
 function ComprehendComponent() {
-	const [pack] = usePack((state) => [state.pack], shallow)
+	const [pack] = usePack(useShallow((state) => [state.pack]))
 	const [questions, setQuestions] = useReducer(reducer, {})
 	const [generating, setGenerating] = useState(false)
 
@@ -93,9 +93,7 @@ function ComprehendComponent() {
 	async function generateQuestions() {
 		const questionizer = await LLMPipeline.getInstance()
 		for (const [index, card] of pack.content.entries()) {
-			console.log(`Started ${index}`)
 			setQuestions({ i: index, q: await questionizer(card.definition, card.term) })
-			console.log(`Finished ${index}`)
 		}
 	}
 

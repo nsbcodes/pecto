@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 
 import Form from 'react-bootstrap/Form'
@@ -8,8 +8,7 @@ import { stripHTML } from '@/lib/utilities'
 
 export default function TrueOrFalse({ i, submit, save }) {
 	const [cards, getSimilarCards] = usePack(
-		(state) => [state.pack.content[i], state.getSimilarCards],
-		shallow
+		useShallow((state) => [state.pack.content[i], state.getSimilarCards])
 	)
 	const [similarTerms, setSimilarTerms] = useState([])
 	// Should be a boolean when set by the user

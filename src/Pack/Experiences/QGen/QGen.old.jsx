@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useReducer, useContext } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 import { ThemeContext } from '@/lib/context'
 import { Experience } from '../Experience'
@@ -16,7 +16,7 @@ const reducer = (state, action) => {
 }
 
 function QGenComponent() {
-	const [pack] = usePack((state) => [state.pack], shallow)
+	const [pack] = usePack(useShallow((state) => [state.pack]))
 	const [q, setQ] = useReducer(reducer, {})
 
 	const theme = useContext(ThemeContext)
@@ -25,9 +25,7 @@ function QGenComponent() {
 		const questionizer = await LLMPipeline.getInstance()
 		pack.content.forEach(async (card, _i) => {
 			if (specific === false || specific === _i) {
-				console.log(`Started ${_i}`)
 				setQ({ uuid: card.uuid, q: await questionizer(card.definition, card.term) })
-				console.log(`Finished ${_i}`)
 			}
 		})
 	}

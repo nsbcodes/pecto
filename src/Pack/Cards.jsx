@@ -11,7 +11,7 @@ import PictureSelect from './PictureSelect'
 import Button from 'react-bootstrap/Button'
 
 import { usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 import { motion } from 'framer-motion'
 import { ThemeContext } from '@/lib/context'
@@ -48,7 +48,7 @@ function MotionWrapper({ yes, index, style, children }) {
  */
 function Cards({ index, edit }) {
 	const [cards, previousCard, categories, packLength, deleteCard, canEdit] = usePack(
-		(state) => [
+		useShallow((state) => [
 			// Data
 			state.pack.content[index],
 			state.pack.content[index - 1],
@@ -57,8 +57,7 @@ function Cards({ index, edit }) {
 			state.deleteCard,
 			// Editing
 			state.canEdit,
-		],
-		shallow
+		])
 	)
 
 	const theme = useContext(ThemeContext)

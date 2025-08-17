@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 import { Experience } from '../Experience'
 import { Filter } from '../Filter'
@@ -15,7 +15,7 @@ import { Test } from './Test'
 import { ThemeContext } from '@/lib/context'
 
 function AssessComponent() {
-	const [pack] = usePack((state) => [state.pack], shallow)
+	const [pack] = usePack(useShallow((state) => [state.pack]))
 	const theme = useContext(ThemeContext)
 
 	const [startedTest, setStartedTest] = useState(false)

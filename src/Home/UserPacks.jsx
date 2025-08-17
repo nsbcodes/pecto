@@ -5,11 +5,11 @@ import Button from 'react-bootstrap/Button'
 import { useState, useMemo } from 'react'
 
 import { useUser } from '@/stores/user'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 function UserPacks(props) {
 	const [editing, setEditing] = useState(false)
-	const [deletePack] = useUser((state) => [state.deletePack], shallow)
+	const [deletePack] = useUser(useShallow((state) => [state.deletePack]))
 	const [search, setSearch] = useState('')
 	const [sort, setSort] = useState(0)
 	const packs = useMemo(() => {

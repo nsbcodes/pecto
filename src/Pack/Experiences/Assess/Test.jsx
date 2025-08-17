@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useReducer, useRef } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 import { useReactToPrint } from 'react-to-print'
 
@@ -34,7 +34,7 @@ function reducer(state, action) {
 }
 
 export function Test({ questions, paper }) {
-	const [content] = usePack((state) => [state.pack.content], shallow)
+	const [content] = usePack(useShallow((state) => [state.pack.content]))
 	const [submit, setSubmit] = useState(false)
 	const [answers, dispatch] = useReducer(reducer, initialState)
 

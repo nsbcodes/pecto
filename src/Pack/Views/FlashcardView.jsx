@@ -7,7 +7,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 
 import { useUser } from '@/stores/user'
 import { saveStarred, usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { Markup } from '@/lib/Markup'
 
 import './FlashcardView.scss'
@@ -61,8 +61,8 @@ function Definition({ content, setProgress }) {
 }
 
 export function FlashcardView() {
-	const [user] = useUser((state) => [state.user], shallow)
-	const [pack, editing] = usePack((state) => [state.pack, state.editing], shallow)
+	const [user] = useUser(useShallow((state) => [state.user]))
+	const [pack, editing] = usePack(useShallow((state) => [state.pack, state.editing]))
 	const [currentCard, setCurrentCard] = useState(0)
 	const [switchedTerm, setSwitchedTerm] = useState(false)
 	const [shuffle, setShuffle] = useState(false)

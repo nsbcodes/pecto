@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 
 import { useParams } from 'react-router-dom'
-import { shallow } from 'zustand/shallow'
 import { useClass } from '@/stores/class'
 
 import UserView from '@/UserView'
@@ -9,18 +8,15 @@ import UserView from '@/UserView'
 import './Class.scss'
 
 export default function Class() {
-	const [classy, status, loadClass] = useClass(
-		(state) => [state.classy, state.status, state.loadClass],
-		shallow
-	)
+	const classy = useClass((state) => state.classy)
+	const status = useClass((state) => state.status)
+	const loadClass = useClass((state) => state.loadClass)
 
 	const { teacher, classId } = useParams()
 
 	useEffect(() => {
 		loadClass(teacher, classId)
 	}, [])
-
-	console.log(classy)
 
 	if (status === 'loading') {
 		return <div>Loading...</div>

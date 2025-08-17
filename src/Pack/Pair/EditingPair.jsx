@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 
 import { usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { v4 as uuidv4 } from 'uuid'
 
 import { Editor } from './Editor'
@@ -17,15 +17,14 @@ import { ThemeContext } from '@/lib/context'
  */
 function EditingPair({ index }) {
 	const [cards, packLength, setCard, addCards, setEditing] = usePack(
-		(state) => [
+		useShallow((state) => [
 			// Data
 			state.pack.content[index],
 			state.pack.content.length,
 			state.setCard,
 			state.addCards,
 			state.setEditing,
-		],
-		shallow
+		])
 	)
 	const theme = useContext(ThemeContext)
 
@@ -38,12 +37,15 @@ function EditingPair({ index }) {
 		// Tab
 		//e.preventDefault()
 		// Add a new card
-		addCards({
-			term: '',
-			definition: '',
-			category: 'default',
-			uuid: uuidv4(),
-		}, true)
+		addCards(
+			{
+				term: '',
+				definition: '',
+				category: 'default',
+				uuid: uuidv4(),
+			},
+			true
+		)
 	}
 
 	return (

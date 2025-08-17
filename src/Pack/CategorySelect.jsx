@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
 import { hslToHex } from '@/lib/utilities'
 
 import { saveStarred, usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { ThemeContext } from '@/lib/context'
 import { syncLocalStorage } from '@/lib/firebase'
 import { useUser } from '@/stores/user'
@@ -21,7 +21,7 @@ import { useUser } from '@/stores/user'
  * @param {number} index - The index of the card in the pack
  */
 function CategorySelect({ index }) {
-	const [user] = useUser((state) => [state.user], shallow)
+	const [user] = useUser(useShallow((state) => [state.user]))
 	const [
 		cards, // TODO: fix misleading name
 		uuid,
@@ -33,7 +33,7 @@ function CategorySelect({ index }) {
 		removeCardCategory,
 		canEdit,
 	] = usePack(
-		(state) => [
+		useShallow((state) => [
 			// Data
 			state.pack.content[index].category,
 			state.pack.content[index].uuid,
@@ -44,8 +44,7 @@ function CategorySelect({ index }) {
 			state.setCardCategory,
 			state.removeCardCategory,
 			state.canEdit,
-		],
-		shallow
+		])
 	)
 	const theme = useContext(ThemeContext)
 

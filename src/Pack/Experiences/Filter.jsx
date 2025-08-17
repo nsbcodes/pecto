@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 
 import { usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -9,13 +9,12 @@ import { ThemeContext } from '@/lib/context'
 
 export function Filter({ disabled = false }) {
 	const [pack, filterPackCategory, filterPackStarred, shufflePack] = usePack(
-		(state) => [
+		useShallow((state) => [
 			state.defaultPack,
 			state.filterPackCategory,
 			state.filterPackStarred,
 			state.shufflePack,
-		],
-		shallow
+		])
 	)
 	const theme = useContext(ThemeContext)
 

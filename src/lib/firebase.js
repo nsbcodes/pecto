@@ -13,6 +13,7 @@ import {
 	// connectFirestoreEmulator,
 } from 'firebase/firestore'
 import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from 'firebase/auth'
+import { useEffect, useState } from 'react'
 
 // TODO: Confirm that our Firebase instance can be safely accessed
 export const firebaseConfig = {
@@ -97,7 +98,6 @@ export const fetchLocalStorage = async (uid) => {
 			return {}
 		}
 	})
-	console.log(res)
 	for (const [key, value] of Object.entries(res?.local) || []) {
 		localStorage.setItem(key, value)
 	}
@@ -129,4 +129,19 @@ export const getUsername = async (username) => {
 export const getUser = async (uid) => {
 	let u = await getDoc(doc(db, 'users', uid))
 	return u.data()?.username
+}
+
+export function useAuth() {
+	const [user, setUser] = useState(null)
+	const [loading, setLoading] = useState(true)
+
+	useEffect(() => {
+		const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+			setUser(firebaseUser)
+			setLoading(false)
+		})
+		return () => unsubscribe()
+	}, [])
+
+	return [user, loading]
 }

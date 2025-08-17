@@ -13,7 +13,7 @@ import { FlashcardView } from './Views/FlashcardView'
 
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 import { v4 as uuidv4 } from 'uuid'
 import { ThemeContext } from '@/lib/context'
@@ -23,7 +23,7 @@ function Pack() {
 	// We wrap useState around this so we can modify it (ex. adding new cards)
 	//const { pack: ogPack, mutate, isLoading, error } = usePack(packId)
 	//const { pack, setPack } = useState(ogPack)
-	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
+	const [user, newPack] = useUser(useShallow((state) => [state.user, state.newPack]))
 	const [
 		pack,
 		error,
@@ -35,7 +35,7 @@ function Pack() {
 		canEdit,
 		letMeEdit,
 	] = usePack(
-		(state) => [
+		useShallow((state) => [
 			// Data
 			state.pack,
 			state.error,
@@ -47,8 +47,7 @@ function Pack() {
 			// Editing
 			state.canEdit,
 			state.letMeEdit,
-		],
-		shallow
+		])
 	)
 	const theme = useContext(ThemeContext)
 

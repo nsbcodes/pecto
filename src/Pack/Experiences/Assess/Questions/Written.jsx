@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 
 import Form from 'react-bootstrap/Form'
@@ -9,7 +9,7 @@ import leven from 'leven'
 import { stripHTML } from '@/lib/utilities'
 
 export default function Written({ i, submit, save }) {
-	const [cards] = usePack((state) => [state.pack.content[i]], shallow)
+	const [cards] = usePack(useShallow((state) => [state.pack.content[i]]))
 	const [answer, setAnswer] = React.useState('')
 	const [qs, setQs] = useState([])
 

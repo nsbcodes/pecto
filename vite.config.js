@@ -11,12 +11,91 @@ export default defineConfig({
 		VitePWA({
 			injectRegister: 'auto',
 			registerType: 'autoUpdate',
+			screenshots: [
+				{
+					src: 'banner_features.png',
+					sizes: '1024x512',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'banner_plant.png',
+					sizes: '1024x512',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'banner_prism.png',
+					sizes: '1024x512',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'banner_sun.png',
+					sizes: '1024x512',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'screenshot_assess.png',
+					sizes: '2876x1799',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'screenshot_blitz.png',
+					sizes: '2880x1800',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'screenshot_comprehend.png',
+					sizes: '2879x1799',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'screenshot_extrapolate.png',
+					sizes: '2879x1799',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'screenshot_main.png',
+					sizes: '2880x1800',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'screenshot_master1.png',
+					sizes: '2880x1800',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'screenshot_master2.png',
+					sizes: '2879x1799',
+					type: 'image/png',
+					platform: 'wide',
+				},
+				{
+					src: 'screenshot_top.png',
+					sizes: '2880x1800',
+					type: 'image/png',
+					platform: 'wide',
+				},
+			],
 			manifest: {
 				short_name: 'Pecto',
+				id: 'pecto/v2.99',
 				name: 'Pecto - Procedural Studying Tool',
+				launch_handler: 'auto',
+				orientation: 'natural',
+				description:
+					'Study efficiently for free using sophisticated algorithms and local artifical intelligence',
 				icons: [
 					{ src: '/icon-192.png', type: 'image/png', sizes: '192x192' },
-					{ src: '/icon-512.png', type: 'image/png', sizes: '512x512' },
+					{ src: '/icon-512.png', type: 'image/png', sizes: '512x512', purpose: 'any' },
 					{
 						src: '/maskable_icon.png',
 						type: 'image/png',

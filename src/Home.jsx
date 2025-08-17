@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import UserPacks from './Home/UserPacks'
 
 import { useUser } from '@/stores/user'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { getMyPacks as getMyPacksLocal } from '@/lib/localstore'
 import { ThemeContext } from './lib/context'
 
@@ -11,8 +11,7 @@ import Button from 'react-bootstrap/Button'
 
 function Home() {
 	const [user, newPack, deletePack, getMyPacks] = useUser(
-		(state) => [state.user, state.newPack, state.deletePack, state.getMyPacks],
-		shallow
+		useShallow((state) => [state.user, state.newPack, state.deletePack, state.getMyPacks])
 	)
 	const [usersPacks, setUsersPacks] = useState([])
 	const [localPacks, setLocalPacks] = useState([])

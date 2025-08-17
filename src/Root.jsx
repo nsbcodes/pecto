@@ -14,9 +14,10 @@ import {
 	fetchLocalStorage,
 	getUser,
 	signOutOfGoogle,
+	getUsername,
+	initUser,
+	useAuth
 } from '@/lib/firebase'
-import { getUsername, initUser } from '@/lib/firebase'
-import { useAuthState } from 'react-firebase-hooks/auth'
 import { ThemeContext } from '@/lib/context'
 
 import { Outlet } from 'react-router-dom'
@@ -27,15 +28,15 @@ import { LinkContainer } from 'react-router-bootstrap'
 import './Root.scss'
 
 import { useUser } from '@/stores/user'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 import { debounce } from './lib/utilities'
 import Theme from './Theme'
 import { Themes } from './Themes'
 
 function Root() {
-	const [user, loading] = useAuthState(auth)
-	const [setUser] = useUser((state) => [state.setUser], shallow)
+	const [user, loading] = useAuth(auth)
+	const [setUser] = useUser(useShallow((state) => [state.setUser]))
 	// const navigate = useNavigate()
 
 	// const [search, setSearch] = useState('')

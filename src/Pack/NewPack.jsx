@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { BasePack } from '@/lib/schema'
 
 import { useUser } from '@/stores/user'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 // READ: https://beta.reactjs.org/learn/you-might-not-need-an-effect#initializing-the-application
 // READ: https://beta.reactjs.org/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development
@@ -20,8 +20,7 @@ import { shallow } from 'zustand/shallow'
 
 const NewPack = function () {
 	const [user, newPack, authenticated] = useUser(
-		(state) => [state.user, state.newPack, state.authenticated],
-		shallow
+		useShallow((state) => [state.user, state.newPack, state.authenticated])
 	)
 	const navigate = useNavigate()
 

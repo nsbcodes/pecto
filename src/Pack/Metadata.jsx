@@ -14,7 +14,7 @@ import './Metadata.scss'
 
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { ThemeContext } from '@/lib/context'
 
 import { v4 as uuidv4 } from 'uuid'
@@ -24,7 +24,7 @@ import { stripHTML } from '@/lib/utilities'
 
 export function Metadata(props) {
 	const [editing, setEditing] = useState(false)
-	const [newPack, deletePack] = useUser((state) => [state.newPack, state.deletePack], shallow)
+	const [newPack, deletePack] = useUser(useShallow((state) => [state.newPack, state.deletePack]))
 	const [
 		pack,
 		togglePublish,
@@ -36,7 +36,7 @@ export function Metadata(props) {
 		canEdit,
 		setEditingPack,
 	] = usePack(
-		(state) => [
+		useShallow((state) => [
 			// Data
 			state.pack,
 			state.togglePublish,
@@ -48,8 +48,7 @@ export function Metadata(props) {
 			// Editing
 			state.canEdit,
 			state.setEditing,
-		],
-		shallow
+		])
 	)
 
 	const theme = useContext(ThemeContext)

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { usePack } from '@/stores/pack'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 import Spinner from 'react-bootstrap/Spinner'
 import { Navigation } from '../Navigation'
@@ -15,8 +15,7 @@ export function Experience({ children, name, showFilter = true }) {
 	// No need to be specfic with selectors here,
 	// since we aren't editing the pack
 	const [pack, error, loading, loadPack] = usePack(
-		(state) => [state.defaultPack, state.error, state.loading, state.loadPack],
-		shallow
+		useShallow((state) => [state.defaultPack, state.error, state.loading, state.loadPack])
 	)
 
 	// Load the pack

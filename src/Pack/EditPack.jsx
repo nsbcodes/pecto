@@ -11,14 +11,14 @@ import Spinner from 'react-bootstrap/Spinner'
 
 import { usePack } from '@/stores/pack'
 import { useUser } from '@/stores/user'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 
 import { v4 as uuidv4 } from 'uuid'
 
 function EditPack() {
 	const { displayName, packId } = useParams()
 	// We wrap useState around this so we can modify it (ex. adding new cards)
-	const [user, newPack] = useUser((state) => [state.user, state.newPack], shallow)
+	const [user, newPack] = useUser(useShallow((state) => [state.user, state.newPack]))
 	const [pack, error, loading, loadPack, filterPackCategory, addCards, letMeEdit] = usePack(
 		(state) => [
 			// Data

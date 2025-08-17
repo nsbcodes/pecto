@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form'
 
 const UserView = function ({ username, minimal = false }) {
 	const displayName = useParams()?.displayName || username
-	console.log(username, displayName)
 	const [usersPacks, setUsersPacks] = useState([])
 
 	const [includeLocal, setIncludeLocal] = useState(false)

@@ -1,0 +1,56 @@
+@use 'sass:color';
+
+$primary: #FFFFFF;
+$warning: #FFFFFF;
+$danger: #FFFFFF;
+$light: #FFFFFF;
+$success: #FFFFFF;
+
+@import 'pre';
+
+$theme-colors: map-merge(
+	$theme-colors,
+	(
+		'primary': $primary,
+		'warning': $warning,
+		'danger': $danger,
+		'light': $light,
+		'success': $success,
+	)
+);
+
+@import 'bootstrap';
+
+body {
+	background-color: color.scale(#242933, $lightness: -100%);
+}
+
+.card,
+.pack,
+.theme-fg-container {
+	background-color: color.scale(#2e3440, $lightness: -100%);
+	@extend .shadow;
+	.card-body {
+		border-radius: 10px;
+	}
+}
+
+.theme-fg {
+	background-color: color.scale(#2e3440, $lightness: -100%);
+}
+
+.card * {
+	background-color: color.scale(#2e3440, $lightness: -100%);
+}
+
+.border {
+	border-color: #3b4252 !important;
+}
+
+#navbar {
+	background-color: color.scale(#2e3440, $lightness: -100%);
+}
+
+.nav-link.active {
+    color: #000000 !important;
+}

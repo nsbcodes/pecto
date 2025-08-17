@@ -2,14 +2,14 @@ import React, { useState, useEffect, useContext } from 'react'
 
 import { ThemeContext } from '@/lib/context'
 import { shuffle, stripHTML } from '@/lib/utilities'
-import { shallow } from 'zustand/shallow'
+import { useShallow } from 'zustand/react/shallow'
 import { usePack } from '@/stores/pack'
 
 import Button from 'react-bootstrap/Button'
 import { Markup } from '@/lib/Markup'
 
 export default function Question({ card, next, correct }) {
-	const [getSimilarCards] = usePack((state) => [state.getSimilarCards], shallow)
+	const [getSimilarCards] = usePack(useShallow((state) => [state.getSimilarCards]))
 	const theme = useContext(ThemeContext)
 	const [similarCards, setSimilarCards] = useState([])
 	const [content, setContent] = useState(null)
@@ -32,7 +32,7 @@ export default function Question({ card, next, correct }) {
 	}, [clicked])
 
 	useEffect(() => {
-		if (similarCards === []) return
+		if (similarCards == []) return
 		setContent(
 			similarCards.map((icard) => {
 				let variant = theme.dark ? 'outline-light' : 'outline-dark'
