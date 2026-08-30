@@ -177,11 +177,6 @@ function Root() {
 						</Nav>
 
 						<div className="d-flex justify-content-end align-items-center">
-							{/* <LinkContainer className="me-2" to={'/foundation'}>
-								<Nav.Link>
-									<img src="/foundation/foundation.png" className="w-25" />
-								</Nav.Link>
-							</LinkContainer> */}
 							<Theme theme={theme} setTheme={setTheme} />
 							<Button
 								variant={user ? 'danger' : 'success'}
