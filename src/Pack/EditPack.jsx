@@ -20,7 +20,7 @@ function EditPack() {
 	// We wrap useState around this so we can modify it (ex. adding new cards)
 	const [user, newPack] = useUser(useShallow((state) => [state.user, state.newPack]))
 	const [pack, error, loading, loadPack, filterPackCategory, addCards, letMeEdit] = usePack(
-		(state) => [
+		useShallow((state) => [
 			// Data
 			state.pack,
 			state.error,
@@ -30,8 +30,7 @@ function EditPack() {
 			state.addCards,
 			// Editing
 			state.letMeEdit,
-		],
-		shallow
+		])
 	)
 
 	// Saving progress spinner
@@ -43,7 +42,7 @@ function EditPack() {
 
 	useEffect(() => {
 		if (pack === undefined) {
-			;(async () => {
+			; (async () => {
 				await loadPack(displayName, packId)
 				filterPackCategory(0)
 			})()
