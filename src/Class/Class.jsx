@@ -34,7 +34,7 @@ export default function Class() {
 			</p>
 
 			<h3>Search all Chapters</h3>
-			<UserView username="MilkyDeveloper" minimal={true} />
+			<UserView username="me" minimal={true} />
 
 			<h3>Chapter 1</h3>
 			<div className="card">

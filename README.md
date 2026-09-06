@@ -26,4 +26,3 @@ Icons and backgrounds designed in Figma.
 ![Main View Screenshot](public/screenshots/screenshot_main.png)
 ![Master Mode Screenshot 1](public/screenshots/screenshot_master1.png)
 ![Master Mode Screenshot 2](public/screenshots/screenshot_master2.png)
-![Top View Screenshot](public/screenshots/screenshot_top.png)
