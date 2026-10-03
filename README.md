@@ -10,7 +10,7 @@ to domain renewal and static file hosting rather than utilizing server resources
 * Import content through a text file with custom separators (Quizlet, etc.)
 * Can also use OCR (Tesseract) to read a picture as text and then use either NLP or a small local LLM to find a subject and term ("Extrapolate" Section)
 * State management through Zustand
-* Authentication and DB through Firebase
+* Authentication (Google Sign-up/Login) and DB through Firebase
 * Full offline functionality through Dexie
 * Framer Motion for smooth animation
 * Remirror for content entry everywhere
@@ -21,10 +21,10 @@ Icons and backgrounds designed in Figma.
 
 ## Screenshots
 
-![Assess Mode Screenshot](public/screenshots/screenshot_assess.png)
-![Blitz Mode Screenshot](public/screenshots/screenshot_blitz.png)
-![Comprehend Mode Screenshot](public/screenshots/screenshot_comprehend.png)
-![Extrapolate Mode Screenshot](public/screenshots/screenshot_extrapolate.png)
-![Main View Screenshot](public/screenshots/screenshot_main.png)
-![Master Mode Screenshot 1](public/screenshots/screenshot_master1.png)
-![Master Mode Screenshot 2](public/screenshots/screenshot_master2.png)
+![Assess Mode Screenshot](https://github.com/nsbcodes/pecto/raw/main/public/screenshots/screenshot_assess.png)
+![Blitz Mode Screenshot](https://github.com/nsbcodes/pecto/raw/main/public/screenshots/screenshot_blitz.png)
+![Comprehend Mode Screenshot](https://github.com/nsbcodes/pecto/raw/main/public/screenshots/screenshot_comprehend.png)
+![Extrapolate Mode Screenshot](https://github.com/nsbcodes/pecto/raw/main/public/screenshots/screenshot_extrapolate.png)
+![Main View Screenshot](https://github.com/nsbcodes/pecto/raw/main/public/screenshots/screenshot_main.png)
+![Master Mode Screenshot 1](https://github.com/nsbcodes/pecto/raw/main/public/screenshots/screenshot_master1.png)
+![Master Mode Screenshot 2](https://github.com/nsbcodes/pecto/raw/main/public/screenshots/screenshot_master2.png)
